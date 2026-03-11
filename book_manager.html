@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+
+    <script>
+        osql.requireLogin();
+
+        $(document).ready(async function () {
+            var me = await osql.getMe();
+            console.log(me);
+            var sql = `insert ignore into Users values('${me.id}', '${me.fname}', '${me.lname}');`;
+            await osql.connect(sql);
+
+            document.getElementById('firstname').innerHTML = me.fname;
+            document.getElementById('lastname').innerHTML = me.lname;
+            execSelect();
+        });
+
+        function logout() {
+            osql.logout();
+        }
+
+        function buttonPressed() {
+            execInsert();
+        }
+
+        async function execInsert() {
+            var bookname = document.getElementById('bookname').value;
+            var isbn = document.getElementById('isbn').value;
+
+            var sql = `insert into Books (title, isbn) values ("${bookname}", "${isbn}")`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            alert(`${bookname}を追加しました`);
+            execSelect();
+
+            document.getElementById('bookname').value = "";
+            document.getElementById('isbn').value = "9784";
+        }
+
+        async function execSelect() {
+            var sql = 'select * from Books';
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = html + '<table border="1">';
+            for (var i = 0; i < objects.length; i++) {
+                html = html + '<tr>';
+                var object = objects[i];
+                html = html + '<td>' + object.id + '</td>';
+                html = html + '<td>' + object.title + '</td>';
+                html = html + '<td>' + object.isbn + '</td>';
+                html = html + '</tr>';
+            }
+            html = html + '</table>';
+            document.getElementById('result').innerHTML = html;
+        }
+    </script>
+
+</head>
+
+<body>
+    <h1>ISアプリ</h1>
+    <div style="text-align: right;">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="javascript:logout()">logout</a>
+    </div>
+    <hr>
+    <h2>本の管理</h2>
+    <hr>
+    <h3>本の登録</h3>
+    署名:<input id="bookname" value="" type="textfield">
+    <br>
+    ISBN:<input id="isbn" value="9784" type="textfield">
+    <button onclick="buttonPressed()">登録</button>
+    <hr>
+    <h3>登録済みの本</h3>
+    <p id="result"></p>
+
+</body>
+
+</html>
