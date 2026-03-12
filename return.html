@@ -28,7 +28,7 @@
 
         async function execSelect() {
             var me = await osql.getMe();
-            var sql = `select Books.title, Books.isbn, Borrowings.checkoutDate from Borrowings join Books on Borrowings.bookId = Books.id where Borrowings.userId = '${me.id}'`;
+            var sql = `select Borrowings.id, Books.title, Books.isbn, Borrowings.checkoutDate from Borrowings join Books on Borrowings.bookId = Books.id where Borrowings.userId = '${me.id}' and Borrowings.returnDate is null`;
             var objects = await osql.connect(sql);
             console.log(objects);
             var html = "";
@@ -39,20 +39,20 @@
                 html = html + '<td>' + object.title + '</td>';
                 html = html + '<td>' + object.isbn + '</td>';
                 html = html + '<td>' + object.checkoutDate + '</td>';
-                html = html + '<td>' + '<button onclick="buttonPressed(\'' + object.isbn + '\')">返却</button>' + '</td>';
+                html = html + '<td>' + '<button onclick="buttonPressed(\'' + object.id + '\')">返却</button>' + '</td>';
                 html = html + '</tr>';
             }
             html = html + '</table>';
             document.getElementById('bookname').innerHTML = html;
         }
 
-        function buttonPressed(isbn) {
-            execUpdate(isbn);
+        function buttonPressed(id) {
+            execUpdate(id);
         }
 
-        async function execUpdate(isbn) {
-            var sql = `update Borrowings set retureDate = now() where `;
-            //返却のSQL文の途中
+        async function execUpdate(id) {
+            var sql = `update Borrowings set returnDate = now() where id = ${id}`;
+            await osql.connect(sql);
             execSelect();
             alert('返却が完了しました');
         }
