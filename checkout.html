@@ -19,7 +19,6 @@
 
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
-            execSelect();
         });
 
         function logout() {
@@ -27,11 +26,10 @@
         }
 
         function buttonPressed() {
-            execInsert();
+            execSelect();
         }
 
-        async function execInsert() {
-            var bookname = document.getElementById('bookname').value;
+        async function execSelect() {
             var isbn = document.getElementById('isbn').value;
 
             if (isbn.length != 13) {
@@ -39,23 +37,18 @@
                 return;
             }
 
-            var sql = `insert into Books (title, isbn) values ("${bookname}", "${isbn}")`;
-            await osql.connect(sql);
-            alert(`${bookname}を追加しました`);
-            execSelect();
-
-            document.getElementById('bookname').value = "";
-            document.getElementById('isbn').value = "9784";
-        }
-
-        async function execSelect() {
-            var sql = 'select * from Books';
+            var sql = `select * from Books where isbn = "${isbn}"`;
             var objects = await osql.connect(sql);
             console.log(objects);
-            var html = '';
+
+            if (objects.length == 0) {
+                alert('ISBNが正しくありません');
+            }
+
+            var html = "";
             html = html + '<table border="1">';
             for (var i = 0; i < objects.length; i++) {
-                html = html + '<tr>';
+                html = html +'<tr>';
                 var object = objects[i];
                 html = html + '<td>' + object.id + '</td>';
                 html = html + '<td>' + object.title + '</td>';
@@ -63,7 +56,22 @@
                 html = html + '</tr>';
             }
             html = html + '</table>';
-            document.getElementById('result').innerHTML = html;
+            document.getElementById('bookname').innerHTML = html;
+            sessionStorage.setItem('bookid',object.id);
+        }
+
+        function button2Pressed() {
+            execInsert()
+        }
+
+        async function execInsert() {
+            var bookid = sessionStorage.getItem('bookid');
+            var me = await osql.getMe();
+
+            var sql = `insert into Borrowings (bookId, userId, checkoutDate) values (${bookid}, "${me.id}", now())`;
+            await osql.connect(sql);
+            document.getElementById('bookname').innerHTML = "本を借りました";
+            document.getElementById('isbn').value = "";
         }
     </script>
 
@@ -76,17 +84,13 @@
         <a href="javascript:logout()">logout</a>
     </div>
     <hr>
-    <h2>本の管理</h2>
+    <h2>貸出</h2>
     <hr>
-    <h3>本の登録</h3>
-    署名:<input id="bookname" value="" type="textfield">
-    <br>
-    ISBN:<input id="isbn" value="9784" type="textfield">
-    <button onclick="buttonPressed()">登録</button>
-    <hr>
-    <h3>登録済みの本</h3>
-    <p id="result"></p>
-
+    <h3>検索</h3>
+    ISBN<input id="isbn" value="9784" type="textfield">
+    <button onclick="buttonPressed()">検索</button>
+    <p id="bookname"></p>
+    <button onclick="button2Pressed()">貸出</button> 
 </body>
 
 </html>

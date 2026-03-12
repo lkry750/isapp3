@@ -14,7 +14,7 @@
         $(document).ready(async function () {
             var me = await osql.getMe();
             console.log(me);
-            var sql = `insert ignore into Users values('${me.id}', '${me.fname}', '${me.lname}');`;
+            var sql = `insert ignore into Users (id, fname, lname) values('${me.id}', '${me.fname}', '${me.lname}');`;
             await osql.connect(sql);
 
             document.getElementById('firstname').innerHTML = me.fname;
@@ -35,8 +35,11 @@
         <a href="javascript:logout()">logout</a>
     </div>
     <hr>
-    <p>一般向け</p>
+    <h2>一般向け</h2>
+    <hr>
     <p><a href="book_manager.html">本の管理</a></p>
+    <p><a href="checkout.html">貸出</a></p>
+    <p><a href="return.html">返却</a></p>
 </body>
 
 </html>

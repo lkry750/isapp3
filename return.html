@@ -26,44 +26,35 @@
             osql.logout();
         }
 
-        function buttonPressed() {
-            execInsert();
-        }
-
-        async function execInsert() {
-            var bookname = document.getElementById('bookname').value;
-            var isbn = document.getElementById('isbn').value;
-
-            if (isbn.length != 13) {
-                alert('ISBNが正しくありません');
-                return;
-            }
-
-            var sql = `insert into Books (title, isbn) values ("${bookname}", "${isbn}")`;
-            await osql.connect(sql);
-            alert(`${bookname}を追加しました`);
-            execSelect();
-
-            document.getElementById('bookname').value = "";
-            document.getElementById('isbn').value = "9784";
-        }
-
         async function execSelect() {
-            var sql = 'select * from Books';
+            var me = await osql.getMe();
+            var sql = `select Books.title, Books.isbn, Borrowings.checkoutDate from Borrowings join Books on Borrowings.bookId = Books.id where Borrowings.userId = '${me.id}'`;
             var objects = await osql.connect(sql);
             console.log(objects);
-            var html = '';
+            var html = "";
             html = html + '<table border="1">';
             for (var i = 0; i < objects.length; i++) {
-                html = html + '<tr>';
+                html = html +'<tr>';
                 var object = objects[i];
-                html = html + '<td>' + object.id + '</td>';
                 html = html + '<td>' + object.title + '</td>';
                 html = html + '<td>' + object.isbn + '</td>';
+                html = html + '<td>' + object.checkoutDate + '</td>';
+                html = html + '<td>' + '<button onclick="buttonPressed(\'' + object.isbn + '\')">返却</button>' + '</td>';
                 html = html + '</tr>';
             }
             html = html + '</table>';
-            document.getElementById('result').innerHTML = html;
+            document.getElementById('bookname').innerHTML = html;
+        }
+
+        function buttonPressed(isbn) {
+            execUpdate(isbn);
+        }
+
+        async function execUpdate(isbn) {
+            var sql = `update Borrowings set retureDate = now() where `;
+            //返却のSQL文の途中
+            execSelect();
+            alert('返却が完了しました');
         }
     </script>
 
@@ -76,17 +67,10 @@
         <a href="javascript:logout()">logout</a>
     </div>
     <hr>
-    <h2>本の管理</h2>
+    <h2>返却</h2>
     <hr>
-    <h3>本の登録</h3>
-    署名:<input id="bookname" value="" type="textfield">
-    <br>
-    ISBN:<input id="isbn" value="9784" type="textfield">
-    <button onclick="buttonPressed()">登録</button>
-    <hr>
-    <h3>登録済みの本</h3>
-    <p id="result"></p>
-
+    <h3>借りている本</h3>
+    <p id="bookname"></p>
 </body>
 
 </html>
