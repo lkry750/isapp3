@@ -29,6 +29,35 @@
         function init() {
             var id = sessionStorage.getItem('pageid');
             document.getElementById('id').innerHTML = id;
+            execSelect();
+        }
+
+        async function execSelect() {
+            var id = sessionStorage.getItem('pageid');
+            var sql = `select Books.title, Borrowings.userId, Users.id, Users.fname, Users.lname, Borrowings.checkoutDate, Borrowings.returnDate 
+            from (Books
+            inner join Borrowings on Borrowings.bookId = Books.id)
+            inner join Users on Borrowings.userId = Users.id
+            where Books.id = ${id}`;
+            objects = await osql.connect(sql);
+            console.log(objects);
+            if (!objects.length) {
+                document.getElementById('id').innerHTML = 'データがありません';
+                return;
+            };
+            var html = "";
+            html = html + '<table border="1">';
+            for (var i = 0; i < objects.length; i++) {
+            var object = objects[i];
+                html = html + '<tr>';
+                html = html + '<td>' + object.fname + '</td>';
+                html = html + '<td>' + object.lname + '</td>';
+                html = html + '<td>' + object.checkoutDate + '</td>';
+                html = html + '<td>' + object.returnDate + '</td>';
+                html = html + '</tr>';
+            }
+            html = html + '</table>';
+            document.getElementById('id').innerHTML = html;
         }
     </script>
 
@@ -41,6 +70,9 @@
         <a href="javascript:logout()">logout</a>
     </div>
     <hr>
+    <h2>本の管理</h2>
+    <hr>
+    <h3 id="h3"></h3>
     <p id="id"></p>
 </body>
 
