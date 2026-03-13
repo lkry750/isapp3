@@ -64,17 +64,27 @@
                 html = html + '<td>' + object.title + '</td>';
                 html = html + '<td>' + object.isbn + '</td>';
                 html = html + '<td>' + object.status + '</td>';
+                html = html + '<td>' + '<button onclick="button2Pressed(\'' + object.id + '\')">x</button>' + '</td>';
                 html = html + '</tr>';
             }
             html = html + '</table>';
             document.getElementById('result').innerHTML = html;
+        }
+
+        function button2Pressed(id) {
+            movePage(id);
+        }
+
+        async function movePage(pageid) {
+            sessionStorage.setItem("pageid", pageid);
+            location.href = 'book_history.html?id=' + pageid;
         }
     </script>
 
 </head>
 
 <body>
-    <h1>ISアプリ</h1>
+    <h1>図書管理システム</h1>
     <div style="text-align: right;">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="javascript:logout()">logout</a>
