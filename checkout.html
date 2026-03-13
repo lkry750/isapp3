@@ -36,8 +36,10 @@
                 alert('ISBNが正しくありません');
                 return;
             }
-
-            var sql = `select * from Books where isbn = "${isbn}"`;
+        
+            var sql = `select Books.id, Books.title, Books.isbn, Borrowings.checkoutDate, Borrowings.returnDate
+            from Books left join Borrowings on Books.id = Borrowings.bookId 
+            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.bookId = Books.id) where Books.isbn = "${isbn}" order by Books.id asc`;
             var objects = await osql.connect(sql);
             console.log(objects);
 
@@ -53,22 +55,21 @@
                 html = html + '<td>' + object.id + '</td>';
                 html = html + '<td>' + object.title + '</td>';
                 html = html + '<td>' + object.isbn + '</td>';
+                html = html + '<td>' + '<button onclick="button2Pressed(\'' + object.id + '\')">貸出</button>' + '</td>';
                 html = html + '</tr>';
             }
             html = html + '</table>';
             document.getElementById('bookname').innerHTML = html;
-            sessionStorage.setItem('bookid',object.id);
         }
 
-        function button2Pressed() {
-            execInsert()
+        function button2Pressed(id) {
+            execInsert(id);
         }
 
-        async function execInsert() {
-            var bookid = sessionStorage.getItem('bookid');
+        async function execInsert(id) {
             var me = await osql.getMe();
 
-            var sql = `insert into Borrowings (bookId, userId, checkoutDate) values (${bookid}, "${me.id}", now())`;
+            var sql = `insert into Borrowings (bookId, userId, checkoutDate) values (${id}, "${me.id}", now())`;
             await osql.connect(sql);
             document.getElementById('bookname').innerHTML = "本を借りました";
             document.getElementById('isbn').value = "";
@@ -90,7 +91,6 @@
     ISBN<input id="isbn" value="9784" type="textfield">
     <button onclick="buttonPressed()">検索</button>
     <p id="bookname"></p>
-    <button onclick="button2Pressed()">貸出</button> 
 </body>
 
 </html>

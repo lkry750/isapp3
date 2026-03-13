@@ -49,7 +49,10 @@
         }
 
         async function execSelect() {
-            var sql = 'select * from Books';
+            var sql = `select Books.id, Books.title, Books.isbn, Borrowings.checkoutDate, Borrowings.returnDate,
+            case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null then '貸出中' else '在架' end as status
+            from Books left join Borrowings on Books.id = Borrowings.bookId
+            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.bookId = Books.id) order by Books.title asc`;
             var objects = await osql.connect(sql);
             console.log(objects);
             var html = '';
@@ -60,6 +63,7 @@
                 html = html + '<td>' + object.id + '</td>';
                 html = html + '<td>' + object.title + '</td>';
                 html = html + '<td>' + object.isbn + '</td>';
+                html = html + '<td>' + object.status + '</td>';
                 html = html + '</tr>';
             }
             html = html + '</table>';
