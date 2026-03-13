@@ -37,7 +37,8 @@
                 return;
             }
         
-            var sql = `select Books.id, Books.title, Books.isbn, Borrowings.checkoutDate, Borrowings.returnDate
+            var sql = `select Books.id, Books.title, Books.isbn, Borrowings.checkoutDate, Borrowings.returnDate,
+            case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null then '貸出中' else '在架' end as status
             from Books left join Borrowings on Books.id = Borrowings.bookId 
             and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.bookId = Books.id) where Books.isbn = "${isbn}" order by Books.id asc`;
             var objects = await osql.connect(sql);
@@ -55,7 +56,12 @@
                 html = html + '<td>' + object.id + '</td>';
                 html = html + '<td>' + object.title + '</td>';
                 html = html + '<td>' + object.isbn + '</td>';
-                html = html + '<td>' + '<button onclick="button2Pressed(\'' + object.id + '\')">貸出</button>' + '</td>';
+
+                html = html + '<td>';
+                if (object.status == '在架') html = html + '<button onclick="button2Pressed(\'' + object.id + '\')">貸出</button>';
+                else html = html + "貸出中";
+                html = html + '</td>';
+                
                 html = html + '</tr>';
             }
             html = html + '</table>';
