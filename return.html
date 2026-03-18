@@ -7,6 +7,7 @@
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
+    <link rel="stylesheet" href="style.css">
 
     <script>
         osql.requireLogin();
@@ -32,17 +33,24 @@
             var objects = await osql.connect(sql);
             console.log(objects);
             var html = "";
-            html = html + '<table border="1">';
+            html = html + '<div class="book-list">';//cssの変更の続きをやる
             for (var i = 0; i < objects.length; i++) {
-                html = html +'<tr>';
                 var object = objects[i];
-                html = html + '<td>' + object.title + '</td>';
-                html = html + '<td>' + object.isbn + '</td>';
-                html = html + '<td>' + object.checkoutDate + '</td>';
-                html = html + '<td>' + '<button onclick="buttonPressed(\'' + object.id + '\')">返却</button>' + '</td>';
-                html = html + '</tr>';
+
+                html = html + '<div class="book-row" onclick="buttonPressed(\'' + object.id + '\')">';
+
+                html = html + '<div class="book-line1">';
+                html = html + '<span class="book-title">' + object.title + '</span>';
+                html = html + '</div>';
+
+                html = html + '<div class="book-line2">';
+                html = html + '<span class="book-date">貸出日 : ' + object.checkoutDate + '</span>';
+                html = html + '<button onclick="buttonPressed(\'' + object.id + '\')">返却</button>';
+                html = html + '</div>';
+
+                html = html + '</div>';
             }
-            html = html + '</table>';
+            html = html + '</div>';
             document.getElementById('bookname').innerHTML = html;
         }
 
@@ -51,6 +59,10 @@
         }
 
         async function execUpdate(id) {
+            if (!confirm("本当に返却しますか？")) {
+                return;
+            }
+
             var sql = `update Borrowings set returnDate = now() where id = ${id}`;
             await osql.connect(sql);
             execSelect();
@@ -70,7 +82,7 @@
     <h2>返却</h2>
     <hr>
     <h3>借りている本</h3>
-    <p id="bookname"></p>
+    <div id="bookname"></div>
 </body>
 
 </html>

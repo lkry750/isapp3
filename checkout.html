@@ -7,6 +7,7 @@
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
+    <link rel="stylesheet" href="style.css">
 
     <script>
         osql.requireLogin();
@@ -49,22 +50,31 @@
             }
 
             var html = "";
-            html = html + '<table border="1">';
+            html = html + '<div class="book-list">';
             for (var i = 0; i < objects.length; i++) {
-                html = html +'<tr>';
                 var object = objects[i];
-                html = html + '<td>' + object.id + '</td>';
-                html = html + '<td>' + object.title + '</td>';
-                html = html + '<td>' + object.isbn + '</td>';
-
-                html = html + '<td>';
-                if (object.status == '在架') html = html + '<button onclick="button2Pressed(\'' + object.id + '\')">貸出</button>';
-                else html = html + "貸出中";
-                html = html + '</td>';
                 
-                html = html + '</tr>';
+                html = html + '<div class="book-row">';
+
+                html = html + '<div class="book-line1">';
+                html = html + '<span class="book-title">' + object.title + '</span>';
+                html = html + '<span class="book-isbn">ISBN : ' + object.isbn + '</span>';
+                html = html + '</div>';
+
+                html = html + '<div class="book-line2">';
+
+                var statusClass = object.status == "在架" ? "status-green" : "status-red";
+                html = html + '<span class="book-status ' + statusClass + '">' + object.status + '</span>';
+
+                if(object.status == "在架"){
+                    html = html + '<button onclick="button2Pressed(' + object.id + ')">貸出</button>';
+                }
+
+                html = html + '</div>';
+
+                html = html + '</div>';
             }
-            html = html + '</table>';
+            html = html + '</div>';
             document.getElementById('bookname').innerHTML = html;
         }
 
@@ -96,7 +106,7 @@
     <h3>検索</h3>
     ISBN<input id="isbn" value="9784" type="textfield">
     <button onclick="buttonPressed()">検索</button>
-    <p id="bookname"></p>
+    <div id="bookname"></div>
 </body>
 
 </html>

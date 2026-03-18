@@ -7,6 +7,7 @@
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
+    <link rel="stylesheet" href="style.css">
 
     <script>
         osql.requireLogin();
@@ -56,23 +57,26 @@
             var objects = await osql.connect(sql);
             console.log(objects);
             var html = '';
-            html = html + '<table border="1">';
+            html = html + '<div class="book-list">';
             for (var i = 0; i < objects.length; i++) {
-                html = html + '<tr>';
                 var object = objects[i];
-                html = html + '<td>' + object.id + '</td>';
-                html = html + '<td>' + object.title + '</td>';
-                html = html + '<td>' + object.isbn + '</td>';
-                html = html + '<td>' + object.status + '</td>';
-                html = html + '<td>' + '<button onclick="button2Pressed(\'' + object.id + '\')">x</button>' + '</td>';
-                html = html + '</tr>';
-            }
-            html = html + '</table>';
-            document.getElementById('result').innerHTML = html;
-        }
 
-        function button2Pressed(id) {
-            movePage(id);
+                html = html + '<div class="book-row" onclick="movePage(\'' + object.id + '\')">';
+
+                html = html + '<div class="book-line1">';
+                html = html + '<span class="book-title">' + object.title + '</span>';
+                html = html + '<span class="book-isbn">ISBN : ' + object.isbn + '</span>';
+                html = html + '</div>';
+
+                html = html + '<div class="book-line2">';
+                var statusClass = object.status === "在架" ? "status-green" : "status-red";
+                html = html + '<span class="book-status ' + statusClass + '">' + object.status + '</span>';
+                html = html + '</div>';
+
+                html = html + '</div>';
+            }
+            html = html + '</div>';
+            document.getElementById('result').innerHTML = html;
         }
 
         async function movePage(pageid) {
@@ -99,7 +103,7 @@
     <button onclick="buttonPressed()">登録</button>
     <hr>
     <h3>登録済みの本</h3>
-    <p id="result"></p>
+    <div id="result"></div>
 
 </body>
 
