@@ -33,15 +33,10 @@
         async function execSelect() {
             var isbn = document.getElementById('isbn').value;
 
-            if (isbn.length != 13) {
-                alert('ISBNが正しくありません');
-                return;
-            }
-        
             var sql = `select Books.id, Books.title, Books.isbn, Borrowings.checkoutDate, Borrowings.returnDate,
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null then '貸出中' else '在架' end as status
             from Books left join Borrowings on Books.id = Borrowings.bookId 
-            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.bookId = Books.id) where Books.isbn = "${isbn}" order by Books.id asc`;
+            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.bookId = Books.id) where Books.isbn like "%${isbn}%" order by Books.id asc`;
             var objects = await osql.connect(sql);
             console.log(objects);
 
@@ -50,31 +45,29 @@
             }
 
             var html = "";
-            html = html + '<div class="book-list">';
             for (var i = 0; i < objects.length; i++) {
                 var object = objects[i];
                 
                 html = html + '<div class="book-row">';
 
-                html = html + '<div class="book-line1">';
+                html = html + '<div class="book-line">';
                 html = html + '<span class="book-title">' + object.title + '</span>';
                 html = html + '<span class="book-isbn">ISBN : ' + object.isbn + '</span>';
                 html = html + '</div>';
 
-                html = html + '<div class="book-line2">';
+                html = html + '<div class="book-line">';
 
-                var statusClass = object.status == "在架" ? "status-green" : "status-red";
-                html = html + '<span class="book-status ' + statusClass + '">' + object.status + '</span>';
+                if (object.status == "貸出中") {
+                    html = html + '<span class="status-red">貸出中</span>';
+                }else if (object.status == "在架") {
+                    html = html + '<button class="checkoutbutton" onclick=button2Pressed(' + object.id + ')">貸出</button>';
 
-                if(object.status == "在架"){
-                    html = html + '<button onclick="button2Pressed(' + object.id + ')">貸出</button>';
                 }
 
                 html = html + '</div>';
 
                 html = html + '</div>';
             }
-            html = html + '</div>';
             document.getElementById('bookname').innerHTML = html;
         }
 
@@ -88,7 +81,7 @@
             var sql = `insert into Borrowings (bookId, userId, checkoutDate) values (${id}, "${me.id}", now())`;
             await osql.connect(sql);
             document.getElementById('bookname').innerHTML = "本を借りました";
-            document.getElementById('isbn').value = "";
+            document.getElementById('isbn').value = "9784";
         }
     </script>
 
@@ -103,10 +96,16 @@
     <hr>
     <h2>貸出</h2>
     <hr>
-    <h3>検索</h3>
-    ISBN<input id="isbn" value="9784" type="textfield">
-    <button onclick="buttonPressed()">検索</button>
-    <div id="bookname"></div>
+    <br>
+    <div class="box">
+        <h3>検索</h3>
+        <span class="label">ISBN</span>
+        <input id="isbn" value="9784" type="textfield">
+        <button onclick="buttonPressed()">検索</button>
+        <br>
+        <br>
+        <div id="bookname"></div>
+    </div>
 </body>
 
 </html>

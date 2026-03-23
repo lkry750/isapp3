@@ -32,25 +32,27 @@
             var sql = `select Borrowings.id, Books.title, Books.isbn, Borrowings.checkoutDate from Borrowings join Books on Borrowings.bookId = Books.id where Borrowings.userId = '${me.id}' and Borrowings.returnDate is null`;
             var objects = await osql.connect(sql);
             console.log(objects);
+            if (objects.length == 0) {
+                document.getElementById("bookname").innerHTML = "借りている本はありません";
+                return;
+            }
             var html = "";
-            html = html + '<div class="book-list">';//cssの変更の続きをやる
             for (var i = 0; i < objects.length; i++) {
                 var object = objects[i];
 
-                html = html + '<div class="book-row" onclick="buttonPressed(\'' + object.id + '\')">';
+                html = html + '<div class="book-row">';
 
-                html = html + '<div class="book-line1">';
+                html = html + '<div class="book-line">';
                 html = html + '<span class="book-title">' + object.title + '</span>';
                 html = html + '</div>';
 
-                html = html + '<div class="book-line2">';
+                html = html + '<div class="book-line">';
                 html = html + '<span class="book-date">貸出日 : ' + object.checkoutDate + '</span>';
                 html = html + '<button onclick="buttonPressed(\'' + object.id + '\')">返却</button>';
                 html = html + '</div>';
 
                 html = html + '</div>';
             }
-            html = html + '</div>';
             document.getElementById('bookname').innerHTML = html;
         }
 
@@ -81,8 +83,11 @@
     <hr>
     <h2>返却</h2>
     <hr>
-    <h3>借りている本</h3>
-    <div id="bookname"></div>
+    <br>
+    <div class="box">
+        <h3>借りている本</h3>
+        <div id="bookname"></div>
+    </div>
 </body>
 
 </html>

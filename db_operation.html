@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        osql.requireLogin();
+
+        $(document).ready(async function () {
+            var me = await osql.getMe();
+            console.log(me);
+            var sql = `insert ignore into Users (id, fname, lname) values('${me.id}', '${me.fname}', '${me.lname}');`;
+            await osql.connect(sql);
+
+            document.getElementById('firstname').innerHTML = me.fname;
+            document.getElementById('lastname').innerHTML = me.lname;
+        });
+
+        function logout() {
+            osql.logout();
+        }
+
+        function buttonPressed() {
+            sqlop();
+        }
+
+        async function sqlop() {
+            var sql = document.getElementById("sql").value;
+            var objects = await osql.connect(sql);
+
+            if (Array.isArray(objects)) {
+                displayResult(objects);
+            } else if (objects) {
+                displayResult([objects]);
+            } else {
+                alert("SQLを実行しました");
+            }
+        }
+
+        function displayResult(data) {
+            var html = "<table border='1'>";
+
+            if (data.length > 0) {
+                html += "<tr>";
+                for (var key in data[0]) {
+                    html += "<th>" + key + "</th>";
+                }
+                html += "</tr>";
+
+                data.forEach(row => {
+                    html += "<tr>";
+                    for (var key in row) {
+                        html += "<td>" + row[key] + "</td>";
+                    }
+                    html += "</tr>";
+                });
+            } else {
+                html += "<tr><td>データがありません</td></tr>";
+            }
+
+            html += "</table>";
+
+            document.getElementById("result").innerHTML = html;
+        }
+    </script>
+
+</head>
+
+<body>
+    <h1>図書管理システム</h1>
+    <div style="text-align: right;">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="javascript:logout()">logout</a>
+    </div>
+    <hr>
+    <h2>管理者向け</h2>
+    <hr>
+    <h3>SQL</h3>
+    <textarea id="sql"></textarea>
+    <button onclick="buttonPressed()">実行</button>
+    <div id="result"></div>
+</body>
+
+</html>

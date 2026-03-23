@@ -57,25 +57,23 @@
             var objects = await osql.connect(sql);
             console.log(objects);
             var html = '';
-            html = html + '<div class="book-list">';
             for (var i = 0; i < objects.length; i++) {
                 var object = objects[i];
 
                 html = html + '<div class="book-row" onclick="movePage(\'' + object.id + '\')">';
 
-                html = html + '<div class="book-line1">';
+                html = html + '<div class="book-line">';
                 html = html + '<span class="book-title">' + object.title + '</span>';
                 html = html + '<span class="book-isbn">ISBN : ' + object.isbn + '</span>';
                 html = html + '</div>';
 
-                html = html + '<div class="book-line2">';
+                html = html + '<div class="book-line">';
                 var statusClass = object.status === "在架" ? "status-green" : "status-red";
                 html = html + '<span class="book-status ' + statusClass + '">' + object.status + '</span>';
                 html = html + '</div>';
 
                 html = html + '</div>';
             }
-            html = html + '</div>';
             document.getElementById('result').innerHTML = html;
         }
 
@@ -96,15 +94,21 @@
     <hr>
     <h2>本の管理</h2>
     <hr>
-    <h3>本の登録</h3>
-    署名:<input id="bookname" value="" type="textfield">
     <br>
-    ISBN:<input id="isbn" value="9784" type="textfield">
-    <button onclick="buttonPressed()">登録</button>
-    <hr>
-    <h3>登録済みの本</h3>
-    <div id="result"></div>
-
+    <div class="box">
+        <h3 >本の登録</h3>
+        <span class="label">署名</span>
+        <input id="bookname" value="" type="textfield">
+        <br>
+        <span class="label">ISBN</span>
+        <input id="isbn" value="9784" type="textfield">
+        <button onclick="buttonPressed()">登録</button>
+    </div>
+    <br>
+    <div class="box">
+        <h3>登録済みの本</h3>
+        <div id="result"></div>
+    </div>
 </body>
 
 </html>

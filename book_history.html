@@ -7,6 +7,7 @@
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
+    <link rel="stylesheet" href="style.css">
 
     <script>
         osql.requireLogin();
@@ -33,12 +34,12 @@
         }
 
         async function execSelect() {
-            var id = sessionStorage.getItem('pageid');
-            var sql = `select Books.title, Borrowings.userId, Users.id, Users.fname, Users.lname, Borrowings.checkoutDate, Borrowings.returnDate 
+            var pageid = sessionStorage.getItem('pageid');
+            var sql = `select Books.title, Borrowings.userId, Users.fname, Users.lname, Borrowings.checkoutDate, Borrowings.returnDate 
             from (Books
             inner join Borrowings on Borrowings.bookId = Books.id)
             inner join Users on Borrowings.userId = Users.id
-            where Books.id = ${id}`;
+            where Books.id = ${pageid}`;
             objects = await osql.connect(sql);
             console.log(objects);
             if (!objects.length) {
@@ -46,17 +47,22 @@
                 return;
             };
             var html = "";
-            html = html + '<table border="1">';
             for (var i = 0; i < objects.length; i++) {
-            var object = objects[i];
-                html = html + '<tr>';
-                html = html + '<td>' + object.fname + '</td>';
-                html = html + '<td>' + object.lname + '</td>';
-                html = html + '<td>' + object.checkoutDate + '</td>';
-                html = html + '<td>' + object.returnDate + '</td>';
-                html = html + '</tr>';
+                var object = objects[i];
+                html = html + '<div class="book-box">';
+
+                html = html + '<div class="book-left">';
+                html = html + (i+1) + ' ' + object.lname + ' ' + object.fname + ' さん'; //Unicodeで①を作ることもできるらしい
+                html = html + '</div>';
+
+                html = html + '<div class="book-right">';
+                html = html + '<span>' + '貸出 : ' + object.checkoutDate + '</span>';
+                var returnDate = object.returnDate == null ? "------------------------------" : object.returnDate;
+                html = html + '<span>' + '返却 : ' + returnDate + '</span>';
+                html = html + '</div>';
+
+                html = html + '</div><br>';
             }
-            html = html + '</table>';
             document.getElementById('id').innerHTML = html;
         }
     </script>
