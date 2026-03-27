@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DB初期化</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/osql.js"></script>
+    <script src="../isapp.js"></script>
+    <script>
+        osql.requireLogin();
+        $(document).ready(init);
+
+        const DATABASE_NAME = isapp.getDatabaseName();
+
+        async function init() {
+            await isapp.initUser();
+            updateCurrentDatabaseDisplay();
+            const statusMessage = $('#status-message');
+            if (!DATABASE_NAME) {
+                statusMessage.html('osql.db にデータベース名が設定されていません。isapp.js の定数を確認してください。');
+            } else {
+                statusMessage.html('「データベース作成・初期化」を押すと、' + DATABASE_NAME + ' に対するテーブルをつくります。');
+            }
+        }
+
+        const initSQL = `
+DROP TABLE IF EXISTS Users;
+CREATE TABLE Users (
+    id VARCHAR(255) PRIMARY KEY,
+    fname VARCHAR(255) NOT NULL,
+    lname VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL
+);
+ALTER TABLE Users ADD INDEX idx_users_role (role);
+`;
+
+        async function initializeDatabase() {
+            const statusMessage = $('#status-message');
+            statusMessage.html(`データベース初期化中...<br>`);
+            if (!DATABASE_NAME) {
+                statusMessage.append('osql.db にデータベース名が設定されていないため、処理を中止します。<br>');
+                return;
+            }
+            osql.db = DATABASE_NAME;
+
+            const rawStatements = initSQL.split(';');
+            const sqlStatements = [];
+            for (let index = 0; index < rawStatements.length; index++) {
+                const statement = rawStatements[index].trim();
+                if (statement.length > 0) {
+                    sqlStatements.push(statement);
+                }
+            }
+
+            for (let index = 0; index < sqlStatements.length; index++) {
+                const sql = sqlStatements[index];
+                statusMessage.append(`実行中: ${sql.substring(0, 80)}...<br>`);
+                const result = await osql.connect(sql, false);
+                console.log(`init ${index}`, result);
+                statusMessage.append(`OK<br>`);
+            }
+
+            statusMessage.append(`全てのSQLを実行しました。<br>`);
+        }
+
+        async function createDatabase() {
+            const createStatus = $('#create-status');
+            if (!DATABASE_NAME) {
+                createStatus.html('osql.db に設定されているデータベース名を確認してください。');
+                return;
+            }
+            osql.db = '';
+            createStatus.html(`データベース ${DATABASE_NAME} を作成中...<br>`);
+            const createResult = await osql.connect(`CREATE DATABASE IF NOT EXISTS \`${DATABASE_NAME}\``, false);
+            console.log('create database', createResult);
+            osql.db = DATABASE_NAME;
+            updateCurrentDatabaseDisplay();
+            createStatus.append('作成または存在確認が完了しました。テーブルの初期化を続けます...<br>');
+            await initializeDatabase();
+            createStatus.append('データベースとテーブル初期化が完了しました。<br>');
+        }
+
+        function updateCurrentDatabaseDisplay() {
+            const displayTarget = $('#current-database');
+            const dbName = osql.db || DATABASE_NAME;
+            if (dbName) {
+                displayTarget.text(`現在のデータベース: ${dbName}`);
+                $('#database-name-display').text(dbName);
+            } else {
+                displayTarget.text('データベースが選択されていません。');
+                $('#database-name-display').text('未設定');
+            }
+        }
+    </script>
+    <style>
+        .db-section {
+            border: 1px solid #ccc;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            background: #f9f9f9;
+        }
+
+        .db-section label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .db-section input {
+            width: 100%;
+            padding: 0.4rem;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .action-row {
+            margin-top: 0.5rem;
+        }
+
+        .status-box {
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            background: #fff;
+            border: 1px dashed #aaa;
+            min-height: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="title">ISアプリ2025</div>
+        <div id="username" style="cursor: pointer;" onclick="isapp.openUserProfile('..')"></div>
+    </div>
+    <h1>データベース初期化</h1>
+    <section class="db-section">
+        <h2>データベース作成とテーブル初期化</h2>
+        <p>対象データベース: <strong id="database-name-display">未設定</strong></p>
+        <div class="action-row">
+            <button onclick="createDatabase()">データベース作成・初期化</button>
+        </div>
+        <div id="create-status" class="status-box"></div>
+        <div id="current-database" class="status-box"></div>
+    </section>
+    <section class="db-section">
+        <h2>テーブル再初期化</h2>
+        <p>すでに作成済みのデータベースを使って再度テーブルを初期化します。</p>
+        <button onclick="initializeDatabase()">テーブル初期化を実行</button>
+        <div id="status-message" class="status-box"></div>
+    </section>
+    <hr>
+    <h2>そのほか</h2>
+    <a href="https://dbkiso.si.aoyama.ac.jp" target="_blank">dbkisoサーバへ</a>
+</body>
+
+</html>

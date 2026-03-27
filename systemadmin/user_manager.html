@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザー管理</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/osql.js"></script>
+    <script src="../isapp.js"></script>
+    <script>
+        osql.requireLogin();
+        $(document).ready(init);
+
+        async function init() {
+            await isapp.initUser();
+            await loadUsers();
+        }
+
+        async function loadUsers() {
+            const usersResult = await osql.connect(`SELECT id, fname, lname, role FROM Users`, false);
+            if (usersResult.status === 200 && usersResult.objects) {
+                let tableHtml = '<table border="1"><thead><tr><th>ID</th><th>姓</th><th>名</th><th>ロール</th></tr></thead><tbody>';
+                usersResult.objects.forEach(user => {
+                    tableHtml += `<tr><td><a href="#" onclick="isapp.openUserProfile('..', '${user.id}')">${user.id}</a></td><td>${user.lname}</td><td>${user.fname}</td><td><input type="text" id="role-${user.id}" value="${user.role}"> <button onclick="updateUserRole('${user.id}')">更新</button></td></tr>`;
+                });
+                tableHtml += '</tbody></table>';
+                $('#user-list').html(tableHtml);
+            } else {
+                $('#user-list').html('<p>ユーザー情報の取得に失敗しました。</p>');
+                console.error("Failed to load users:", usersResult);
+            }
+        }
+
+        async function updateUserRole(userId) {
+            const escapedUserId = $.escapeSelector(userId);
+            const newRole = $('#role-' + escapedUserId).val();
+            const updateSql = `UPDATE Users SET role = '${osql.escapeSingleQuote(newRole)}' WHERE id = '${userId}'`;
+            const updateResult = await osql.connect(updateSql, false);
+
+            if (updateResult.status === 200) {
+                console.log(`User ${userId} role updated to ${newRole}`);
+            } else {
+                alert(`ロールの更新に失敗しました: ${updateResult.message}`);
+                console.error("Failed to update user role:", updateResult);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="title">ISアプリ2025</div>
+        <div id="username" style="cursor: pointer;" onclick="isapp.openUserProfile('..')"></div>
+    </div>
+    <h1>ユーザー管理</h1>
+    <div id="user-list"></div>
+</body>
+
+</html>

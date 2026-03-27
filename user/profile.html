@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プロフィール編集</title>
+    <link rel="stylesheet" href="../style.css">
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/osql.js"></script>
+    <script src="../isapp.js"></script>
+    <script>
+        osql.requireLogin();
+        $(document).ready(init);
+
+        async function init() {
+            const params = osql.getParams();
+            const userIdFromParams = params['userId'];
+
+            const me = await osql.getMe();
+            let targetUserId = null;
+
+            if (userIdFromParams) {
+                targetUserId = userIdFromParams;
+            } else if (me) {
+                targetUserId = me.id;
+            }
+
+            if (!targetUserId) {
+                console.error("No target user ID available.");
+                return;
+            }
+
+            // Check if the current logged-in user (me) exists in the Users table
+            if (me && me.id === targetUserId) {
+                const checkUserResult = await osql.connect(`SELECT id FROM Users WHERE id = '${me.id}'`, false);
+                if (checkUserResult.objects.length === 0) {
+                    const insertSql = `INSERT INTO Users (id, fname, lname, role) VALUES (
+                        '${me.id}',
+                        '${osql.escapeSingleQuote(me.fname)}',
+                        '${osql.escapeSingleQuote(me.lname)}',
+                        'user'
+                    )`;
+                    const insertResult = await osql.connect(insertSql, false);
+                    if (insertResult.status === 200) {
+                        console.log("Current user inserted successfully into Users table.");
+                    } else {
+                        console.error("Failed to insert current user into Users table:", insertResult);
+                    }
+                }
+            }
+
+            const userResult = await osql.connect(`SELECT fname, lname FROM Users WHERE id = '${targetUserId}'`, false);
+            if (userResult.objects.length > 0) {
+                const user = userResult.objects[0];
+                $('#fname').val(user.fname);
+                $('#lname').val(user.lname);
+            } else {
+                console.error(`User with ID ${targetUserId} not found in Users table after all checks.`);
+                if (me && me.id === targetUserId) {
+                    $('#fname').val(me.fname);
+                    $('#lname').val(me.lname);
+                }
+            }
+        }
+
+        async function updateProfile() {
+            const params = osql.getParams();
+            const userId = params['userId'];
+
+            let targetUserId = null;
+            if (userId) {
+                targetUserId = userId;
+            } else {
+                const me = await osql.getMe();
+                if (me) {
+                    targetUserId = me.id;
+                }
+            }
+
+            if (!targetUserId) return;
+
+            const newFname = $('#fname').val();
+            const newLname = $('#lname').val();
+
+            const updateSql = `UPDATE Users SET fname = '${osql.escapeSingleQuote(newFname)}', lname = '${osql.escapeSingleQuote(newLname)}' WHERE id = '${targetUserId}'`;
+            const updateResult = await osql.connect(updateSql, false);
+
+            if (updateResult.status === 200) {
+                alert('プロフィールを更新しました。');
+                if (window.opener) {
+                    window.opener.location.reload(); // 親ウィンドウをリロード
+                }
+                window.close(); // プロフィールウィンドウを閉じる
+            } else {
+                alert(`プロフィールの更新に失敗しました: ${updateResult.message}`);
+                console.error("Failed to update profile:", updateResult);
+            }
+        }
+
+        function doLogout() {
+            osql.logout();
+        }
+    </script>
+</head>
+
+<body>
+    <div class="header">
+        <div class="title">ISアプリ2025</div>
+    </div>
+    <h1>ユーザページ</h1>
+
+    <div class="content-section">
+        <h2>プロフィール</h2>
+        <form>
+            <label for="lname">姓:</label>
+            <input type="text" id="lname" name="lname"><br><br>
+            <label for="fname">名:</label>
+            <input type="text" id="fname" name="fname"><br><br>
+            <button type="button" onclick="updateProfile()">更新</button>
+        </form>
+    </div>
+
+    <div class="content-section">
+        <h2>そのほか</h2>
+        <button type="button" onclick="doLogout()">ログアウト</button>
+    </div>ß
+</body>
+
+</html>

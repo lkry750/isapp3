@@ -60,8 +60,7 @@
                 if (object.status == "貸出中") {
                     html = html + '<span class="status-red">貸出中</span>';
                 }else if (object.status == "在架") {
-                    html = html + '<button class="checkoutbutton" onclick=button2Pressed(' + object.id + ')">貸出</button>';
-
+                    html = html + '<button class="checkoutbutton" onclick="button2Pressed(' + object.id + ')">貸出</button>';
                 }
 
                 html = html + '</div>';

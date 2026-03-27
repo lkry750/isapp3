@@ -1,0 +1,19 @@
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<div id="reader" style="width:300px;"></div>
+
+<script>
+const html5QrCode = new Html5Qrcode("reader");
+
+html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    (decodedText) => {
+
+        if (/^9784\d{9}$/.test(decodedText)) {
+            sessionStorage.setItem("isbn", decodedText);
+            location.href = "book_manager.html";
+        }
+    }
+);
+</script>

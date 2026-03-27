@@ -7,7 +7,9 @@
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <link rel="stylesheet" href="style.css">
+    
 
     <script>
         osql.requireLogin();
@@ -21,6 +23,7 @@
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
             execSelect();
+            isbnInput();
         });
 
         function logout() {
@@ -46,7 +49,7 @@
             execSelect();
 
             document.getElementById('bookname').value = "";
-            document.getElementById('isbn').value = "9784";
+            document.getElementById('isbn').value = "";
         }
 
         async function execSelect() {
@@ -81,6 +84,18 @@
             sessionStorage.setItem("pageid", pageid);
             location.href = 'book_history.html?id=' + pageid;
         }
+
+        function goScan() {
+            location.href = 'scan.html';
+        }
+
+        function isbnInput() {
+            var isbn = sessionStorage.getItem("isbn");
+            if (isbn) {
+                document.getElementById("isbn").value = isbn;
+                sessionStorage.removeItem("isbn");
+            }
+        }
     </script>
 
 </head>
@@ -97,12 +112,13 @@
     <br>
     <div class="box">
         <h3 >本の登録</h3>
-        <span class="label">署名</span>
+        <span class="label">書名</span>
         <input id="bookname" value="" type="textfield">
         <br>
         <span class="label">ISBN</span>
-        <input id="isbn" value="9784" type="textfield">
+        <input id="isbn" value="" type="textfield">
         <button onclick="buttonPressed()">登録</button>
+        <button onclick="goScan()">カメラ起動</button>
     </div>
     <br>
     <div class="box">
