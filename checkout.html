@@ -31,15 +31,18 @@
         }
 
         async function execSelect() {//ここから
-            var isbn = document.getElementById('isbn').value;
+            var uuid = document.getElementById('uuid').value;
 
-            var sql = `select Books.id, Books.title, Books.isbn, Borrowings.checkoutDate, Borrowings.returnDate,
-            case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null then '貸出中' else '在架' end as status
-            from Books left join Borrowings on Books.id = Borrowings.bookId 
-            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.bookId = Books.id) where Books.isbn like "%${isbn}%" order by Books.id asc`;
+            var sql = `select Books.uuid, Books.isbn, BookTitle.TITLE, Borrowings.checkoutDate, Borrowings.returnDate,
+            case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
+            then "貸出中" else "在架" end as status
+            from Books
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            left join Borrowings on Books.uuid = Borrowings.uuid
+            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
+            where Books.uuid = '${uuid}';`;
             var objects = await osql.connect(sql);
             console.log(objects);
-
 
             var html = "";
             for (var i = 0; i < objects.length; i++) {
@@ -48,7 +51,7 @@
                 html = html + '<div class="book-row">';
 
                 html = html + '<div class="book-line">';
-                html = html + '<span class="book-title">' + object.title + '</span>';
+                html = html + '<span class="book-title">' + object.TITLE + '</span>';
                 html = html + '<span class="book-isbn">ISBN : ' + object.isbn + '</span>';
                 html = html + '</div>';
 
@@ -57,7 +60,7 @@
                 if (object.status == "貸出中") {
                     html = html + '<span class="status-red">貸出中</span>';
                 }else if (object.status == "在架") {
-                    html = html + '<button class="checkoutbutton" onclick="button2Pressed(' + object.id + ')">貸出</button>';
+                    html = html + '<button class="checkoutbutton" onclick="button2Pressed(' + object.uuid + ')">貸出</button>';
                 }
 
                 html = html + '</div>';
@@ -77,7 +80,7 @@
             var sql = `insert into Borrowings (bookId, userId, checkoutDate) values (${id}, "${me.id}", now())`;
             await osql.connect(sql);
             document.getElementById('bookname').innerHTML = "本を借りました";
-            document.getElementById('isbn').value = "9784";
+            document.getElementById('uuid').value = '';
         }
     </script>
 
