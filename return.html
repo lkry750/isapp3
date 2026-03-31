@@ -27,9 +27,13 @@
             osql.logout();
         }
 
-        async function execSelect() {
+        async function execSelect() {//ここから
             var me = await osql.getMe();
-            var sql = `select Borrowings.id, Books.title, Books.isbn, Borrowings.checkoutDate from Borrowings join Books on Borrowings.bookId = Books.id where Borrowings.userId = '${me.id}' and Borrowings.returnDate is null`;
+            var sql = `select Borrowings.id, BookTitle.TITLE, Books.isbn, Borrowings.checkoutDate from Borrowings
+            join Books on Borrowings.uuid = Books.uuid
+            join BookTitle on BookTitle.ISBN = Books.isbn
+            where Borrowings.userId = '${me.id}'
+            and Borrowings.returnDate is null`;
             var objects = await osql.connect(sql);
             console.log(objects);
             if (objects.length == 0) {
@@ -43,7 +47,7 @@
                 html = html + '<div class="book-row">';
 
                 html = html + '<div class="book-line">';
-                html = html + '<span class="book-title">' + object.title + '</span>';
+                html = html + '<span class="book-title">' + object.TITLE + '</span>';
                 html = html + '</div>';
 
                 html = html + '<div class="book-line">';

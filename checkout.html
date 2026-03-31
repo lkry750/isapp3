@@ -30,7 +30,7 @@
             execSelect();
         }
 
-        async function execSelect() {//ここから
+        async function execSelect() {
             var uuid = document.getElementById('uuid').value;
 
             var sql = `select Books.uuid, Books.isbn, BookTitle.TITLE, Borrowings.checkoutDate, Borrowings.returnDate,
@@ -60,7 +60,7 @@
                 if (object.status == "貸出中") {
                     html = html + '<span class="status-red">貸出中</span>';
                 }else if (object.status == "在架") {
-                    html = html + '<button class="checkoutbutton" onclick="button2Pressed(' + object.uuid + ')">貸出</button>';
+                    html = html + '<button class="checkoutbutton" onclick="button2Pressed(\'' + object.uuid + '\')">貸出</button>';
                 }
 
                 html = html + '</div>';
@@ -77,7 +77,7 @@
         async function execInsert(id) {
             var me = await osql.getMe();
 
-            var sql = `insert into Borrowings (bookId, userId, checkoutDate) values (${id}, "${me.id}", now())`;
+            var sql = `insert into Borrowings (uuid, userId, checkoutDate) values ('${id}', '${me.id}', now())`;
             await osql.connect(sql);
             document.getElementById('bookname').innerHTML = "本を借りました";
             document.getElementById('uuid').value = '';
