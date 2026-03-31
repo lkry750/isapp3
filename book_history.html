@@ -33,7 +33,7 @@
             execSelect();
         }
 
-        async function execSelect() {
+        async function execSelect() {//ここから
             var pageid = sessionStorage.getItem('pageid');
             var sql = `select Books.title, Borrowings.userId, Users.fname, Users.lname, Borrowings.checkoutDate, Borrowings.returnDate 
             from (Books
