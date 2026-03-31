@@ -33,7 +33,7 @@
             execSelect();
         }
 
-        async function execSelect() {//ここから
+        async function execSelect() {
             var pageid = sessionStorage.getItem('pageid');
             var sql = `select TITLE, Books.isbn, fname, lname, Borrowings.checkoutDate, Borrowings.returnDate from Books
             inner join BookTitle on BookTitle.ISBN = Books.isbn

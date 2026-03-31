@@ -30,7 +30,7 @@
             execSelect();
         }
 
-        async function execSelect() {
+        async function execSelect() {//ここから
             var isbn = document.getElementById('isbn').value;
 
             var sql = `select Books.id, Books.title, Books.isbn, Borrowings.checkoutDate, Borrowings.returnDate,
@@ -40,9 +40,6 @@
             var objects = await osql.connect(sql);
             console.log(objects);
 
-            if (objects.length == 0) {
-                alert('ISBNが正しくありません');
-            }
 
             var html = "";
             for (var i = 0; i < objects.length; i++) {
@@ -98,8 +95,8 @@
     <br>
     <div class="box">
         <h3>検索</h3>
-        <span class="label">ISBN</span>
-        <input id="isbn" value="9784" type="textfield">
+        <span class="label">UUID</span>
+        <input id="uuid" value="" type="textfield">
         <button onclick="buttonPressed()">検索</button>
         <br>
         <br>
