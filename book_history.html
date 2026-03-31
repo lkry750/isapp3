@@ -35,11 +35,11 @@
 
         async function execSelect() {//ここから
             var pageid = sessionStorage.getItem('pageid');
-            var sql = `select Books.title, Borrowings.userId, Users.fname, Users.lname, Borrowings.checkoutDate, Borrowings.returnDate 
-            from (Books
-            inner join Borrowings on Borrowings.bookId = Books.id)
+            var sql = `select TITLE, Books.isbn, fname, lname, Borrowings.checkoutDate, Borrowings.returnDate from Books
+            inner join BookTitle on BookTitle.ISBN = Books.isbn
+            inner join Borrowings on Borrowings.uuid = Books.uuid
             inner join Users on Borrowings.userId = Users.id
-            where Books.id = ${pageid}`;
+            where Books.uuid = '${pageid}'`;
             objects = await osql.connect(sql);
             console.log(objects);
             if (!objects.length) {
