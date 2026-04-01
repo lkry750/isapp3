@@ -7,7 +7,6 @@
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
-    <script src="https://unpkg.com/html5-qrcode"></script>
     <link rel="stylesheet" href="style.css">
     
 
@@ -69,7 +68,7 @@
             for (var i = 0; i < objects.length; i++) {
                 var object = objects[i];
 
-                html = html + '<div class="book-row" onclick="movePage(\'' + object.uuid + '\')">';
+                html = html + '<div class="book-row" onclick="moveHistory(\'' + object.uuid + '\')">';
 
                 html = html + '<div class="book-line">';
                 html = html + '<span class="book-title">' + object.TITLE + '</span>';
@@ -80,15 +79,23 @@
                 var statusClass = object.status === "在架" ? "status-green" : "status-red";
                 html = html + '<span class="book-status ' + statusClass + '">' + object.status + '</span>';
                 html = html + '</div>';
-
                 html = html + '</div>';
+
+                html = html + '<div class="bool-line">';
+                html = html + '<span onclick="moveQR(\'' + object.uuid + '\')">QR</span>';
+                html = html + '</div>';                
             }
             document.getElementById('result').innerHTML = html;
         }
 
-        async function movePage(pageid) {
+        async function moveHistory(pageid) {
             sessionStorage.setItem("pageid", pageid);
             location.href = 'book_history.html?id=' + pageid;
+        }
+
+        async function moveQR(pageid) {
+            sessionStorage.setItem("pageid", pageid);
+            location.href = 'qrcode.html?id=' + pageid;
         }
 
         function goScan() {

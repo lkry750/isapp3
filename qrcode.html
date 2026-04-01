@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <script src="jquery.qrcode.min.js" charset="utf-8"></script>
+    <script>
+        osql.requireLogin();
+
+        $(document).ready(async function () {
+            var me = await osql.getMe();
+            console.log(me);
+            var sql = `insert ignore into Users (id, fname, lname) values('${me.id}', '${me.fname}', '${me.lname}');`;
+            await osql.connect(sql);
+
+            // document.getElementById('firstname').innerHTML = me.fname;
+            // document.getElementById('lastname').innerHTML = me.lname;
+            init();
+        });
+
+        function logout() {
+            osql.logout();
+        }
+
+        function init() {
+            var pageid = sessionStorage.getItem('pageid');
+            document.getElementById('qrcode').innerHTML = pageid;
+        }
+
+    </script>
+
+</head>
+
+<body>
+    ID:<div id="qrcode"></div>
+</body>
+
+</html>
