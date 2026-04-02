@@ -8,7 +8,6 @@
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
-    <script src="jquery.qrcode.min.js" charset="utf-8"></script>
     <script>
         osql.requireLogin();
 
@@ -20,16 +19,21 @@
 
             // document.getElementById('firstname').innerHTML = me.fname;
             // document.getElementById('lastname').innerHTML = me.lname;
-            init();
+            qrcode();
         });
 
         function logout() {
             osql.logout();
         }
 
-        function init() {
+        function qrcode() {
             var pageid = sessionStorage.getItem('pageid');
-            document.getElementById('qrcode').innerHTML = pageid;
+            $('#qrcode').qrcode({
+                text: pageid,
+                width: 365,
+                height: 365
+            });
+            document.getElementById('pageid').innerHTML = pageid;
         }
 
     </script>
@@ -37,7 +41,8 @@
 </head>
 
 <body>
-    ID:<div id="qrcode"></div>
+    <div id="qrcode"></div>
+    ID: <span id="pageid"></span>
 </body>
 
 </html>
