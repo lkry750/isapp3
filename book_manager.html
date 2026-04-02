@@ -109,6 +109,32 @@
                 sessionStorage.removeItem("isbn");
             }
         }
+
+        async function bookinfo() {
+            var isbn = sessionStorage.getItem('isbn');
+            var url = "https://api.openbd.jp/v1/get?isbn=" + isbn;
+            $.getJSON(url, function(date)) {
+                if(date[0] == null) {
+                    console.log('データがありません');
+                }else{
+                    if( data[0].summary.cover == "" ){
+                        $("#thumbnail").html('<img src=\"\" />');
+                    } else {
+                        $("#thumbnail").html('<img src=\"' + data[0].summary.cover + '\" style=\"border:solid 1px #000000\" />');
+                    }
+                    $("#title").val(data[0].summary.title);
+                    $("#publisher").val(data[0].summary.publisher);
+                    $("#volume").val(data[0].summary.volume);
+                    $("#series").val(data[0].summary.series);
+                    $("#author").val(data[0].summary.author);
+                    $("#pubdate").val(data[0].summary.pubdate);
+                    $("#cover").val(data[0].summary.cover);
+                    $("#description").val(data[0].onix.CollateralDetail.TextContent[0].Text);      
+                }
+
+            }
+        }
+
     </script>
 
 </head>
@@ -121,6 +147,10 @@
     </div>
     <hr>
     <h2>本の管理</h2>
+    <hr>
+    書籍名:
+    出版社:
+
     <hr>
     <br>
     <div class="box">
