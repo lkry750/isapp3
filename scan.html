@@ -1,19 +1,92 @@
-<script src="https://unpkg.com/html5-qrcode"></script>
+<!DOCTYPE html>
 
-<div id="reader" style="width:300px;"></div>
+<html>
 
-<script>
-const html5QrCode = new Html5Qrcode("reader");
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/html5-qrcode"></script>
 
-html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    (decodedText) => {
-
-        if (/^9784\d{9}$/.test(decodedText)) {
-            sessionStorage.setItem("isbn", decodedText);
-            location.href = "book_manager.html";
+    <script>
+        osql.requireLogin();
+        
+        $(document).ready(async function () {
+            var me = await osql.getMe();
+            console.log(me);
+            var sql = `insert ignore into Users (id, fname, lname) values('${me.id}', '${me.fname}', '${me.lname}');`;
+            await osql.connect(sql);
+            
+            // document.getElementById('firstname').innerHTML = me.fname;
+            // document.getElementById('lastname').innerHTML = me.lname;
+            reader();
+        });
+        
+        function logout() {
+            osql.logout();
         }
-    }
-);
-</script>
+
+        function reader() {
+            var url = sessionStorage.getItem('url');
+
+            //QRコード
+            const html5QrCode = new Html5Qrcode("reader");
+
+            var formats = [];
+            if(url == "book_manager.html") {
+                formats = [];
+            }else{
+                formats = [];
+            }
+
+            html5QrCode.start(
+
+                //カメラの指定
+                { facingMode: "environment" },
+                //読み取りの設定
+                {
+                fps: 10,
+                qrbox: { width: 200, height: 200},
+                aspectRatio: 1.0,
+                disableFlip: true,
+                formatsToSupport: [
+                    Html5QrcodeSupportedFormats.EAN_13,
+                    Html5QrcodeSupportedFormats.QR_CODE
+                ],
+                experimentalFeatures: {useBarCodeDetectorIfSupported: false},
+                },
+                //読み取り成功時の処理
+                (decodedText) => {
+                    //isbnとQRコードで分岐
+                    //正規表現というらしい
+                    if(/^(97[89])\d{10}$/.test(decodedText)) {
+                        //isbnの処理
+                        sessionStorage.setItem('isbn', decodedText);
+                    }else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decodedText)) {
+                        //uuidの処理
+                        sessionStorage.setItem('uuid', decodedText);
+                    }    
+                    console.log(decodedText);
+                    html5QrCode.stop();
+                    location.href = url;
+                },
+                // 読み取り失敗時の処理
+                // (errorMessage) => {
+                //     console.log(errorMessage);
+                // }
+            );
+        }
+        
+
+        
+    </script>
+</head>
+
+<body>
+    <h1>QRコード</h1>
+    <div id="reader" style="width:300px;"></div>
+    <div id="result"></div>
+</body>
+
+</html>

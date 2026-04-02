@@ -74,6 +74,20 @@
             execSelect();
             alert('返却が完了しました');
         }
+
+        //借りている本は読み取らなくてもわかってしまうため
+        // function goScan() {
+        //     sessionStorage.setItem("url", "return.html");
+        //     location.href = 'scan.html';
+        // }
+
+        // function uuidInput() {
+        //     var uuid = sessionStorage.getItem("uuid");
+        //     if (uuid) {
+        //         document.getElementById("uuid").value = uuid;
+        //         sessionStorage.removeItem("uuid");
+        //     }
+        // }
     </script>
 
 </head>
@@ -90,6 +104,7 @@
     <br>
     <div class="box">
         <h3>借りている本</h3>
+        <button onclick="goScan()">カメラ起動</button>
         <div id="bookname"></div>
     </div>
 </body>

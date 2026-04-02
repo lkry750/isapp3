@@ -8,7 +8,6 @@
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
     <link rel="stylesheet" href="style.css">
-    
 
     <script>
         osql.requireLogin();
@@ -99,6 +98,7 @@
         }
 
         function goScan() {
+            sessionStorage.setItem("url", "book_manager.html");
             location.href = 'scan.html';
         }
 
@@ -124,7 +124,7 @@
     <hr>
     <br>
     <div class="box">
-        <h3 >本の登録</h3>
+        <h3>本の登録</h3>
         <span class="label">書名</span>
         <input id="bookname" value="" type="textfield">
         <br>
