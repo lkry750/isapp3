@@ -109,6 +109,7 @@
                 console.log('isbnがない');
                 return;
             }
+            //openBD
             var url = "https://api.openbd.jp/v1/get?isbn=" + isbn;
 
             $.getJSON(url, function(data) {
