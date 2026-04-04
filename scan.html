@@ -33,13 +33,6 @@
             //QRコード
             const html5QrCode = new Html5Qrcode("reader");
 
-            var formats = [];
-            if(url == "book_manager.html") {
-                formats = [];
-            }else{
-                formats = [];
-            }
-
             html5QrCode.start(
 
                 //カメラの指定
@@ -60,10 +53,10 @@
                 (decodedText) => {
                     //isbnとQRコードで分岐
                     //正規表現というらしい
-                    if(/^(97[89])\d{10}$/.test(decodedText)) {
+                    if(/^(97[89])\d{10}$/.test(decodedText)&&(url == "book_manager.html")) {
                         //isbnの処理
                         sessionStorage.setItem('isbn', decodedText);
-                    }else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decodedText)) {
+                    }else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decodedText)&&(url == "checkout.html")) {
                         //uuidの処理
                         sessionStorage.setItem('uuid', decodedText);
                     }    
@@ -75,6 +68,8 @@
                 // (errorMessage) => {
                 //     console.log(errorMessage);
                 // }
+
+                //isbnを読み取りたいときに別のものを読み取ってしまった時に，画面遷移するけど，データがないという状況がある．
             );
         }
         

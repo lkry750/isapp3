@@ -21,7 +21,6 @@
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
             execSelect();
-            isbnInput();
             bookinfo();
         });
 
@@ -103,29 +102,25 @@
             location.href = 'scan.html';
         }
 
-        function isbnInput() {
-            var isbn = sessionStorage.getItem("isbn");
-            if (isbn) {
-                document.getElementById("isbn").value = isbn;
-                // sessionStorage.removeItem("isbn");
-            }
-        }
-
         async function bookinfo() {
             var isbn = sessionStorage.getItem('isbn');
+            document.getElementById('isbn').value = isbn;
             if(!isbn) {
                 console.log('isbnがない');
+                return;
             }
             var url = "https://api.openbd.jp/v1/get?isbn=" + isbn;
+
             $.getJSON(url, function(data) {
-                if(data[0] == null) {
+                console.log(data);
+                if(!data || !data[0] || !data[0].summary) {
                     console.log('データがありません');
+                    $("#bookname").val("取得できませんでした");
+                    return;
                 }
                 $("#bookname").val(data[0].summary.title);
-
+                sessionStorage.removeItem("isbn");
             });
-
-            sessionStorage.removeItem("isbn");
         }
 
     </script>
