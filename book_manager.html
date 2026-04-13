@@ -75,16 +75,14 @@
 
                 html = html + '<div class="book-line">';
                 html = html + '<button onclick="moveQR(\'' + object.uuid + '\')">QR</button>';
-                html = html + '<button onclick="moveHistory(\'' + object.uuid + ' , 'object.TITLE + '\')">history</button>'
+                html = html + '<button onclick="moveHistory(\'' + object.uuid + '\' , \'' + object.TITLE + '\')">history</button>';
                 var statusClass = object.status === "在架" ? "status-green" : "status-red";
-                html = html + '<div class="book-status">'
+                html = html + '<div class="book-status">';
                 html = html + '<span class="' + statusClass + '">' + object.status + '</span>';
-                html = html + '</div>'
+                html = html + '</div>';
                 html = html + '</div>';
 
-                html = html + '</div>'
-                
-                
+                html = html + '</div>';
             }
             document.getElementById('result').innerHTML = html;
         }

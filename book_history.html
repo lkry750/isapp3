@@ -21,6 +21,7 @@
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
             init();
+            execSelect();
         });
 
         function logout() {
@@ -29,8 +30,10 @@
 
         function init() {
             var id = sessionStorage.getItem('pageid');
+            var title = sessionStorage.getItem('title');
             document.getElementById('id').innerHTML = id;
-            execSelect();
+            document.getElementById('title').innerHTML = title;
+            console.log(title);
         }
 
         async function execSelect() {
@@ -43,7 +46,7 @@
             var objects = await osql.connect(sql);
             console.log(objects);
             if (!objects.length) {
-                document.getElementById('id').innerHTML = 'データがありません';
+                document.getElementById('result').innerHTML = 'データがありません';
                 return;
             };
             var html = "";
@@ -63,7 +66,7 @@
 
                 html = html + '</div>';
             }
-            document.getElementById('id').innerHTML = html;
+            document.getElementById('result').innerHTML = html;
         }
     </script>
 
@@ -78,9 +81,10 @@
     <hr>
     <h2>本の管理</h2>
     <hr>
-    <h3><span id="name">undefined</span>の履歴</h3>
-    <h3 id="h3"></h3>
+    <h3><span id="title">undefined</span> の履歴</h3>
     <div id="id"></div>
+    <br>
+    <div id="result"></div>
 </body>
 
 </html>
