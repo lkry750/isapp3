@@ -1,16 +1,16 @@
 .book {
-    width: 700;
+    width: 500;
 }
 
-book-line {
+.book-line {
     background-color: aqua
 }
 
-book-title {
+.book-title {
     background-color: aquamarine;
 }
 
-book-isbn {
+.book-isbn {
     background-color: blue;
-    text-align: right;
+    float: right;
 }
