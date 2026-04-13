@@ -78,11 +78,12 @@
                 var statusClass = object.status === "在架" ? "status-green" : "status-red";
                 html = html + '<span class="book-status ' + statusClass + '">' + object.status + '</span>';
                 html = html + '</div>';
+                
+                html = html + '<button onclick="moveQR(\'' + object.uuid + '\')">QR</button>';
+
                 html = html + '</div>';
 
-                html = html + '<div class="bool-line">';
-                html = html + '<span onclick="moveQR(\'' + object.uuid + '\')">QR</span>';
-                html = html + '</div>';                
+                       
             }
             document.getElementById('result').innerHTML = html;
         }
