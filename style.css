@@ -24,7 +24,23 @@
     color: #2e7d32;
 }
     
-
 .status-red {
     color: #c62828;
 }
+
+.line {
+    display: flex;
+    justify-content: space-between;
+}
+
+.checkout {
+    float: right;
+}
+
+.return {
+    float: right;
+    margin-left: auto;
+}
+
+
+

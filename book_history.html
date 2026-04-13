@@ -40,7 +40,7 @@
             inner join Borrowings on Borrowings.uuid = Books.uuid
             inner join Users on Borrowings.userId = Users.id
             where Books.uuid = '${pageid}'`;
-            objects = await osql.connect(sql);
+            var objects = await osql.connect(sql);
             console.log(objects);
             if (!objects.length) {
                 document.getElementById('id').innerHTML = 'データがありません';
@@ -49,19 +49,19 @@
             var html = "";
             for (var i = 0; i < objects.length; i++) {
                 var object = objects[i];
-                html = html + '<div class="book-box">';
+                html = html + '<div class="book">';
 
-                html = html + '<div class="book-left">';
-                html = html + (i+1) + ' ' + object.lname + ' ' + object.fname + ' さん'; //Unicodeで①を作ることもできるらしい
-                html = html + '</div>';
+                html = html + '<div class="line">'
+                html = html + (i+1) + ' ' + object.lname + ' ' + object.fname + ' さん';
+                html = html + '<span class="checkout">' + '貸出 : ' + object.checkoutDate + '</span>';
+                html = html + '</div>'
 
-                html = html + '<div class="book-right">';
-                html = html + '<span>' + '貸出 : ' + object.checkoutDate + '</span>';
+                html = html + '<div class="line">'
                 var returnDate = object.returnDate == null ? "------------------------------" : object.returnDate;
-                html = html + '<span>' + '返却 : ' + returnDate + '</span>';
-                html = html + '</div>';
+                html = html + '<span class="return">' + '返却 : ' + returnDate + '</span>';
+                html = html + '</div>'
 
-                html = html + '</div><br>';
+                html = html + '</div>';
             }
             document.getElementById('id').innerHTML = html;
         }
@@ -78,6 +78,7 @@
     <hr>
     <h2>本の管理</h2>
     <hr>
+    <h3><span id="name">undefined</span>の履歴</h3>
     <h3 id="h3"></h3>
     <div id="id"></div>
 </body>
