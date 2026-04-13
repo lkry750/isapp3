@@ -75,7 +75,7 @@
 
                 html = html + '<div class="book-line">';
                 html = html + '<button onclick="moveQR(\'' + object.uuid + '\')">QR</button>';
-                html = html + '<button onclick="moveHistory(\'' + object.uuid + '\' , \'' + object.TITLE + '\')">id</button>';
+                html = html + '<button onclick="moveIdHistory(\'' + object.uuid + '\' , \'' + object.TITLE + '\')">id</button>';
                 var statusClass = object.status === "在架" ? "status-green" : "status-red";
                 html = html + '<div class="book-status">';
                 html = html + '<span class="' + statusClass + '">' + object.status + '</span>';
@@ -87,7 +87,7 @@
             document.getElementById('result').innerHTML = html;
         }
 
-        async function moveHistory(pageid,title) {
+        async function moveIdHistory(pageid,title) {
             sessionStorage.setItem("pageid", pageid);
             sessionStorage.setItem("title", title);
             location.href = 'book_history.html?id=' + pageid;

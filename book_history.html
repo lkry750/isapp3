@@ -31,7 +31,6 @@
         function init() {
             var id = sessionStorage.getItem('pageid');
             var title = sessionStorage.getItem('title');
-            document.getElementById('id').innerHTML = id;
             document.getElementById('title').innerHTML = title;
             console.log(title);
         }
@@ -82,8 +81,6 @@
     <h2>本の管理</h2>
     <hr>
     <h3><span id="title">undefined</span> の履歴</h3>
-    <div id="id"></div>
-    <br>
     <div id="result"></div>
 </body>
 
