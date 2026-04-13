@@ -27,7 +27,7 @@
             osql.logout();
         }
 
-        async function execSelect() {//ここから
+        async function execSelect() {
             var me = await osql.getMe();
             var sql = `select Borrowings.id, BookTitle.TITLE, Books.isbn, Borrowings.checkoutDate from Borrowings
             join Books on Borrowings.uuid = Books.uuid
