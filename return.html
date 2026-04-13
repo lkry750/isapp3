@@ -44,14 +44,14 @@
             for (var i = 0; i < objects.length; i++) {
                 var object = objects[i];
 
-                html = html + '<div class="book-row">';
+                html = html + '<div class="book">';
 
                 html = html + '<div class="book-line">';
                 html = html + '<span class="book-title">' + object.TITLE + '</span>';
                 html = html + '</div>';
 
                 html = html + '<div class="book-line">';
-                html = html + '<span class="book-date">貸出日 : ' + object.checkoutDate + '</span>';
+                html = html + '<span>貸出日 : ' + object.checkoutDate + '</span>';
                 html = html + '<button onclick="buttonPressed(\'' + object.id + '\')">返却</button>';
                 html = html + '</div>';
 
@@ -103,7 +103,6 @@
     <hr>
     <div>
         <h3>借りている本</h3>
-        <button onclick="goScan()">カメラ起動</button>
         <hr>
         <div id="bookname"></div>
     </div>

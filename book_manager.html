@@ -77,7 +77,9 @@
                 html = html + '<button onclick="moveQR(\'' + object.uuid + '\')">QR</button>';
                 html = html + '<button onclick="moveHistory(\'' + object.uuid + '\')">history</button>'
                 var statusClass = object.status === "在架" ? "status-green" : "status-red";
-                html = html + '<span class="book-status ' + statusClass + '">' + object.status + '</span>';
+                html = html + '<div class="book-status">'
+                html = html + '<span class="' + statusClass + '">' + object.status + '</span>';
+                html = html + '</div>'
                 html = html + '</div>';
 
                 html = html + '</div>'
@@ -137,21 +139,18 @@
     <hr>
     <h2>本の管理</h2>
     <hr>
-    <div class="box">
-        <h3>本の登録</h3>
-        <span >書名</span>
-        <input id="bookname" value="" type="textfield">
-        <br>
-        <span >ISBN</span>
-        <input id="isbn" value="" type="textfield">
-        <button onclick="buttonPressed()">登録</button>
-        <button onclick="goScan()">カメラ起動</button>
-    </div>
+    <h3>本の登録</h3>
+    <span >書名</span>
+    <input id="bookname" value="" type="textfield">
+    <br>
+    <span >ISBN</span>
+    <input id="isbn" value="" type="textfield">
+    <button onclick="buttonPressed()">登録</button>
+    <button onclick="goScan()">カメラ起動</button>
     <hr>
-    <div >
-        <h3>登録済みの本</h3>
-        <div id="result"></div>
-    </div>
+    <h3>登録済みの本</h3>
+    <div id="result"></div>
+   
 </body>
 
 </html>

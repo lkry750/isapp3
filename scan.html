@@ -53,16 +53,22 @@
                 (decodedText) => {
                     //isbnとQRコードで分岐
                     //正規表現というらしい
+                    var ok = false;
                     if(/^(97[89])\d{10}$/.test(decodedText)&&(url == "book_manager.html")) {
                         //isbnの処理
                         sessionStorage.setItem('isbn', decodedText);
+                        ok = true;
                     }else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decodedText)&&(url == "checkout.html")) {
                         //uuidの処理
                         sessionStorage.setItem('uuid', decodedText);
-                    }    
-                    console.log(decodedText);
-                    html5QrCode.stop();
-                    location.href = url;
+                        ok = true;
+                    }
+                    if(ok){
+                        html5QrCode.stop();
+                        location.href = url;
+                    }else{
+                        console.log(decodedText);
+                    }       
                 },
                 // 読み取り失敗時の処理
                 // (errorMessage) => {

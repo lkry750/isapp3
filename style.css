@@ -1,16 +1,30 @@
 .book {
-    width: 500;
+    width: 50%;
+    padding: 0.5em 1em;
+    margin: 0;
+    color: #2c2c2f;
+    background: #cde4ff;
+    border-top: solid 3px #5989cf;
 }
 
-.book-line {
-    background-color: aqua
-}
-
-.book-title {
-    background-color: aquamarine;
-}
-
-.book-isbn {
-    background-color: blue;
+.book-isbn { 
     float: right;
+}
+
+.book-status {
+    width: 50px;
+    text-align: center;
+    float: right;
+    border: 1px solid black;
+    padding: 0px 10px;
+    background-color: #ffffff;
+}
+
+.status-green {
+    color: #2e7d32;
+}
+    
+
+.status-red {
+    color: #c62828;
 }
