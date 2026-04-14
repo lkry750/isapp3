@@ -7,7 +7,7 @@
     border-top: solid 3px #5989cf;
 }
 
-.book-isbn { 
+.book-isbn {
     float: right;
 }
 
@@ -23,7 +23,7 @@
 .status-green {
     color: #2e7d32;
 }
-    
+
 .status-red {
     color: #c62828;
 }
@@ -41,6 +41,3 @@
     float: right;
     margin-left: auto;
 }
-
-
-
