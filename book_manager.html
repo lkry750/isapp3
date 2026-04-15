@@ -115,7 +115,7 @@
 
             $.getJSON(url, function(data) {
                 console.log(data);
-                if(!data || !data[0] || !data[0].summary) {
+                if( !data[0] ) {
                     console.log('データがありません');
                     $("#bookname").val("取得できませんでした");
                     return;
