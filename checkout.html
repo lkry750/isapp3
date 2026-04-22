@@ -3,14 +3,14 @@
 <html>
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <script type="text/javascript" src="lib/jquery.min.js"></script>
-    <script type="text/javascript" src="lib/osql.js"></script>
-    <link rel="stylesheet" href="style.css">
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <script type="text/javascript" src="lib/osql.js"></script>
+  <link rel="stylesheet" href="style.css">
 
-    <script>
-        osql.requireLogin();
+  <script>
+    osql.requireLogin();
 
         $(document).ready(async function () {
             var me = await osql.getMe();
@@ -98,29 +98,29 @@
                 buttonPressed();
             }
         }
-    </script>
+  </script>
 
 </head>
 
 <body>
-    <h1>図書管理システム</h1>
-    <div style="text-align: right;">
-        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-        <a href="javascript:logout()">logout</a>
-    </div>
-    <hr>
-    <h2>貸出</h2>
-    <hr>
-    <div>
-        <h3>検索</h3>
-        <span>UUID</span>
-        <input id="uuid" value="" type="textfield">
-        <button onclick="buttonPressed()">検索</button>
-        <button onclick="goScan()">カメラ起動</button>
-        <br>
-        <br>
-        <div id="bookname"></div>
-    </div>
+  <h1>図書管理システム</h1>
+  <div style="text-align: right;">
+    ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+    <a href="javascript:logout()">logout</a>
+  </div>
+  <hr>
+  <h2>貸出</h2>
+  <hr>
+  <div>
+    <h3>検索</h3>
+    <span>UUID</span>
+    <input id="uuid" value="" type="textfield">
+    <button onclick="buttonPressed()">検索</button>
+    <button onclick="goScan()">カメラ起動</button>
+    <br>
+    <br>
+    <div id="bookname"></div>
+  </div>
 </body>
 
 </html>
