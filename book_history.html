@@ -11,7 +11,7 @@
 
     <script>
         osql.requireLogin();
-
+        
         $(document).ready(async function () {
             var me = await osql.getMe();
             console.log(me);
@@ -37,10 +37,10 @@
 
         async function execSelect() {
             var pageid = sessionStorage.getItem('pageid');
-            var sql = `select TITLE, Books.isbn, fname, lname, Borrowings.checkoutDate, Borrowings.returnDate from Books
-            inner join BookTitle on BookTitle.ISBN = Books.isbn
+            var sql = `select title, Books.isbn, fname, lname, Borrowings.checkoutDate, Borrowings.returnDate from Books
+            inner join BookTitle on BookTitle.isbn = Books.isbn
             inner join Borrowings on Borrowings.uuid = Books.uuid
-            inner join Users on Borrowings.userId = Users.id
+            inner join Users on Borrowings.userid = Users.id
             where Books.uuid = '${pageid}'`;
             var objects = await osql.connect(sql);
             console.log(objects);

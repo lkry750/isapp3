@@ -29,10 +29,10 @@
 
         async function execSelect() {
             var me = await osql.getMe();
-            var sql = `select Borrowings.id, BookTitle.TITLE, Books.isbn, Borrowings.checkoutDate from Borrowings
+            var sql = `select Borrowings.id, BookTitle.title, Books.isbn, Borrowings.checkoutDate from Borrowings
             join Books on Borrowings.uuid = Books.uuid
-            join BookTitle on BookTitle.ISBN = Books.isbn
-            where Borrowings.userId = '${me.id}'
+            join BookTitle on BookTitle.isbn = Books.isbn
+            where Borrowings.userid = '${me.id}'
             and Borrowings.returnDate is null`;
             var objects = await osql.connect(sql);
             console.log(objects);
@@ -47,7 +47,7 @@
                 html = html + '<div class="book">';
 
                 html = html + '<div class="book-line">';
-                html = html + '<span class="book-title">' + object.TITLE + '</span>';
+                html = html + '<span class="book-title">' + object.title + '</span>';
                 html = html + '</div>';
 
                 html = html + '<div class="book-line">';

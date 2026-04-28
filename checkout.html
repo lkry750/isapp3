@@ -35,7 +35,7 @@
         async function execSelect() {
             var uuid = document.getElementById('uuid').value;
 
-            var sql = `select Books.uuid, Books.isbn, BookTitle.TITLE, Borrowings.checkoutDate, Borrowings.returnDate,
+            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
             then "貸出中" else "在架" end as status
             from Books
@@ -53,7 +53,7 @@
                 html = html + '<div class="book-row">';
 
                 html = html + '<div class="book-line">';
-                html = html + '<span class="book-title">' + object.TITLE + '</span>';
+                html = html + '<span class="book-title">' + object.title + '</span>';
                 html = html + '<span class="book-isbn">ISBN : ' + object.isbn + '</span>';
                 html = html + '</div>';
 
@@ -79,7 +79,7 @@
         async function execInsert(id) {
             var me = await osql.getMe();
 
-            var sql = `insert into Borrowings (uuid, userId, checkoutDate) values ('${id}', '${me.id}', now())`;
+            var sql = `insert into Borrowings (uuid, userid, checkoutDate) values ('${id}', '${me.id}', now())`;
             await osql.connect(sql);
             document.getElementById('bookname').innerHTML = "本を借りました";
             document.getElementById('uuid').value = '';

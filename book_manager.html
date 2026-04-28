@@ -41,8 +41,8 @@
                 return;
             }
             //本のisbnがなければ追加，あれば更新する
-            var sql = `insert into BookTitle (ISBN, TITLE) values ('${isbn}','${bookname}')
-            on duplicate key update TITLE = values(TITLE);
+            var sql = `insert into BookTitle (isbn, title) values ('${isbn}','${bookname}')
+            on duplicate key update title = values(title);
             insert into Books (uuid, isbn, created_at) values (uuid(), '${isbn}', now())`;
             await osql.connect(sql);
             alert(`${bookname}を追加しました`);
@@ -53,14 +53,14 @@
         }
 
         async function execSelect() {
-            var sql = `select Books.uuid, Books.isbn, BookTitle.TITLE, Borrowings.checkoutDate, Borrowings.returnDate,
+            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
             then "貸出中" else "在架" end as status
             from Books
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Borrowings on Books.uuid = Borrowings.uuid
             and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
-            order by BookTitle.TITLE asc;`;
+            order by BookTitle.title asc;`;
             var objects = await osql.connect(sql);
             console.log(objects);
             var html = '';
@@ -69,13 +69,13 @@
                 html = html + '<div class="book">'
 
                 html = html + '<div class="book-line">';
-                html = html + '<span class="book-title">' + object.TITLE + '</span>';
+                html = html + '<span class="book-title">' + object.title + '</span>';
                 html = html + '<span class="book-isbn">ISBN : ' + object.isbn + '</span>';
                 html = html + '</div>';
 
                 html = html + '<div class="book-line">';
                 html = html + '<button onclick="moveQR(\'' + object.uuid + '\')">QR</button>';
-                html = html + '<button onclick="moveIdHistory(\'' + object.uuid + '\' , \'' + object.TITLE + '\')">id</button>';
+                html = html + '<button onclick="moveIdHistory(\'' + object.uuid + '\' , \'' + object.title + '\')">id</button>';
                 var statusClass = object.status === "在架" ? "status-green" : "status-red";
                 html = html + '<div class="book-status">';
                 html = html + '<span class="' + statusClass + '">' + object.status + '</span>';
