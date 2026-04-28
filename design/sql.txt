@@ -1,7 +1,0 @@
-create database 自分のDB名前;
-osql.jsの６行目　osql.db=　も変えること．
-
-isdb3は以下のデータベーススキーマで設計している．
-create table Users(id varchar(128) primary key, fname varchar(128), lname varchar(128));
-create table Rooms(id serial, name varchar(128));
-create table Comments(id serial, roomId bigint, userId varchar(128), comment text, time timestamp);
