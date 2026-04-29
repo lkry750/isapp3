@@ -20,6 +20,7 @@
 
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
+            console.log(me);
             execSelect();
             bookinfo();
         });
@@ -75,7 +76,7 @@
 
                 html = html + '<div class="book-line">';
                 html = html + '<button onclick="moveQR(\'' + object.uuid + '\')">QR</button>';
-                html = html + '<button onclick="moveIdHistory(\'' + object.uuid + '\' , \'' + object.title + '\')">id</button>';
+                html = html + '<button onclick="moveIdHistory(\'' + object.uuid + '\' , \'' + object.title + '\')">履歴</button>';
                 var statusClass = object.status === "在架" ? "status-green" : "status-red";
                 html = html + '<div class="book-status">';
                 html = html + '<span class="' + statusClass + '">' + object.status + '</span>';
