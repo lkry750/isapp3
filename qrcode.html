@@ -8,22 +8,11 @@
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
     <script>
         osql.requireLogin();
 
         $(document).ready(async function () {
-            var me = await osql.getMe();
-            console.log(me);
-            var sql = `
-            insert into Users (id, fname, lname, role) values('${me.id}', '${me.fname}', '${me.lname}', 'student')
-            on duplicate key update
-            fname = '${me.fname}', 
-            lname = '${me.lname}';
-            `;
-            await osql.connect(sql);
-
-            // document.getElementById('firstname').innerHTML = me.fname;
-            // document.getElementById('lastname').innerHTML = me.lname;
             qrcode();
         });
 
