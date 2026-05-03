@@ -7,6 +7,8 @@
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
 
     <script>
@@ -15,10 +17,6 @@
         $(document).ready(async function () {
             qrcode();
         });
-
-        function logout() {
-            osql.logout();
-        }
 
         function qrcode() {
             var pageid = sessionStorage.getItem('pageid');

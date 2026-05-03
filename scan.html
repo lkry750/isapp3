@@ -7,6 +7,7 @@
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
     <script type="text/javascript" src="https://unpkg.com/html5-qrcode"></script>
 
     <script>
@@ -16,10 +17,6 @@
             reader();
         });
         
-        function logout() {
-            osql.logout();
-        }
-
         function reader() {
             var url = sessionStorage.getItem('url');
 

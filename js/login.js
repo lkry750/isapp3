@@ -12,3 +12,7 @@ async function login(){
     document.getElementById('firstname').innerHTML = me.fname;
     document.getElementById('lastname').innerHTML = me.lname;
 }
+
+function logout() {
+    osql.logout();
+}

@@ -8,100 +8,32 @@
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
-
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
 
     <script>
         osql.requireLogin();
 
         $(document).ready(async function () {
-            login();
-            execSelect();
+            qrcode();
         });
 
-        function logout() {
-            osql.logout();
+        function qrcode() {
+            var pageid = sessionStorage.getItem('pageid');
+            $('#qrcode').qrcode({
+                text: pageid,
+                width: 365,
+                height: 365
+            });
+            document.getElementById('pageid').innerHTML = pageid;
         }
 
-        async function execSelect() {
-            var me = await osql.getMe();
-            var sql = `select Borrowings.id, BookTitle.title, Books.isbn, Borrowings.checkoutDate from Borrowings
-            join Books on Borrowings.uuid = Books.uuid
-            join BookTitle on BookTitle.isbn = Books.isbn
-            where Borrowings.userid = '${me.id}'
-            and Borrowings.returnDate is null`;
-            var objects = await osql.connect(sql);
-            console.log(objects);
-            if (objects.length == 0) {
-                document.getElementById("bookname").innerHTML = "借りている本はありません";
-                return;
-            }
-            var html = "";
-            for (var i = 0; i < objects.length; i++) {
-                var object = objects[i];
-
-                html = html + '<div class="book">';
-
-                html = html + '<div class="book-line">';
-                html = html + '<span class="book-title">' + object.title + '</span>';
-                html = html + '</div>';
-
-                html = html + '<div class="book-line">';
-                html = html + '<span>貸出日 : ' + object.checkoutDate + '</span>';
-                html = html + '<button onclick="buttonPressed(\'' + object.id + '\')">返却</button>';
-                html = html + '</div>';
-
-                html = html + '</div>';
-            }
-            document.getElementById('bookname').innerHTML = html;
-        }
-
-        function buttonPressed(id) {
-            execUpdate(id);
-        }
-
-        async function execUpdate(id) {
-            if (!confirm("本当に返却しますか？")) {
-                return;
-            }
-
-            var sql = `update Borrowings set returnDate = now() where id = ${id}`;
-            await osql.connect(sql);
-            execSelect();
-            alert('返却が完了しました');
-        }
-
-        //借りている本は読み取らなくてもわかってしまうため
-        // function goScan() {
-        //     sessionStorage.setItem("url", "return.html");
-        //     location.href = 'scan.html';
-        // }
-
-        // function uuidInput() {
-        //     var uuid = sessionStorage.getItem("uuid");
-        //     if (uuid) {
-        //         document.getElementById("uuid").value = uuid;
-        //         sessionStorage.removeItem("uuid");
-        //     }
-        // }
     </script>
 
 </head>
 
 <body>
-    <h1>図書管理システム</h1>
-    <div style="text-align: right;">
-        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-        <a href="javascript:logout()">logout</a>
-    </div>
-    <hr>
-    <h2>返却</h2>
-    <hr>
-    <div>
-        <h3>借りている本</h3>
-        <hr>
-        <div id="bookname"></div>
-    </div>
+    <div id="qrcode"></div>
+    ID: <span id="pageid"></span>
 </body>
 
 </html>

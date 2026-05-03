@@ -23,10 +23,6 @@
             displayCheckout();
         });
 
-        function logout() {
-            osql.logout();
-        }
-
         async function displayUser() {
             var sql = `select id, role from Users`;
             var objects = await osql.connect(sql);
@@ -96,10 +92,10 @@
     <h2>管理者向け</h2>
     <hr>
     <div class="tab-switch">
-        <label><input type="radio" name="tab" checked>ユーザ管理</label>
+        <label><input type="radio" name="tab">ユーザ管理</label>
         <div class="tab-content" id="tab1">内容1</div>
 
-        <label><input type="radio" name="tab">本管理</label>
+        <label><input type="radio" name="tab" checked>本管理</label>
         <div class="tab-content" id="tab2">内容2</div>
 
         <label><input type="radio" name="tab">貸本管理</label>
