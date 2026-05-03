@@ -7,32 +7,22 @@
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="js/login.js"></script>
     <script type="text/javascript" src="js/admin.js"></script>
+
+    <link rel="stylesheet" href="style.css">
 
     <script>
         osql.requireLogin();
 
         $(document).ready(async function () {
-            var me = await osql.getMe();
-            console.log(me);
-            var sql = `
-            insert into Users (id, fname, lname, role) values('${me.id}', '${me.fname}', '${me.lname}', 'student')
-            on duplicate key update
-            fname = '${me.fname}', 
-            lname = '${me.lname}';
-            `;
-            await osql.connect(sql);
-
-            document.getElementById('firstname').innerHTML = me.fname;
-            document.getElementById('lastname').innerHTML = me.lname;
+            login();
+            admin();
         });
 
         function logout() {
             osql.logout();
         }
-
-
     </script>
 
 </head>
@@ -46,10 +36,7 @@
     <hr>
     <h2>管理者向け</h2>
     <hr>
-    <h3>SQL</h3>
-    <textarea id="sql"></textarea>
-    <button onclick="buttonPressed()">実行</button>
-    <div id="result"></div>
+
 </body>
 
 </html>

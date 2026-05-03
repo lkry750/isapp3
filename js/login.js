@@ -11,5 +11,4 @@ async function login(){
 
     document.getElementById('firstname').innerHTML = me.fname;
     document.getElementById('lastname').innerHTML = me.lname;
-    console.log('ログイン完了！');
 }
