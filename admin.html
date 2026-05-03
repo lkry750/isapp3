@@ -18,14 +18,15 @@
         $(document).ready(async function () {
             login();
             admin();
-            userSelect();
+            displayUser();
+            displayBook();
         });
 
         function logout() {
             osql.logout();
         }
 
-        async function userSelect() {
+        async function displayUser() {
             var sql = `select id, role from Users`;
             var objects = await osql.connect(sql);
             console.log(objects);
@@ -38,6 +39,26 @@
                 html += '</div>';
             }
             document.getElementById('tab1').innerHTML = html;
+        }
+
+        async function displayBook() {
+            var sql = `
+            select Books.isbn, BookTitle.title, count(*) as count from Books
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            group by Books.isbn, BookTitle.title;
+            `;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = "";
+            for (var i=0;i<objects.length;i++){
+                var object = objects[i];
+                html += '<div>';
+                html += '<div>ISBN: ' + object.isbn + '</div>';
+                html += '<div>Title: ' + object.title + '</div>';
+                html += '<div>Count: ' + object.count + '</div>';
+                html += '</div>';
+            }
+            document.getElementById('tab2').innerHTML = html;
         }
     </script>
 
