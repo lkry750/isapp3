@@ -46,9 +46,11 @@
                 return;
             }
             //本のisbnがなければ追加，あれば更新する
-            var sql = `insert into BookTitle (isbn, title) values ('${isbn}','${bookname}')
+            var sql = `
+            insert into BookTitle (isbn, title) values ('${isbn}','${bookname}')
             on duplicate key update title = values(title);
-            insert into Books (uuid, isbn, created_at) values (uuid(), '${isbn}', now())`;
+            insert into Books (uuid, isbn, created_at) values (uuid(), '${isbn}', now())
+            `;
             await osql.connect(sql);
             alert(`${bookname}を追加しました`);
             execSelect();
@@ -57,15 +59,39 @@
             document.getElementById('isbn').value = "";
         }
 
+        async function bookinfo() {
+            var isbn = sessionStorage.getItem('isbn');
+            document.getElementById('isbn').value = isbn;
+            if(!isbn) {
+                console.log('isbnがない');
+                return;
+            }
+            //openBD
+            var url = "https://api.openbd.jp/v1/get?isbn=" + isbn;
+            
+            $.getJSON(url, function(data) {
+            console.log(data);
+            if( !data[0] ) {
+                console.log('データがありません');
+                $("#bookname").val("取得できませんでした");
+                return;
+            }
+            $("#bookname").val(data[0].summary.title);
+            sessionStorage.removeItem("isbn");
+            });
+        }
+
         async function execSelect() {
-            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
+            var sql = `
+            select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
             then "貸出中" else "在架" end as status
             from Books
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Borrowings on Books.uuid = Borrowings.uuid
             and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
-            order by BookTitle.title asc;`;
+            order by BookTitle.title asc;
+            `;
             var objects = await osql.connect(sql);
             console.log(objects);
             var html = '';
@@ -105,30 +131,9 @@
 
         function goScan() {
             sessionStorage.setItem("url", "book_manager.html");
-            location.href = 'scan.html';
+            location.replace('scan.html');
         }
 
-        async function bookinfo() {
-            var isbn = sessionStorage.getItem('isbn');
-            document.getElementById('isbn').value = isbn;
-            if(!isbn) {
-                console.log('isbnがない');
-                return;
-            }
-            //openBD
-            var url = "https://api.openbd.jp/v1/get?isbn=" + isbn;
-
-            $.getJSON(url, function(data) {
-                console.log(data);
-                if( !data[0] ) {
-                    console.log('データがありません');
-                    $("#bookname").val("取得できませんでした");
-                    return;
-                }
-                $("#bookname").val(data[0].summary.title);
-                sessionStorage.removeItem("isbn");
-            });
-        }
 
     </script>
 
