@@ -18,10 +18,26 @@
         $(document).ready(async function () {
             login();
             admin();
+            userSelect();
         });
 
         function logout() {
             osql.logout();
+        }
+
+        async function userSelect() {
+            var sql = `select id, role from Users`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = "";
+            for(var i=0;i<objects.length;i++){
+                var object = objects[i];
+                html += '<div>';
+                html += '<div>id: ' + object.id + '</div>';
+                html += '<div>role: ' + object.role + '</div>';
+                html += '</div>';
+            }
+            document.getElementById('tab1').innerHTML = html;
         }
     </script>
 
@@ -38,13 +54,13 @@
     <hr>
     <div class="tab-switch">
         <label><input type="radio" name="tab" checked>ユーザ管理</label>
-        <div class="tab-content">内容1</div>
+        <div class="tab-content" id="tab1">内容1</div>
 
         <label><input type="radio" name="tab">本管理</label>
-        <div class="tab-content">内容2</div>
+        <div class="tab-content" id="tab2">内容2</div>
 
-        <label><input type="radio" name="tab">本管理</label>
-        <div class="tab-content">内容3</div>
+        <label><input type="radio" name="tab">貸本管理</label>
+        <div class="tab-content" id="tab3">内容3</div>
     </div>
 
 </body>
