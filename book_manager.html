@@ -38,25 +38,28 @@
         }
 
         async function execInsert() {
-            var bookname = document.getElementById('title').value;
             var isbn = document.getElementById('isbn').value;
-
+            var title = document.getElementById('title').value;
+            if(isbn.length <= 0) {
+                alert('ISBNを入力してください');
+                return;
+            }
             if (isbn.length != 13) {
                 alert('ISBNが正しくありません');
                 return;
             }
-            //本のisbnがなければ追加，あれば更新する
+            //BookTitleを更新，Booksを追加
             var sql = `
-            insert into BookTitle (isbn, title) values ('${isbn}','${bookname}')
+            insert into BookTitle (isbn, title) values ('${isbn}','${title}')
             on duplicate key update title = values(title);
-            insert into Books (uuid, isbn, created_at) values (uuid(), '${isbn}', now())
+            insert into Books (uuid, isbn, created_at) values (uuid(), '${isbn}', now());
             `;
             await osql.connect(sql);
-            alert(`${bookname}を追加しました`);
+            alert(`${title}を追加しました`);
             execSelect();
-
-            document.getElementById('bookname').value = "";
+            
             document.getElementById('isbn').value = "";
+            document.getElementById('title').value = "";
         }
 
         function displayIsbn() {
