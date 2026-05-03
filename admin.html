@@ -20,6 +20,7 @@
             admin();
             displayUser();
             displayBook();
+            displayCheckout();
         });
 
         function logout() {
@@ -59,6 +60,27 @@
                 html += '</div>';
             }
             document.getElementById('tab2').innerHTML = html;
+        }
+
+        async function displayCheckout() {
+            var sql = `
+            select title, userid, checkoutDate from Books
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            left join Borrowings on Borrowings.uuid = Books.uuid
+            where checkoutDate is not null and returnDate is null;
+            `;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = "";
+            for (var i=0;i<objects.length;i++){
+                var object = objects[i];
+                html += '<div>';
+                html += '<div>Title: ' + object.title + '</div>';
+                html += '<div>userid: ' + object.userid + '</div>';
+                html += '<div>checkoutDate: ' + object.checkoutDate + '</div>';
+                html += '</div>';
+            }
+            document.getElementById('tab3').innerHTML = html;
         }
     </script>
 
