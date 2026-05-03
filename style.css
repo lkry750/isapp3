@@ -41,3 +41,38 @@
     float: right;
     margin-left: auto;
 }
+
+.tab-switch {
+    --tab-color: #5989cf;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 700px;
+    gap: 5px;
+}
+
+/* orderでラベルの表示順を先頭に持ってきている */
+.tab-switch label {
+    padding: 0.7em 1em;
+    background: #cde4ff;
+    cursor: pointer;
+    order: -1; 
+    text-align: center;
+}
+
+/* 最初は非表示 */
+.tab-switch input {
+    display: none;
+}
+.tab-content {
+    display: none;
+    width: 100%;
+}
+
+/* 選択された時に表示を変える */
+.tab-switch label:has(:checked) {
+    background: var(--tab-color);
+    color: white;
+}
+.tab-switch label:has(:checked)+.tab-content {
+    display: block;
+}
