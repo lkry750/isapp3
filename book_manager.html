@@ -26,7 +26,7 @@
             document.getElementById('firstname').innerHTML = me.fname;
             document.getElementById('lastname').innerHTML = me.lname;
             execSelect();
-            bookinfo();
+            displayIsbn();
         });
 
         function logout() {
@@ -57,6 +57,12 @@
 
             document.getElementById('bookname').value = "";
             document.getElementById('isbn').value = "";
+        }
+
+        function displayIsbn() {
+            var isbn = sessionStorage.getItem('isbn');
+            document.getElementById('isbn').value = isbn;
+            sessionStorage.removeItem('isbn');
         }
 
         async function bookinfo() {
@@ -149,13 +155,17 @@
     <h2>本の管理</h2>
     <hr>
     <h3>本の登録</h3>
-    <span >書名</span>
-    <input id="bookname" value="" type="textfield">
+    <div>
+        <span >ISBN</span>
+        <input id="isbn" value="" type="textfield">
+        <button>検索</button>
     <br>
-    <span >ISBN</span>
-    <input id="isbn" value="" type="textfield">
-    <button onclick="buttonPressed()">登録</button>
-    <button onclick="goScan()">カメラ起動</button>
+    <div>
+        <span >書名</span>
+        <input id="bookname" value="" type="textfield">
+        <button onclick="buttonPressed()">登録</button>
+        <button onclick="goScan()">カメラ起動</button>
+    </div>
     <hr>
     <h3>登録済みの本</h3>
     <div id="result"></div>
