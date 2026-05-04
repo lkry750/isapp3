@@ -21,6 +21,7 @@
             displayUser();
             displayBook();
             displayCheckout();
+            displayLog();
         });
 
         async function displayUser() {
@@ -30,7 +31,7 @@
             var html = "";
             for(var i=0;i<objects.length;i++){
                 var object = objects[i];
-                html += '<div>';
+                html += '<div class="box">';
                 html += '<div>id: ' + object.id + '</div>';
                 html += '<div>role: ' + object.role + '</div>';
                 html += '</div>';
@@ -49,7 +50,7 @@
             var html = "";
             for (var i=0;i<objects.length;i++){
                 var object = objects[i];
-                html += '<div>';
+                html += '<div class="box">';
                 html += '<div>ISBN: ' + object.isbn + '</div>';
                 html += '<div>Title: ' + object.title + '</div>';
                 html += '<div>Count: ' + object.count + '</div>';
@@ -70,13 +71,44 @@
             var html = "";
             for (var i=0;i<objects.length;i++){
                 var object = objects[i];
-                html += '<div>';
+                html += '<div class="box">';
                 html += '<div>Title: ' + object.title + '</div>';
                 html += '<div>userid: ' + object.userid + '</div>';
                 html += '<div>checkoutDate: ' + object.checkoutDate + '</div>';
                 html += '</div>';
             }
             document.getElementById('tab3').innerHTML = html;
+        }
+
+        async function displayLog() {
+            var sql = `
+            select checkoutDate as Date, Books.isbn, title, userid, role, 'checkout' as action from Borrowings
+            left join Books on Borrowings.uuid = Books.uuid
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            left join Users on Borrowings.userid = Users.id
+            union all
+            select returnDate as Date, Books.isbn, title, userid, role, 'return' as action from Borrowings
+            left join Books on Borrowings.uuid = Books.uuid
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            left join Users on Borrowings.userid = Users.id
+            where returnDate is not null
+            order by Date;
+            `;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = "";
+            for (var i=0;i<objects.length;i++){
+                var object = objects[i];
+                html += '<div class="box">';
+                html += '<div>Date: ' + object.Date + '</div>';
+                html += '<div>isbn: ' + object.isbn + '</div>';
+                html += '<div>title: ' + object.title + '</div>';
+                html += '<div>userid: ' + object.userid + '</div>';
+                html += '<div>role: ' + object.role + '</div>';
+                html += '<div>action: ' + object.action + '</div>';
+                html += '</div>';
+            }
+            document.getElementById('tab4').innerHTML = html;
         }
     </script>
 
@@ -100,6 +132,9 @@
 
         <label><input type="radio" name="tab">貸本管理</label>
         <div class="tab-content" id="tab3">内容3</div>
+
+        <label><input type="radio" name="tab">履歴一覧</label>
+        <div class="tab-content" id="tab4">内容4</div>
     </div>
 
 </body>
