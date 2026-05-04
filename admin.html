@@ -59,6 +59,7 @@
                 html += '<div>Title: ' + object.title + '</div>';
                 html += '<div>ISBN: ' + object.isbn + '</div>';
                 html += '<div>Stock: ' + object.stock + '/' + object.total + '</div>';
+                html += '<button onclick="buttonPressed(' + object.isbn + ')">詳細</button>'
                 html += '</div>';
             }
             document.getElementById('tab2').innerHTML = html;
@@ -114,6 +115,10 @@
                 html += '</div>';
             }
             document.getElementById('tab4').innerHTML = html;
+        }
+
+        function buttonPressed(isbn) {
+            location.href = "isbn_manager.html";
         }
     </script>
 
