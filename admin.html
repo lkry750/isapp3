@@ -32,8 +32,7 @@
             for(var i=0;i<objects.length;i++){
                 var object = objects[i];
                 html += '<div class="box">';
-                html += '<div>id: ' + object.id + '</div>';
-                html += '<div>role: ' + object.role + '</div>';
+                html += '<div>' + object.id + ' (' + object.role + ')</div>';
                 html += '</div>';
             }
             document.getElementById('tab1').innerHTML = html;
@@ -56,7 +55,7 @@
             for (var i=0;i<objects.length;i++){
                 var object = objects[i];
                 html += '<div class="box">';
-                html += '<div>Title: ' + object.title + '</div>';
+                html += '<div>' + object.title + '</div>';
                 html += '<div>ISBN: ' + object.isbn + '</div>';
                 html += '<div>Stock: ' + object.stock + '/' + object.total + '</div>';
                 html += '<button onclick="buttonPressed(' + object.isbn + ')">詳細</button>'
@@ -67,9 +66,10 @@
 
         async function displayCheckout() {
             var sql = `
-            select title, userid, checkoutDate from Books
+            select title, userid, role, checkoutDate from Books
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Borrowings on Borrowings.uuid = Books.uuid
+            left join Users on Users.id = Borrowings.userid
             where checkoutDate is not null and returnDate is null;
             `;
             var objects = await osql.connect(sql);
@@ -78,9 +78,9 @@
             for (var i=0;i<objects.length;i++){
                 var object = objects[i];
                 html += '<div class="box">';
-                html += '<div>Title: ' + object.title + '</div>';
-                html += '<div>userid: ' + object.userid + '</div>';
-                html += '<div>checkoutDate: ' + object.checkoutDate + '</div>';
+                html += '<div>' + object.title + '</div>';
+                html += '<div>' + object.userid + ' (' + object.role + ')</div>';
+                html += '<div>借りた日: ' + object.checkoutDate + '</div>';
                 html += '</div>';
             }
             document.getElementById('tab3').innerHTML = html;
@@ -88,12 +88,12 @@
 
         async function displayLog() {
             var sql = `
-            select checkoutDate as Date, Books.isbn, title, userid, role, 'checkout' as action from Borrowings
+            select checkoutDate as Date, Books.isbn, title, userid, role, '貸出' as action from Borrowings
             left join Books on Borrowings.uuid = Books.uuid
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Users on Borrowings.userid = Users.id
             union all
-            select returnDate as Date, Books.isbn, title, userid, role, 'return' as action from Borrowings
+            select returnDate as Date, Books.isbn, title, userid, role, '返却' as action from Borrowings
             left join Books on Borrowings.uuid = Books.uuid
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Users on Borrowings.userid = Users.id
@@ -106,12 +106,11 @@
             for (var i=0;i<objects.length;i++){
                 var object = objects[i];
                 html += '<div class="box">';
+                html += '<div>' + object.action + '</div>';
                 html += '<div>Date: ' + object.Date + '</div>';
-                html += '<div>isbn: ' + object.isbn + '</div>';
-                html += '<div>title: ' + object.title + '</div>';
-                html += '<div>userid: ' + object.userid + '</div>';
-                html += '<div>role: ' + object.role + '</div>';
-                html += '<div>action: ' + object.action + '</div>';
+                html += '<div>タイトル: ' + object.title + '</div>';
+                html += '<div>ISBN: ' + object.isbn + '</div>';
+                html += '<div>' + object.userid + ' (' + object.role + ')</div>';
                 html += '</div>';
             }
             document.getElementById('tab4').innerHTML = html;
@@ -143,7 +142,7 @@
         <label><input type="radio" name="tab">貸本管理</label>
         <div class="tab-content" id="tab3">内容3</div>
 
-        <label><input type="radio" name="tab">貸し借りの履歴</label>
+        <label><input type="radio" name="tab">貸出返却の履歴</label>
         <div class="tab-content" id="tab4">内容4</div>
     </div>
 

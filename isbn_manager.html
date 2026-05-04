@@ -22,20 +22,23 @@
         });
 
         async function displayIsbn() {
-            console.log('実行中');
             var isbn = osql.getParam('isbn');
             var sql = `select uuid, created_at from Books where isbn = "${isbn}";`;
             var objects = await osql.connect(sql);
             var html = "";
             for (var i=0;i<objects.length;i++){
                 var object = objects[i];
-                console.log(object);
                 html += '<div class="box">';
                 html += '<div>uuid: ' + object.uuid + '</div>';
-                html += '<div>日時: ' + object.created_at + '</div>';
+                html += '<div>追加日: ' + object.created_at + '</div>';
+                html += '<button onclick="buttonPressed()">削除</button>';
                 html += '</div>';
             }
             document.getElementById('tab1').innerHTML = html;
+        }
+
+        function buttonPressed() {
+            alert('まだ未実装');
         }
 
     </script>
