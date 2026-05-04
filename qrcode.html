@@ -15,16 +15,27 @@
 
         $(document).ready(async function () {
             qrcode();
+            await displayTitle();
         });
 
         function qrcode() {
-            var pageid = sessionStorage.getItem('pageid');
+            var uuid = osql.getParam('uuid');
             $('#qrcode').qrcode({
-                text: pageid,
+                text: uuid,
                 width: 365,
                 height: 365
             });
-            document.getElementById('pageid').innerHTML = pageid;
+        }
+
+        async function displayTitle() {
+            var uuid = osql.getParam('uuid');
+            var sql = `
+            select title from Books left join BookTitle on Books.isbn = BookTitle.isbn
+            where Books.uuid = "${uuid}";
+            `;
+            var objects = await osql.connect(sql);
+            var title = objects[0].title;
+            document.getElementById('title').innerHTML = title;
         }
 
     </script>
@@ -33,7 +44,7 @@
 
 <body>
     <div id="qrcode"></div>
-    ID: <span id="pageid"></span>
+    <span id="title"></span>
 </body>
 
 </html>

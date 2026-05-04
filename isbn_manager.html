@@ -28,16 +28,22 @@
             var html = "";
             for (var i=0;i<objects.length;i++){
                 var object = objects[i];
-                html += '<div class="box">';
-                html += '<div>uuid: ' + object.uuid + '</div>';
-                html += '<div>追加日: ' + object.created_at + '</div>';
-                html += '<button onclick="buttonPressed()">削除</button>';
-                html += '</div>';
+                html += `<div class="box">`;
+                html += `<div>uuid: ${object.uuid} </div>`;
+                html += `<div>追加日: ${object.created_at} </div>`;
+                html += `<button onclick="button1Pressed('${object.uuid}')">QR</button>`;
+                html += `<button onclick="button2Pressed()">削除</button>`;
+                html += `</div>`;
             }
             document.getElementById('tab1').innerHTML = html;
         }
 
-        function buttonPressed() {
+        function button1Pressed(uuid) {
+            console.log(uuid)
+            location.href = 'qrcode.html?uuid=' + uuid;
+        }
+
+        function button2Pressed() {
             alert('まだ未実装');
         }
 

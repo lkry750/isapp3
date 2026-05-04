@@ -130,8 +130,7 @@
         }
 
         async function moveQR(pageid) {
-            sessionStorage.setItem("pageid", pageid);
-            location.href = 'qrcode.html?id=' + pageid;
+            location.href = 'qrcode.html?uuid=' + pageid;
         }
 
         function goScan() {
