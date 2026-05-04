@@ -41,7 +41,12 @@
 
         async function displayBook() {
             var sql = `
-            select Books.isbn, BookTitle.title, count(*) as count from Books
+            select BookTitle.title, 
+            Books.isbn, 
+            count(distinct Books.uuid) as total,
+            count(distinct Books.uuid) - count(distinct case when checkoutDate is not null and returnDate is null then Books.uuid end)as stock
+            from Books
+            left join Borrowings on Borrowings.uuid = Books.uuid
             left join BookTitle on Books.isbn = BookTitle.isbn
             group by Books.isbn, BookTitle.title;
             `;
@@ -51,9 +56,9 @@
             for (var i=0;i<objects.length;i++){
                 var object = objects[i];
                 html += '<div class="box">';
-                html += '<div>ISBN: ' + object.isbn + '</div>';
                 html += '<div>Title: ' + object.title + '</div>';
-                html += '<div>Count: ' + object.count + '</div>';
+                html += '<div>ISBN: ' + object.isbn + '</div>';
+                html += '<div>Stock: ' + object.stock + '/' + object.total + '</div>';
                 html += '</div>';
             }
             document.getElementById('tab2').innerHTML = html;
@@ -133,7 +138,7 @@
         <label><input type="radio" name="tab">貸本管理</label>
         <div class="tab-content" id="tab3">内容3</div>
 
-        <label><input type="radio" name="tab">履歴一覧</label>
+        <label><input type="radio" name="tab">貸し借りの履歴</label>
         <div class="tab-content" id="tab4">内容4</div>
     </div>
 
