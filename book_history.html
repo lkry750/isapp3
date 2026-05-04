@@ -15,9 +15,9 @@
         osql.requireLogin();
         
         $(document).ready(async function () {
-            login();
-            init();
-            execSelect();
+            await login();
+            await init();
+            await execSelect();
         });
 
         function init() {

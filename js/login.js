@@ -1,6 +1,5 @@
 async function login(){
     var me = await osql.getMe();
-    console.log(me);
     var sql = `
             insert into Users (id, fname, lname, role) values('${me.id}', '${me.fname}', '${me.lname}', 'student')
             on duplicate key update
@@ -8,6 +7,7 @@ async function login(){
             lname = '${me.lname}';
             `;
     await osql.connect(sql);
+    console.log(me.id + "がログインしています");
 
     document.getElementById('firstname').innerHTML = me.fname;
     document.getElementById('lastname').innerHTML = me.lname;

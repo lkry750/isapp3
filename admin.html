@@ -16,12 +16,12 @@
         osql.requireLogin();
 
         $(document).ready(async function () {
-            login();
-            admin();
-            displayUser();
-            displayBook();
-            displayCheckout();
-            displayLog();
+            await login();
+            await admin();
+            await displayUser();
+            await displayBook();
+            await displayCheckout();
+            await displayLog();
         });
 
         async function displayUser() {
@@ -118,7 +118,7 @@
         }
 
         function buttonPressed(isbn) {
-            location.href = "isbn_manager.html";
+            location.href = "isbn_manager.html?isbn=" + isbn;
         }
     </script>
 
