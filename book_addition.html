@@ -10,23 +10,15 @@
     <script type="text/javascript" src="lib/osql.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
 
+    <link rel="stylesheet" href="style.css">
+
     <script>
         osql.requireLogin();
 
         $(document).ready(async function () {
             await login();
-            authority();
         });
 
-        async function authority() {
-        var me = await osql.getMe();
-        var sql = `select role from Users where id = "${me.id}";`;
-        var objects = await osql.connect(sql);
-        var role = objects[0].role;
-        if (role != 'teacher') return;
-        document.getElementById('return').innerHTML = `<a href="return.html">返却</a>`;
-        document.getElementById('admin').innerHTML = `<a href="admin.html">管理者向け</a>`;
-        }
     </script>
 
 </head>
@@ -38,14 +30,9 @@
         <a href="javascript:logout()">logout</a>
     </div>
     <hr>
-    <h2>一般向け</h2>
+    <h2>本の追加</h2>
     <hr>
-    <p><a href="book_manager.html">本の管理</a></p>
-    <p><a href="checkout.html">貸出</a></p>
-    <p id="return"></p>
-    <hr>
-    <p id="admin"></p>
-    <p><a href="book_addition.html">本の追加</a></p>
+    
 </body>
 
 </html>
