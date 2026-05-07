@@ -4,6 +4,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
@@ -110,7 +111,6 @@
                 html = html + '</div>';
 
                 html = html + '<div class="book-line">';
-                html = html + '<button onclick="moveQR(\'' + object.uuid + '\')">QR</button>';
                 html = html + '<button onclick="moveIdHistory(\'' + object.uuid + '\' , \'' + object.title + '\')">履歴</button>';
                 var statusClass = object.status === "在架" ? "status-green" : "status-red";
                 html = html + '<div class="book-status">';
