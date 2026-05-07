@@ -17,20 +17,43 @@
 
         $(document).ready(async function () {
             await login();
+            await execSelect();
+            displayId();
         });
 
-        
+        async function execSelect() {
+            var me = await osql.getMe();
+            var sql = `
+            select title, userid, role, checkoutDate from Books
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            left join Borrowings on Borrowings.uuid = Books.uuid
+            left join Users on Users.id = Borrowings.userid
+            where checkoutDate is not null and returnDate is null and userid = "${me.id}";`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = "";
+            for (var i=0;i<objects.length;i++){ 
+                var object=objects[i]; 
+                html += `<div class="box">`;
+                html += `<div>${object.title}</div>`;
+                html += `<div>${object.userid} (${object.role})</div>`;
+                html += `<div>借りた日: ${object.checkoutDate}</div>`;
+                html += `</div>`;
+            }
+            document.getElementById('book').innerHTML = html;
+        }
         
         function goScan() {
             sessionStorage.setItem("url", "return.html");
             location.href = 'scan.html';
         }
 
-        function uuidInput() {
+        function displayId() {
             var uuid = sessionStorage.getItem("uuid");
             if (uuid) {
                 document.getElementById("uuid").value = uuid;
                 sessionStorage.removeItem("uuid");
+                // 返却する本の表示まだ
             }
         }
     </script>
@@ -46,11 +69,12 @@
     <hr>
     <h2>返却</h2>
     <hr>
+    UUID: <input id="uuid">
     <button onclick="goScan()">カメラ起動</button>
     <div>
         <h3>借りている本</h3>
         <hr>
-        <div id="bookname"></div>
+        <div id="book"></div>
     </div>
 </body>
 
