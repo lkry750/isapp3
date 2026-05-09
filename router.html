@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+
+    <script>
+        osql.requireLogin();
+
+        $(document).ready(async function () {
+            router();
+        });
+
+        async function router() {
+            var uuid = osql.getParam('uuid');
+            if(!uuid) return;
+            var sql = `
+            select Books.uuid, Books.isbn, Borrowings.checkoutDate, Borrowings.returnDate,
+            case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
+            then "貸出中" else "在架" end as status
+            from Books
+            left join Borrowings on Books.uuid = Borrowings.uuid
+            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b
+            where b.uuid = Books.uuid)
+            where Books.uuid = "${uuid}";
+            `;
+            var objects = await osql.connect(sql);
+            var object = objects[0];
+            var status = object.status;
+            if(status == "在架"){
+                location.replace('checkout.html?uuid=' + uuid);
+            }else if(status == "貸出中"){
+                location.replace('return.html?uuid=' + uuid);
+            }else{
+                console.log('本のstatusが不明');
+            }
+        }
+
+        function buttonPressed() {
+            location.href = "router.html?uuid=" + "c569387a-42e3-11f1-adcb-fe328d738ec4";
+        }
+        
+    </script>
+
+</head>
+
+<body>
+    <p>読み込み中です．．．．．．</p>
+    <button onclick="buttonPressed()">ボタン</button>
+</body>
+
+</html>
