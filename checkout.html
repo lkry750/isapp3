@@ -17,15 +17,13 @@
 
         $(document).ready(async function () {
             await login();
-            await uuidInput();
+            await execSelect();
         });
 
-        function buttonPressed() {
-            execSelect();
-        }
-
         async function execSelect() {
-            var uuid = document.getElementById('uuid').value;
+            var uuid = osql.getParam('uuid');
+            console.log(uuid);
+            if(!uuid) return;
 
             var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
@@ -42,7 +40,7 @@
             for (var i = 0; i < objects.length; i++) {
                 var object = objects[i];
                 
-                html = html + '<div class="book-row">';
+                html = html + '<div class="box">';
 
                 html = html + '<div class="book-line">';
                 html = html + '<span class="book-title">' + object.title + '</span>';
@@ -82,14 +80,6 @@
             location.href = 'scan.html';
         }
 
-        function uuidInput() {
-            var uuid = sessionStorage.getItem("uuid");
-            if (uuid) {
-                document.getElementById("uuid").value = uuid;
-                sessionStorage.removeItem("uuid");
-                buttonPressed();
-            }
-        }
   </script>
 
 </head>

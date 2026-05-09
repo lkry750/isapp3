@@ -30,36 +30,31 @@
                 { facingMode: "environment" },
                 //読み取りの設定
                 {
-                fps: 10,
-                qrbox: { width: 200, height: 200},
-                aspectRatio: 1.0,
-                disableFlip: true,
-                formatsToSupport: [
-                    Html5QrcodeSupportedFormats.EAN_13,
-                    Html5QrcodeSupportedFormats.QR_CODE
-                ],
-                experimentalFeatures: {useBarCodeDetectorIfSupported: false},
+                    fps: 10,
+                    qrbox: { width: 200, height: 200},
+                    aspectRatio: 1.0,
+                    disableFlip: true,
+                    formatsToSupport: [
+                        Html5QrcodeSupportedFormats.EAN_13,
+                        Html5QrcodeSupportedFormats.QR_CODE
+                    ],
+                    experimentalFeatures: {useBarCodeDetectorIfSupported: false},
                 },
                 //読み取り成功時の処理
                 (decodedText) => {
                     //isbnとQRコードで分岐
                     //正規表現というらしい
-                    var ok = false;
-                    if(/^(97[89])\d{10}$/.test(decodedText)&&(url == "book_manager.html")) {
+                    if(/^(97[89])\d{10}$/.test(decodedText)) {
                         //isbnの処理
                         sessionStorage.setItem('isbn', decodedText);
-                        ok = true;
-                    }else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decodedText)) {
-                        //uuidの処理
-                        sessionStorage.setItem('uuid', decodedText);
-                        ok = true;
-                    }
-                    if(ok){
                         html5QrCode.stop();
                         location.replace(url);
-                    }else{
-                        console.log(decodedText);
-                    }       
+                    }else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decodedText)) {
+                        //uuidの処理
+                        var uuid = decodedText;
+                        html5QrCode.stop();
+                        location.replace(url + "?uuid=" + uuid);
+                    }
                 },
                 // 読み取り失敗時の処理
                 // (errorMessage) => {
