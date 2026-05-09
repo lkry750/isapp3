@@ -24,7 +24,7 @@
         async function execSelect() {
             var me = await osql.getMe();
             var sql = `
-            select title, userid, role, checkoutDate from Books
+            select Borrowings.id, title, userid, role, checkoutDate from Books
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Borrowings on Borrowings.uuid = Books.uuid
             left join Users on Users.id = Borrowings.userid
@@ -38,6 +38,7 @@
                 html += `<div>${object.title}</div>`;
                 html += `<div>${object.userid} (${object.role})</div>`;
                 html += `<div>借りた日: ${object.checkoutDate}</div>`;
+                html += `<button onclick="buttonPressed(${object.id})">返却</button>`;
                 html += `</div>`;
             }
             document.getElementById('book').innerHTML = html;
@@ -55,6 +56,21 @@
                 sessionStorage.removeItem("uuid");
                 // 返却する本の表示まだ
             }
+        }
+
+        function buttonPressed(id) {
+            execUpdate(id);
+        }
+
+        async function execUpdate(id) {
+            if (!confirm("本当に返却しますか？")) {
+                return;
+            }
+
+            var sql = `update Borrowings set returnDate = now() where id = ${id}`;
+            await osql.connect(sql);
+            execSelect();
+            alert('返却が完了しました');
         }
     </script>
 
