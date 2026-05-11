@@ -17,9 +17,50 @@
 
         $(document).ready(async function () {
             await login();
+            execSelect();
         });
 
+        async function execSelect() {
+            var isbn = osql.getParam('isbn');
+            document.getElementById('isbn').value = isbn;
 
+        }
+
+        async function bookinfo() {
+            var isbn = document.getElementById('isbn').value;
+            if(isbn.length <= 0) {
+                alert('ISBNを入力してください');
+                return;
+            }
+            if (isbn.length != 13) {
+                alert('ISBNが正しくありません');
+                return;
+            }
+            var sql = `select title from BookTitle where isbn = ${isbn}`;
+            var object = await osql.connect(sql);
+            if (object.length > 0){
+                //DB
+                document.getElementById('title').value = object[0].title;
+                console.log(object.title);
+            }else{
+                //openBD
+                var url = "https://api.openbd.jp/v1/get?isbn=" + isbn;
+                $.getJSON(url, function(data) {
+                    console.log(data);
+                    if( !data[0] ) {
+                        console.log('データがありません');
+                        $("#title").val("取得できませんでした");
+                        return;
+                    }
+                    $("#title").val(data[0].summary.title);
+                });
+            }            
+        }
+
+        function goScan() {
+            sessionStorage.setItem("url", "book_addition.html");
+            location.replace('scan.html');
+        }
 
     </script>
 
@@ -34,8 +75,9 @@
     <hr>
     <h2>本の追加</h2>
     <hr>
-    
-    
+    <button onclick="goScan()">カメラ起動</button>
+    <input id="isbn">
+    <div id="result"></div>
 </body>
 
 </html>

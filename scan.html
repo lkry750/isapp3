@@ -48,8 +48,10 @@
                     if(/^(97[89])\d{10}$/.test(decodedText)) {
                         //isbnの処理
                         sessionStorage.setItem('isbn', decodedText);
+                        var isbn = decodedText;
+
                         html5QrCode.stop();
-                        location.replace(url);
+                        location.replace(url + "?isbn=" + isbn);
                     }else if (/^https?:\/\/.+/i.test(decodedText)) {
                         //uuidの処理
                         var uuid = decodedText.split("uuid=")[1].split("&")[0];
