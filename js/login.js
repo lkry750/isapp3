@@ -8,6 +8,7 @@ async function login(){
             `;
     await osql.connect(sql);
     console.log(me.id + "がログインしています");
+    console.log(me);
 
     document.getElementById('firstname').innerHTML = me.fname;
     document.getElementById('lastname').innerHTML = me.lname;

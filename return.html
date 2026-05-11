@@ -46,11 +46,12 @@
 
         async function execSelect() {
             var uuid = osql.getParam('uuid');
+            var me = await osql.getMe();
             console.log(uuid);
             if(!uuid) return;
 
             var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.id, 
-            Borrowings.checkoutDate, Borrowings.returnDate,
+            Borrowings.checkoutDate, Borrowings.returnDate, userid,
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
             then "貸出中" else "在架" end as status
             from Books
@@ -76,7 +77,9 @@
 
                 if (object.status == "貸出中") {
                     html += `<span class="status-red">貸出中</span>`;
-                    html += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返却</button>`;
+                    if (me.id == object.userid) {
+                        html += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返却</button>`;
+                    }
                 } else if (object.status == "在架") {
                     html += `<span class="status-green">在架</span>`;
                 }

@@ -43,15 +43,17 @@
                 //読み取り成功時の処理
                 (decodedText) => {
                     //isbnとQRコードで分岐
+
                     //正規表現というらしい
                     if(/^(97[89])\d{10}$/.test(decodedText)) {
                         //isbnの処理
                         sessionStorage.setItem('isbn', decodedText);
                         html5QrCode.stop();
                         location.replace(url);
-                    }else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decodedText)) {
+                    }else if (/^https?:\/\/.+/i.test(decodedText)) {
                         //uuidの処理
-                        var uuid = decodedText;
+                        var uuid = decodedText.split("uuid=")[1].split("&")[0];
+                        
                         html5QrCode.stop();
                         location.replace(url + "?uuid=" + uuid);
                     }
