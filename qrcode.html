@@ -21,10 +21,11 @@
 
         function qrcode() {
             var uuid = osql.getParam('uuid');
+            var url = "https://mindcode.si.aoyama.ac.jp/user_projects/a8124018%40gsuite.si.aoyama.ac.jp/f0848f6e-c797-41a5-a63f-aad2421ea462/router.html";
             $('#qrcode').qrcode({
-                text: uuid,
-                width: 365,
-                height: 365
+                text: url + "?uuid=" + uuid,
+                width: 200,
+                height: 200
             });
         }
 
