@@ -32,34 +32,44 @@
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Borrowings on Books.uuid = Borrowings.uuid
             and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
-            where Books.uuid = '${uuid}';`;
+            where Books.uuid = '${uuid}';
+            `;
             var objects = await osql.connect(sql);
             console.log(objects);
 
             var html = "";
             for (var i = 0; i < objects.length; i++) {
                 var object = objects[i];
-                
-                html = html + '<div class="box">';
 
-                html = html + '<div class="book-line">';
-                html = html + '<span class="book-title">' + object.title + '</span>';
-                html = html + '<span class="book-isbn">ISBN : ' + object.isbn + '</span>';
-                html = html + '</div>';
+                html += `<div class="box">`;
+                html += `<div class="book-line">`;
+                html += `<span class="book-title">${object.title}</span>`;
+                html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
+                html += `</div>`;
 
-                html = html + '<div class="book-line">';
+                html += `<div class="book-line">`;
 
                 if (object.status == "貸出中") {
-                    html = html + '<span class="status-red">貸出中</span>';
-                }else if (object.status == "在架") {
-                    html = html + '<button class="checkoutbutton" onclick="button2Pressed(\'' + object.uuid + '\')">貸出</button>';
+                    html += `<span class="status-red">貸出中</span>`;
+                } else if (object.status == "在架") {
+                    html += `<span class="status-green">在架</span>`;
+                    html += `<button class="checkoutbutton" onclick="button2Pressed('${object.uuid}')">貸出</button>`;
                 }
 
-                html = html + '</div>';
-
-                html = html + '</div>';
+                html += `</div>`;
+                html += `</div>`;
             }
-            document.getElementById('bookname').innerHTML = html;
+            document.getElementById('result').innerHTML = html;
+        }
+
+        async function execInsert(id) {
+            var me = await osql.getMe();
+
+            var sql = `insert into Borrowings (uuid, userid, checkoutDate) values ('${id}', '${me.id}', now())`;
+            await osql.connect(sql);
+            execSelect();
+            alert('本を借りました');
+            document.getElementById('uuid').value = '';
         }
 
         function buttonPressed() {
@@ -70,18 +80,9 @@
             execInsert(id);
         }
 
-        async function execInsert(id) {
-            var me = await osql.getMe();
-
-            var sql = `insert into Borrowings (uuid, userid, checkoutDate) values ('${id}', '${me.id}', now())`;
-            await osql.connect(sql);
-            document.getElementById('bookname').innerHTML = "本を借りました";
-            document.getElementById('uuid').value = '';
-        }
-
         function goScan() {
             sessionStorage.setItem("url", "checkout.html");
-            location.href = 'scan.html';
+            location.replace('scan.html');
         }
 
   </script>
@@ -103,10 +104,9 @@
     <input id="uuid" value="" type="textfield">
     <button onclick="buttonPressed()">検索</button>
     <button onclick="goScan()">カメラ起動</button>
-    <br>
-    <br>
-    <div id="bookname"></div>
   </div>
+  <hr>
+  <div id="result"></div>
 </body>
 
 </html>
