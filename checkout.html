@@ -76,7 +76,9 @@
                     html += `<span class="status-red">貸出中</span>`;
                 } else if (object.status == "在架") {
                     html += `<span class="status-green">在架</span>`;
-                    html += `<button class="checkoutbutton" onclick="button2Pressed('${object.uuid}')">貸出</button>`;
+                    if(me.ip.startsWith("106.72")){
+                        html += `<button class="checkoutbutton" onclick="button2Pressed('${object.uuid}')">貸出</button>`;
+                    }      
                 }
 
                 html += `</div>`;

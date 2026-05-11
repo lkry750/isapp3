@@ -77,7 +77,7 @@
 
                 if (object.status == "貸出中") {
                     html += `<span class="status-red">貸出中</span>`;
-                    if (me.id == object.userid) {
+                    if (me.id == object.userid && me.ip.startsWith("106.72")) {
                         html += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返却</button>`;
                     }
                 } else if (object.status == "在架") {
