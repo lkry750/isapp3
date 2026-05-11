@@ -38,7 +38,6 @@
                 var object=objects[i]; 
                 html += `<div class="box">`;
                 html += `<div>${object.title}</div>`;
-                html += `<div>${object.userid} (${object.role})</div>`;
                 html += `<div>借りた日: ${object.checkoutDate}</div>`;
                 html += `</div>`;
             }
@@ -141,6 +140,7 @@
         <input id="uuid">
         <button onclick="buttonPressed()">検索</button>
         <button onclick="goScan()">カメラ起動</button>
+        <hr>
         <div id="result"></div>
     </div>
     <div>

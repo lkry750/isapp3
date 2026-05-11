@@ -17,8 +17,31 @@
 
         $(document).ready(async function () {
             await login();
+            execSelectStatus();
             await execSelect();
         });
+
+        async function execSelectStatus() {
+            var me = await osql.getMe();
+            var sql = `
+            select Borrowings.id, title, userid, role, checkoutDate from Books
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            left join Borrowings on Borrowings.uuid = Books.uuid
+            left join Users on Users.id = Borrowings.userid
+            where checkoutDate is not null and returnDate is null and userid = "${me.id}";
+            `;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = "";
+            for (var i=0;i<objects.length;i++){ 
+                var object=objects[i]; 
+                html += `<div class="box">`;
+                html += `<div>${object.title}</div>`;
+                html += `<div>借りた日: ${object.checkoutDate}</div>`;
+                html += `</div>`;
+            }
+            document.getElementById('book').innerHTML = html;
+        }
 
         async function execSelect() {
             var uuid = osql.getParam('uuid');
@@ -90,23 +113,29 @@
 </head>
 
 <body>
-  <h1>図書管理システム</h1>
-  <div style="text-align: right;">
-    ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-    <a href="javascript:logout()">logout</a>
-  </div>
-  <hr>
-  <h2>貸出</h2>
-  <hr>
-  <div>
-    <h3>検索</h3>
-    <span>UUID</span>
-    <input id="uuid" value="" type="textfield">
-    <button onclick="buttonPressed()">検索</button>
-    <button onclick="goScan()">カメラ起動</button>
-  </div>
-  <hr>
-  <div id="result"></div>
+    <h1>図書管理システム</h1>
+    <div style="text-align: right;">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="javascript:logout()">logout</a>
+    </div>
+    <hr>
+    <h2>貸出</h2>
+    <hr>
+    <div>
+        <h3>検索</h3>
+        <span>UUID</span>
+        <input id="uuid" value="" type="textfield">
+        <button onclick="buttonPressed()">検索</button>
+        <button onclick="goScan()">カメラ起動</button>
+        <hr>
+        <div id="result"></div>
+    </div>
+    <div>
+        <hr>
+        <h3>借りている本</h3>
+        <hr>
+        <div id="book"></div>
+    </div>
 </body>
 
 </html>
