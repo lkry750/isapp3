@@ -26,6 +26,7 @@
             if (role != 'teacher') return;
             document.getElementById('admin').innerHTML = `<a href="admin.html">管理者向け</a>`;
             document.getElementById('add').innerHTML = `<a href="book_addition.html">本の追加</a>`;
+            document.getElementById('del').innerHTML = `<a href="book_delete.html">本の削除</a>`;
         }
     </script>
 
@@ -46,6 +47,7 @@
     <hr>
     <p id="admin"></p>
     <p id="add"></p>
+    <p id="del"></p>
 </body>
 
 </html>

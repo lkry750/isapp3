@@ -21,7 +21,7 @@
             await bookinfo();
         });
 
-        async function execSelect() {
+        function execSelect() {
             var isbn = osql.getParam('isbn');
             document.getElementById('isbn').value = isbn;
         }

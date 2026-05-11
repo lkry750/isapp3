@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        osql.requireLogin();
+
+        $(document).ready(async function () {
+            await login();
+            execSelect();
+        });
+
+        function execSelect() {
+            var uuid = osql.getParam('uuid');
+            document.getElementById('uuid').innerHTML = uuid;
+        }
+
+        function goScan() {
+            sessionStorage.setItem("url", "book_delete.html");
+            location.replace('scan.html');
+        }
+    </script>
+
+</head>
+
+<body>
+    <h1>図書管理システム</h1>
+    <div style="text-align: right;">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="javascript:logout()">logout</a>
+    </div>
+    <hr>
+    <h2>本の削除</h2>
+    <hr>
+    <button onclick="goScan()">カメラ起動</button>
+    <p id="uuid"></p>
+</body>
+
+</html>
