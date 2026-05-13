@@ -17,7 +17,7 @@
 
         $(document).ready(async function () {
             await login();
-            execSelectStatus();
+            await execSelectStatus();
             await execSelect();
         });
 
@@ -93,7 +93,7 @@
 
             var sql = `insert into Borrowings (uuid, userid, checkoutDate) values ('${id}', '${me.id}', now())`;
             await osql.connect(sql);
-            execSelect();
+            await execSelect();
             alert('本を借りました');
             document.getElementById('uuid').value = '';
         }
