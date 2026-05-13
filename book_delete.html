@@ -20,9 +20,64 @@
             execSelect();
         });
 
-        function execSelect() {
+        async function execSelect() {
             var uuid = osql.getParam('uuid');
-            document.getElementById('uuid').innerHTML = uuid;
+            var me = await osql.getMe();
+            console.log(uuid);
+            if(!uuid) return;
+
+            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
+            case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
+            then "貸出中" else "在架" end as status
+            from Books
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            left join Borrowings on Books.uuid = Borrowings.uuid
+            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
+            where Books.uuid = '${uuid}';
+            `;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+
+            if (objects.length <= 0) {
+                document.getElementById('result').innerHTML = `<p>本が見つかりません</p>`;
+                return;
+            }
+
+            var html = "";
+            for (var i = 0; i < objects.length; i++) {
+                var object = objects[i];
+
+                html += `<div class="box">`;
+                html += `<div class="book-line">`;
+                html += `<span class="book-title">${object.title}</span>`;
+                html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
+                html += `</div>`;
+
+                html += `<div class="book-line">`;
+
+                if (object.status == "貸出中") {
+                    html += `<span class="status-red">貸出中</span>`;
+                    html += `<span>削除できません</span>`;
+                } else if (object.status == "在架") {
+                    html += `<span class="status-green">在架</span>`;
+                    if(me.ip.startsWith("106.72")){
+                        html += `<button class="checkoutbutton" onclick="deleteBook('${object.uuid}')">削除</button>`;
+                    }      
+                }
+                html += `</div>`;
+                html += `</div>`;
+            }
+            document.getElementById('result').innerHTML = html;
+        }
+
+        async function deleteBook(uuid) {
+            if (!confirm('本を削除しますか?')) return;
+            var sql = `
+            delete from Books where uuid = '${uuid}';
+            `;
+            var object = await osql.connect(sql);
+            alert('削除しました');
+            execSelect();
         }
 
         function goScan() {
@@ -43,7 +98,7 @@
     <h2>本の削除</h2>
     <hr>
     <button onclick="goScan()">カメラ起動</button>
-    <p id="uuid"></p>
+    <p id="result"></p>
 </body>
 
 </html>

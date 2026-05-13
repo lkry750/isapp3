@@ -45,6 +45,7 @@
 
         async function execSelect() {
             var uuid = osql.getParam('uuid');
+            var me = await osql.getMe();
             console.log(uuid);
             if(!uuid) return;
 
