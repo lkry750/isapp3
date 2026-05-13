@@ -79,6 +79,10 @@
             `;
             var objects = await osql.connect(sql);
             console.log(objects);
+            if (objects.length <= 0) {
+                document.getElementById('tab3').innerHTML = "借りている人はいません";
+                return;
+            }
             var html = "";
             for (var i=0;i<objects.length;i++){
                 var object = objects[i];
