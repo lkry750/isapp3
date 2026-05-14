@@ -60,9 +60,7 @@
                     html += `<span>削除できません</span>`;
                 } else if (object.status == "在架") {
                     html += `<span class="status-green">在架</span>`;
-                    if(me.ip.startsWith(schoolip)){
-                        html += `<button class="checkoutbutton" onclick="deleteBook('${object.uuid}')">削除</button>`;
-                    }      
+                    html += `<button class="checkoutbutton" onclick="deleteBook('${object.uuid}')">削除</button>`;   
                 }
                 html += `</div>`;
                 html += `</div>`;

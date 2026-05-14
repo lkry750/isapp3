@@ -16,5 +16,3 @@ async function login(){
 function logout() {
     osql.logout();
 }
-
-var schoolip = "100.70";

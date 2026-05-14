@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+
+    <script>
+        osql.requireLogin();
+
+        $(document).ready(async function () {
+            enableReturnMode();
+        });
+
+        // 5分間の返却時間を与える
+        function enableReturnMode() {
+            sessionStorage.setItem('return_expire', Date.now() + 5 * 60 * 1000);
+            document.getElementById('result').innerHTML = '読み取りが完了しました<br>返却ページに遷移します';
+        }
+
+        setTimeout(function () {
+            location.href = 'return.html';
+        },3000);
+            
+    </script>
+
+</head>
+
+<body>
+    <div id="result"></div>
+</body>
+
+</html>

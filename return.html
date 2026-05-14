@@ -76,8 +76,10 @@
 
                 if (object.status == "貸出中") {
                     html += `<span class="status-red">貸出中</span>`;
-                    if (me.id == object.userid && me.ip.startsWith(schoolip)) {
+                    if (me.id == object.userid && canReturn()) {
                         html += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返却</button>`;
+                    }else if (me.id == object.userid) {
+                        html += `<div>返却のためのQRを読み込んでください</div>`;
                     }
                 } else if (object.status == "在架") {
                     html += `<span class="status-green">在架</span>`;
@@ -87,6 +89,16 @@
                 html += `</div>`;
             }
             document.getElementById('result').innerHTML = html;
+        }
+
+        function canReturn() {
+            var expire = sessionStorage.getItem('return_expire');
+            if (!expire) return false;
+            if (Date.now() > Number(expire)) {
+                sessionStorage.removeItem('return_expire');
+                return false;
+            }
+            return true;
         }
 
         async function execUpdate(id) {
