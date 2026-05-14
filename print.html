@@ -1,81 +1,110 @@
 <!DOCTYPE html>
 
 <html>
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 
     <script>
-        osql.requireLogin();
+      osql.requireLogin();
 
-        $(document).ready(async function () {
-            await login();
-        });
+      $(document).ready(async function () {
+        await login();
+      });
 
-        async function getUnprintedBooks() {
-            var sql = `
-            select Books.uuid, Books.isbn, BookTitle.title from Books
-            left join BookTitle on Books.isbn = BookTitle.isbn
-            where Books.printed_at is null;
+      async function getUnprintedBooks() {
+        var sql = `
+          select Books.uuid, Books.isbn, BookTitle.title from Books
+          left join BookTitle on Books.isbn = BookTitle.isbn
+          where Books.printed_at is null;
+          `;
+        var objects = await osql.connect(sql);
+
+        var groups = {};
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
+          if (!groups[object.isbn]) {
+            groups[object.isbn] = {
+              title: object.title,
+              uuids: [],
+            };
+          }
+          // uuidの追加
+          groups[object.isbn].uuids.push(object.uuid);
+        }
+        console.log(groups);
+        return groups;
+      }
+
+      async function showUnprintedBooks() {
+        var groups = await getUnprintedBooks();
+        var html = '';
+        for (var isbn in groups) {
+          var group = groups[isbn];
+          html += `<div class="box">`;
+          html += `<div>${group.title}</div>`;
+          html += `<div>${group.uuids.length}冊</div>`;
+          html += `</div>`;
+        }
+        html += `<button onclick="printAll()">一括印刷</button>`;
+        document.getElementById('result').innerHTML = html;
+      }
+
+      async function printAll() {
+        var groups = await getUnprintedBooks();
+        var html = '';
+        for (var isbn in groups) {
+          var group = groups[isbn];
+
+          for (var i = 0; i < group.uuids.length; i++) {
+            var uuid = group.uuids[i];
+            html += ` <div class="qr-box">
+            <div id="qr-${uuid}"></div>
+            </div>
             `;
-            var objects = await osql.connect(sql);
-
-            var groups = {};
-            for (var i=0;i<objects.length;i++) {
-                var object = objects[i];
-                if (!groups[object.isbn]) {
-                    groups[object.isbn] = {
-                        title: object.title,
-                        uuids: []
-                    };
-                }
-                // uuidの追加
-                groups[object.isbn].uuids.push(object.uuid);
-            }
-            console.log(groups);
-            return groups;
+          }
         }
 
-        async function showUnprintedBooks() {
-            var groups = await getUnprintedBooks();
-            var html = '';
-            for (var isbn in groups) {
-                var group = groups[isbn];
-                html += `<div class="box">`;
-                html += `<div>${group.title}</div>`;
-                html += `<div>${group.uuids.length}冊</div>`;
-                html += `</div>`;
-            }
-            html += `<button onclick="printAll()">一括印刷</button>`;
-            document.getElementById('result').innerHTML = html;
+        document.getElementById('result').innerHTML = html;
+
+        // QR生成
+        for (var isbn in groups) {
+          var group = groups[isbn];
+          for (var i = 0; i < group.uuids.length; i++) {
+            var uuid = group.uuids[i];
+            var url =
+              'https://mindcode.si.aoyama.ac.jp/' +
+              'user_projects/' +
+              'a8124018%40gsuite.si.aoyama.ac.jp/' +
+              'f0848f6e-c797-41a5-a63f-aad2421ea462/' +
+              `router.html?uuid=${uuid}`;
+            $(`#qr-${uuid}`).qrcode({ text: url, width: 380, height: 380 });
+          }
         }
-
-
-
+        window.print();
+      }
     </script>
+  </head>
 
-</head>
-
-<body>
+  <body>
     <div class="no-print">
-        <h1>図書管理システム</h1>
-        <div style="text-align: right;">
-            ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-            <a href="javascript:logout()">logout</a>
-        </div>
-        <hr>
-        <h2>QR印刷</h2>
-        <hr>
-        <button onclick="showUnprintedBooks()">一覧表示</button>
+      <h1>図書管理システム</h1>
+      <div style="text-align: right">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="javascript:logout()">logout</a>
+      </div>
+      <hr />
+      <h2>QR印刷</h2>
+      <hr />
+      <button onclick="showUnprintedBooks()">一覧表示</button>
     </div>
     <div id="result"></div>
-</body>
-
+  </body>
 </html>

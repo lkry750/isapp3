@@ -1,10 +1,10 @@
 .box {
-    width: 100%;
-    padding: 0.5em 1em;
-    margin: 0;
-    color: #2c2c2f;
-    background: #cde4ff;
-    border-top: solid 3px #5989cf;
+  width: 100%;
+  padding: 0.5em 1em;
+  margin: 0;
+  color: #2c2c2f;
+  background: #cde4ff;
+  border-top: solid 3px #5989cf;
 }
 
 /* .book-title {
@@ -12,77 +12,81 @@
 } */
 
 .book-isbn {
-    float: right;
+  float: right;
 }
 
 .book-status {
-    width: 50px;
-    text-align: center;
-    float: right;
-    border: 1px solid black;
-    padding: 0px 10px;
-    background-color: #ffffff;
+  width: 50px;
+  text-align: center;
+  float: right;
+  border: 1px solid black;
+  padding: 0px 10px;
+  background-color: #ffffff;
 }
 
 .status-green {
-    color: #2e7d32;
+  color: #2e7d32;
 }
 
 .status-red {
-    color: #c62828;
+  color: #c62828;
 }
 
 .line {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .checkout {
-    float: right;
+  float: right;
 }
 
 .return {
-    float: right;
-    margin-left: auto;
+  float: right;
+  margin-left: auto;
 }
 
 .tab-switch {
-    --tab-color: #5989cf;
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 1500px;
-    gap: 5px;
+  --tab-color: #5989cf;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1500px;
+  gap: 5px;
 }
 
 /* orderでラベルの表示順を先頭に持ってきている */
 .tab-switch label {
-    padding: 0.7em 1em;
-    background: #cde4ff;
-    cursor: pointer;
-    order: -1; 
-    text-align: center;
+  padding: 0.7em 1em;
+  background: #cde4ff;
+  cursor: pointer;
+  order: -1;
+  text-align: center;
 }
 
 /* 最初は非表示 */
 .tab-switch input {
-    display: none;
+  display: none;
 }
 .tab-content {
-    display: none;
-    width: 100%;
+  display: none;
+  width: 100%;
 }
 
 /* 選択された時に表示を変える */
 .tab-switch label:has(:checked) {
-    background: var(--tab-color);
-    color: white;
+  background: var(--tab-color);
+  color: white;
 }
-.tab-switch label:has(:checked)+.tab-content {
-    display: block;
+.tab-switch label:has(:checked) + .tab-content {
+  display: block;
 }
 
 @media print {
-    .no-print {
-        display: none;
-    }
+  .no-print {
+    display: none;
+  }
+}
+
+.qr-box:not(:last-child) {
+  break-after: page;
 }
