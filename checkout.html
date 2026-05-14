@@ -98,10 +98,6 @@
             document.getElementById('uuid').value = '';
         }
 
-        function buttonPressed() {
-            execSelect();
-        }
-
         function button2Pressed(id) {
             execInsert(id);
         }
@@ -126,9 +122,6 @@
     <hr>
     <div>
         <h3>検索</h3>
-        <span>UUID</span>
-        <input id="uuid" value="" type="textfield">
-        <button onclick="buttonPressed()">検索</button>
         <button onclick="goScan()">カメラ起動</button>
         <hr>
         <div id="result"></div>

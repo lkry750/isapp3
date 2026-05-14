@@ -17,4 +17,4 @@ function logout() {
     osql.logout();
 }
 
-var schoolip = "106.72";
+var schoolip = "100.70";

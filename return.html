@@ -101,16 +101,6 @@
             alert('返却が完了しました');
         }
 
-        function displayUuid() {
-            var uuid = sessionStorage.getItem("uuid");
-            if (uuid) {
-                document.getElementById("uuid").value = uuid;
-                sessionStorage.removeItem("uuid");
-                // 返却する本の表示まだ
-            }
-        }
-
-
         function buttonPressed(){
             execSelect();
         }
@@ -139,9 +129,6 @@
     <hr>
     <div>
         <h3>検索</h3>
-        <span>UUID</span>
-        <input id="uuid">
-        <button onclick="buttonPressed()">検索</button>
         <button onclick="goScan()">カメラ起動</button>
         <hr>
         <div id="result"></div>
