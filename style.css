@@ -80,3 +80,9 @@
 .tab-switch label:has(:checked)+.tab-content {
     display: block;
 }
+
+@media print {
+    .no-print {
+        display: none;
+    }
+}
