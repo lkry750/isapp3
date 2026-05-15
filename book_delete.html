@@ -9,6 +9,7 @@
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
+    <script type="text/javascript" src="js/admin.js"></script>
 
     <link rel="stylesheet" href="style.css">
 
@@ -17,6 +18,7 @@
 
         $(document).ready(async function () {
             await login();
+            await admin();
             execSelect();
         });
 
