@@ -47,7 +47,7 @@
             var uuid = osql.getParam('uuid');
             var me = await osql.getMe();
             console.log(uuid);
-            if(!uuid) goScan();
+            if(!uuid) return;
 
             var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
