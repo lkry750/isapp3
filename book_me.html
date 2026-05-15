@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script>
+      osql.requireLogin();
+
+      $(document).ready(async function () {
+        await login();
+        await execSelectStatus();
+      });
+
+      async function execSelectStatus() {
+        var me = await osql.getMe();
+        var sql = `
+            select Borrowings.id, title, userid, role, checkoutDate from Books
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            left join Borrowings on Borrowings.uuid = Books.uuid
+            left join Users on Users.id = Borrowings.userid
+            where checkoutDate is not null and returnDate is null and userid = "${me.id}";
+            `;
+        var objects = await osql.connect(sql);
+        console.log(objects);
+        var html = '';
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
+          html += `<div class="box">`;
+          html += `<div>${object.title}</div>`;
+          html += `<div>借りた日: ${object.checkoutDate}</div>`;
+          html += `</div>`;
+        }
+        document.getElementById('book').innerHTML = html;
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>図書管理システム</h1>
+    <div style="text-align: right">
+      ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+      <a href="javascript:logout()">logout</a>
+    </div>
+    <hr />
+    <h2>まいらいぶらり</h2>
+    <hr />
+    <div id="book"></div>
+  </body>
+</html>
