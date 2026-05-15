@@ -17,8 +17,8 @@
 
         $(document).ready(async function () {
             await login();
-            await execSelectStatus();
             await execSelect();
+            await execSelectStatus();
         });
 
         async function execSelectStatus() {
@@ -47,7 +47,7 @@
             var uuid = osql.getParam('uuid');
             var me = await osql.getMe();
             console.log(uuid);
-            if(!uuid) return;
+            if(!uuid) goScan();
 
             var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null

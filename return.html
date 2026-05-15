@@ -17,8 +17,8 @@
 
         $(document).ready(async function () {
             await login();
+            await execSelect();
             await execSelectStatus();
-            execSelect();
         });
 
         async function execSelectStatus() {
@@ -47,7 +47,7 @@
             var uuid = osql.getParam('uuid');
             var me = await osql.getMe();
             console.log(uuid);
-            if(!uuid) return;
+            if(!uuid) goScan();
 
             var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.id, 
             Borrowings.checkoutDate, Borrowings.returnDate, userid,
