@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script type="text/javascript" src="lib/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/osql.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script>
+      osql.requireLogin();
+
+      $(document).ready(async function () {
+        await login();
+        qrcode();
+      });
+
+      function qrcode() {
+        // QRが小さくなって読めない,要検討
+        var url =
+        'https://mindcode.si.aoyama.ac.jp/' +
+        'user_projects/' +
+        'a8124018%40gsuite.si.aoyama.ac.jp/' +
+        'f0848f6e-c797-41a5-a63f-aad2421ea462/' +
+        `enable_return.html`;
+        $('#qrcode').qrcode({
+          text: url,
+          width: 500,
+          height: 500,
+        });
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>図書管理システム</h1>
+    <div style="text-align: right">
+      ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+      <a href="javascript:logout()">logout</a>
+    </div>
+    <hr />
+    <h2>返却QR</h2>
+    <hr />
+    <div id="qrcode"></div>
+  </body>
+</html>
