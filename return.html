@@ -18,36 +18,13 @@
         $(document).ready(async function () {
             await login();
             await execSelect();
-            await execSelectStatus();
         });
-
-        async function execSelectStatus() {
-            var me = await osql.getMe();
-            var sql = `
-            select Borrowings.id, title, userid, role, checkoutDate from Books
-            left join BookTitle on Books.isbn = BookTitle.isbn
-            left join Borrowings on Borrowings.uuid = Books.uuid
-            left join Users on Users.id = Borrowings.userid
-            where checkoutDate is not null and returnDate is null and userid = "${me.id}";
-            `;
-            var objects = await osql.connect(sql);
-            console.log(objects);
-            var html = "";
-            for (var i=0;i<objects.length;i++){ 
-                var object=objects[i]; 
-                html += `<div class="box">`;
-                html += `<div>${object.title}</div>`;
-                html += `<div>借りた日: ${object.checkoutDate}</div>`;
-                html += `</div>`;
-            }
-            document.getElementById('book').innerHTML = html;
-        }
 
         async function execSelect() {
             var uuid = osql.getParam('uuid');
             var me = await osql.getMe();
             console.log(uuid);
-            if(!uuid) return;
+            if(!uuid) goScan();
 
             var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.id, 
             Borrowings.checkoutDate, Borrowings.returnDate, userid,
@@ -143,12 +120,6 @@
         <button onclick="goScan()">カメラ起動</button>
         <hr>
         <div id="result"></div>
-    </div>
-    <div>
-        <hr>
-        <h3>借りている本</h3>
-        <hr>
-        <div id="book"></div>
     </div>
 </body>
 
