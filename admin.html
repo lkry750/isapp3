@@ -75,6 +75,7 @@
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
           html += `<div class="box" onclick="toggleBookDetail('${object.isbn}')">`;
+          html += `<span id="arrow-${object.isbn}">▶</span>`;
           html += `<div>${object.title}</div>`;
           html += `<div>ISBN: ${object.isbn}</div>`;
           html += `<div>Stock: ${object.stock}/${object.total}</div>`;
@@ -86,8 +87,10 @@
 
       async function toggleBookDetail(isbn) {
         var detail = document.getElementById('detail-' + isbn);
+        var arrow = document.getElementById('arrow-' + isbn);
         if (detail.innerHTML != '') {
           detail.innerHTML = '';
+          arrow.innerHTML = '▶';
           return;
         }
         var sql = `select uuid, copy_no, created_at from Books where isbn = '${isbn}' order by copy_no`;
@@ -102,6 +105,7 @@
           html += `<button onclick="deleteBook('${object.uuid}')">削除</button>`;
           html += `</div>`;
         }
+        arrow.innerHTML = '▼';
         detail.innerHTML = html;
       }
 

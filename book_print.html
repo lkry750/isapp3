@@ -39,6 +39,7 @@
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
           html += `<div class="box" onclick="toggleBookDetail('${object.isbn}')">`;
+          html += `<span id="arrow-${object.isbn}">▶</span>`;
           html += `<div>${object.title}</div>`;
           html += `<div>ISBN: ${object.isbn}</div>`;
           html += `<div>Stock: ${object.stock}/${object.total}</div>`;
@@ -50,8 +51,10 @@
 
       async function toggleBookDetail(isbn) {
         var detail = document.getElementById('detail-' + isbn);
+        var arrow = document.getElementById('arrow-' + isbn);
         if (detail.innerHTML != '') {
           detail.innerHTML = '';
+          arrow.innerHTML = '▶';
           return;
         }
         var sql = `select uuid, copy_no, created_at, printed_at from Books where isbn = '${isbn}' order by copy_no asc`;
@@ -66,6 +69,7 @@
           html += `</div>`;
         }
         detail.innerHTML = html;
+        arrow.innerHTML = '▼';
       }
 
       var selectedUuids = [];
@@ -110,7 +114,7 @@
           });
         }
         window.print();
-        var ok = confirm("印刷できましたか？");
+        var ok = confirm('印刷できましたか？');
         if (ok) {
           await updatePrintedAt(uuids);
           selectedUuids = [];
@@ -123,7 +127,7 @@
           sql += `update Books set printed_at = now() where uuid = '${uuids[i]}';`;
         }
         await osql.connect(sql);
-        alert("状態を印刷済みに更新しました");
+        alert('状態を印刷済みに更新しました');
         displayBook();
       }
     </script>
@@ -136,9 +140,9 @@
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="javascript:logout()">logout</a>
       </div>
-      <hr>
+      <hr />
       <h2>QR印刷</h2>
-      <hr>
+      <hr />
       <div id="result">読み込み中...</div>
       <button onclick="printSelectedBooks()">選択した本を印刷</button>
     </div>
