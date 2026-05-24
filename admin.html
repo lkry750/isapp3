@@ -1,50 +1,64 @@
 <!DOCTYPE html>
 
 <html>
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
     <script type="text/javascript" src="js/admin.js"></script>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 
     <script>
-        osql.requireLogin();
+      osql.requireLogin();
 
-        $(document).ready(async function () {
-            await login();
-            await admin();
-            await displayUser();
-            await displayBook();
-            await displayCheckout();
-            await displayLog();
-        });
+      $(document).ready(async function () {
+        await login();
+        await admin();
+        await showTab(2); 
+      });
 
-        async function displayUser() {
-            var sql = `select id, role from Users`;
-            var objects = await osql.connect(sql);
-            console.log(objects);
-            var html = "";
-            for(var i=0;i<objects.length;i++){
-                var object = objects[i];
-                html += `<div class="box">`;
-                html += `<div>${object.id}</div>`;
-                html += `<select onchange="userChange('${object.id}', this.value)">`;
-                html += `<option value="student" ${object.role === "student" ? "selected" : ""}>student</option>`;
-                html += `<option value="teacher" ${object.role === "teacher" ? "selected" : ""}>teacher</option>`;
-                html += `</select>`;
-                html += `</div>`;
-            }
-            document.getElementById('tab1').innerHTML = html;
+      // タブごとに処理を分散
+      async function showTab(tabNo) {
+        document.getElementById('tab1').style.display = 'none';
+        document.getElementById('tab2').style.display = 'none';
+        document.getElementById('tab3').style.display = 'none';
+        document.getElementById('tab4').style.display = 'none';
+        document.getElementById('tab' + tabNo).style.display = 'block';
+        if (tabNo === 1) {
+          await displayUser();
+        } else if (tabNo === 2) {
+          await displayBook();
+        } else if (tabNo === 3) {
+          await displayCheckout();
+        } else if (tabNo === 4) {
+          await displayLog();
         }
+      }
 
-        async function displayBook() {
-            var sql = `
+      async function displayUser() {
+        var sql = `select id, role from Users`;
+        var objects = await osql.connect(sql);
+        console.log(objects);
+        var html = '';
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
+          html += `<div class="box">`;
+          html += `<div>${object.id}</div>`;
+          html += `<select onchange="userChange('${object.id}', this.value)">`;
+          html += `<option value="student" ${object.role === 'student' ? 'selected' : ''}>student</option>`;
+          html += `<option value="teacher" ${object.role === 'teacher' ? 'selected' : ''}>teacher</option>`;
+          html += `</select>`;
+          html += `</div>`;
+        }
+        document.getElementById('tab1').innerHTML = html;
+      }
+
+      async function displayBook() {
+        var sql = `
             select BookTitle.title, 
             Books.isbn, 
             count(distinct Books.uuid) as total,
@@ -54,49 +68,49 @@
             left join BookTitle on Books.isbn = BookTitle.isbn
             group by Books.isbn, BookTitle.title;
             `;
-            var objects = await osql.connect(sql);
-            console.log(objects);
-            var html = "";
-            for (var i=0;i<objects.length;i++){
-                var object = objects[i];
-                html += `<div class="box">`;
-                html += `<div>${object.title}</div>`;
-                html += `<div>ISBN: ${object.isbn}</div>`;
-                html += `<div>Stock: ${object.stock}/${object.total}</div>`;
-                html += `<button onclick="buttonPressed(${object.isbn})">詳細</button>`;
-                html += `</div>`;
-            }
-            document.getElementById('tab2').innerHTML = html;
+        var objects = await osql.connect(sql);
+        console.log(objects);
+        var html = '';
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
+          html += `<div class="box">`;
+          html += `<div>${object.title}</div>`;
+          html += `<div>ISBN: ${object.isbn}</div>`;
+          html += `<div>Stock: ${object.stock}/${object.total}</div>`;
+          html += `<button onclick="buttonPressed(${object.isbn})">詳細</button>`;
+          html += `</div>`;
         }
+        document.getElementById('tab2').innerHTML = html;
+      }
 
-        async function displayCheckout() {
-            var sql = `
+      async function displayCheckout() {
+        var sql = `
             select title, userid, role, checkoutDate from Books
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Borrowings on Borrowings.uuid = Books.uuid
             left join Users on Users.id = Borrowings.userid
             where checkoutDate is not null and returnDate is null;
             `;
-            var objects = await osql.connect(sql);
-            console.log(objects);
-            if (objects.length <= 0) {
-                document.getElementById('tab3').innerHTML = "借りている人はいません";
-                return;
-            }
-            var html = "";
-            for (var i=0;i<objects.length;i++){
-                var object = objects[i];
-                html += `<div class="box">`;
-                html += `<div>${object.title}</div>`;
-                html += `<div>${object.userid} (${object.role})</div>`;
-                html += `<div>借りた日: ${object.checkoutDate}</div>`;
-                html += `</div>`;
-            }
-            document.getElementById('tab3').innerHTML = html;
+        var objects = await osql.connect(sql);
+        console.log(objects);
+        if (objects.length <= 0) {
+          document.getElementById('tab3').innerHTML = '借りている人はいません';
+          return;
         }
+        var html = '';
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
+          html += `<div class="box">`;
+          html += `<div>${object.title}</div>`;
+          html += `<div>${object.userid} (${object.role})</div>`;
+          html += `<div>借りた日: ${object.checkoutDate}</div>`;
+          html += `</div>`;
+        }
+        document.getElementById('tab3').innerHTML = html;
+      }
 
-        async function displayLog() {
-            var sql = `
+      async function displayLog() {
+        var sql = `
             select checkoutDate as Date, Books.isbn, title, userid, role, '貸出' as action from Borrowings
             left join Books on Borrowings.uuid = Books.uuid
             left join BookTitle on Books.isbn = BookTitle.isbn
@@ -107,60 +121,58 @@
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Users on Borrowings.userid = Users.id
             where returnDate is not null
-            order by Date;
+            order by Date desc
+            limit 50;
             `;
-            var objects = await osql.connect(sql);
-            console.log(objects);
-            var html = "";
-            for (var i=0;i<objects.length;i++){
-                var object = objects[i];
-                html += `<div class="box">`;
-                html += `<div>${object.action}</div>`;
-                html += `<div>Date: ${object.Date}</div>`;
-                html += `<div>タイトル: ${object.title}</div>`;
-                html += `<div>ISBN: ${object.isbn}</div>`;
-                html += `<div>${object.userid} (${object.role})</div>`;
-                html += `</div>`;
-            }
-            document.getElementById('tab4').innerHTML = html;
+        var objects = await osql.connect(sql);
+        console.log(objects);
+        var html = '';
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
+          html += `<div class="box">`;
+          html += `<div>${object.action}</div>`;
+          html += `<div>Date: ${object.Date}</div>`;
+          html += `<div>タイトル: ${object.title}</div>`;
+          html += `<div>ISBN: ${object.isbn}</div>`;
+          html += `<div>${object.userid} (${object.role})</div>`;
+          html += `</div>`;
         }
+        document.getElementById('tab4').innerHTML = html;
+      }
 
-        async function userChange(userid, role) {
-            var sql = `update Users set role = "${role}" where id = "${userid}";`;
-            await osql.connect(sql);
-            alert('変更');
-        }
+      async function userChange(userid, role) {
+        var sql = `update Users set role = "${role}" where id = "${userid}";`;
+        await osql.connect(sql);
+        alert('変更');
+      }
 
-        function buttonPressed(isbn) {
-            location.href = "isbn_manager.html?isbn=" + isbn;
-        }
+      function buttonPressed(isbn) {
+        location.href = 'isbn_manager.html?isbn=' + isbn;
+      }
     </script>
+  </head>
 
-</head>
-
-<body>
+  <body>
     <h1>図書管理システム</h1>
-    <div style="text-align: right;">
-        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-        <a href="javascript:logout()">logout</a>
+    <div style="text-align: right">
+      ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+      <a href="javascript:logout()">logout</a>
     </div>
-    <hr>
+    <hr />
     <h2>管理者向け</h2>
-    <hr>
+    <hr />
     <div class="tab-switch">
-        <label><input type="radio" name="tab">ユーザ管理</label>
-        <div class="tab-content" id="tab1">読み込み中です．．．．．．</div>
+      <label><input type="radio" name="tab" onclick="showTab(1)">ユーザ管理</label>
+      <div class="tab-content" id="tab1">読み込み中です．．．．．．</div>
 
-        <label><input type="radio" name="tab" checked>本管理</label>
-        <div class="tab-content" id="tab2">読み込み中です．．．．．．</div>
+      <label><input type="radio" name="tab" onclick="showTab(2)" checked>本管理</label>
+      <div class="tab-content" id="tab2">読み込み中です．．．．．．</div>
 
-        <label><input type="radio" name="tab">貸本管理</label>
-        <div class="tab-content" id="tab3">読み込み中です．．．．．．</div>
+      <label><input type="radio" name="tab" onclick="showTab(3)">貸本管理</label>
+      <div class="tab-content" id="tab3">読み込み中です．．．．．．</div>
 
-        <label><input type="radio" name="tab">貸出返却の履歴</label>
-        <div class="tab-content" id="tab4">読み込み中です．．．．．．</div>
+      <label><input type="radio" name="tab" onclick="showTab(4)">貸出返却の履歴</label>
+      <div class="tab-content" id="tab4">読み込み中です．．．．．．</div>
     </div>
-
-</body>
-
+  </body>
 </html>
