@@ -102,7 +102,6 @@
           html += `<div>No. ${object.copy_no}</div>`;
           html += `<div>追加日: ${object.created_at}</div>`;
           html += `<button onclick="button1Pressed('${object.uuid}')">QR</button>`;
-          html += `<button onclick="deleteBook('${object.uuid}')">削除</button>`;
           html += `</div>`;
         }
         arrow.innerHTML = '▼';
@@ -111,15 +110,6 @@
 
       function button1Pressed(uuid) {
         location.href = 'qrcode.html?uuid=' + uuid;
-      }
-
-      async function deleteBook(uuid) {
-        var ok = confirm('本当に削除しますか?');
-        if (!ok) return;
-        var sql = `delete from Books where uuid = "${uuid}"`;
-        var result = await osql.connect(sql);
-        alert('削除しました');
-        location.reload();
       }
 
       // 3つ目のタブ
