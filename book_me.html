@@ -30,6 +30,10 @@
             `;
         var objects = await osql.connect(sql);
         console.log(objects);
+        if (objects.length == 0){
+          document.getElementById('book').innerHTML = "借りている本はありません";
+          return;
+        }
         var html = '';
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
