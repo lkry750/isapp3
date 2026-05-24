@@ -19,8 +19,113 @@
       $(document).ready(async function () {
         await login();
         await admin();
+        displayBook();
       });
 
+      async function displayBook() {
+        var sql = `
+            select BookTitle.title, Books.isbn,
+            count(distinct Books.uuid) as total,
+            count(distinct Books.uuid) - count(distinct case when checkoutDate is not null and returnDate is null then Books.uuid
+            end)as stock
+            from Books
+            left join Borrowings on Borrowings.uuid = Books.uuid
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            group by Books.isbn, BookTitle.title;
+        `;
+        var objects = await osql.connect(sql);
+        console.log(objects);
+        var html = '';
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
+          html += `<div class="box" onclick="toggleBookDetail('${object.isbn}')">`;
+          html += `<div>${object.title}</div>`;
+          html += `<div>ISBN: ${object.isbn}</div>`;
+          html += `<div>Stock: ${object.stock}/${object.total}</div>`;
+          html += `</div>`;
+          html += `<div id="detail-${object.isbn}"></div>`;
+        }
+        document.getElementById('result').innerHTML = html;
+      }
+
+      async function toggleBookDetail(isbn) {
+        var detail = document.getElementById('detail-' + isbn);
+        if (detail.innerHTML != '') {
+          detail.innerHTML = '';
+          return;
+        }
+        var sql = `select uuid, copy_no, created_at, printed_at from Books where isbn = '${isbn}' order by copy_no asc`;
+        var objects = await osql.connect(sql);
+        var html = '';
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
+          var checked = selectedUuids.includes(object.uuid) ? 'checked' : '';
+          html += `<div class="box">`;
+          html += `<label><input type="checkbox" class="book-check" value="${object.uuid}" ${checked} onchange="changeCheck('${object.uuid}', this.checked)">No. ${object.copy_no}</label>`;
+          html += `<div>印刷日: ${object.printed_at == null ? '----------------' : object.printed_at}</div>`;
+          html += `</div>`;
+        }
+        detail.innerHTML = html;
+      }
+
+      var selectedUuids = [];
+
+      function changeCheck(uuid, checked) {
+        if (checked) {
+          if (!selectedUuids.includes(uuid)) {
+            selectedUuids.push(uuid);
+          }
+        } else {
+          selectedUuids = selectedUuids.filter(function (x) {
+            return x !== uuid;
+          });
+        }
+      }
+
+      async function printSelectedBooks() {
+        var uuids = selectedUuids;
+        if (uuids.length <= 0) {
+          alert('印刷する本を選択してください');
+          return;
+        }
+        var html = '';
+        for (var i = 0; i < uuids.length; i++) {
+          var uuid = uuids[i];
+          html += `<div class="qr-box"><div id="qr-${uuid}"></div></div>`;
+        }
+        document.getElementById('qr').innerHTML = html;
+        for (var i = 0; i < uuids.length; i++) {
+          var uuid = uuids[i];
+          var url =
+            'https://mindcode.si.aoyama.ac.jp/' +
+            'user_projects/' +
+            'a8124018%40gsuite.si.aoyama.ac.jp/' +
+            'f0848f6e-c797-41a5-a63f-aad2421ea462/' +
+            `router.html?uuid=${uuid}`;
+
+          $(`#qr-${uuid}`).qrcode({
+            text: url,
+            width: 380,
+            height: 380,
+          });
+        }
+        window.print();
+        var ok = confirm("印刷できましたか？");
+        if (ok) {
+          await updatePrintedAt(uuids);
+          selectedUuids = [];
+        }
+      }
+
+      async function updatePrintedAt(uuids) {
+        var sql = '';
+        for (var i = 0; i < uuids.length; i++) {
+          sql += `update Books set printed_at = now() where uuid = '${uuids[i]}';`;
+        }
+        await osql.connect(sql);
+        alert("状態を印刷済みに更新しました");
+        displayBook();
+      }
     </script>
   </head>
 
@@ -31,11 +136,12 @@
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="javascript:logout()">logout</a>
       </div>
-      <hr>
+      <hr />
       <h2>QR印刷</h2>
-      <hr>
-      <button onclick="showUnprintedBooks()">一覧表示</button>
+      <hr />
+      <div id="result">読み込み中...</div>
+      <button onclick="printSelectedBooks()">選択した本を印刷</button>
     </div>
-    <div id="result"></div>
+    <div id="qr"></div>
   </body>
 </html>

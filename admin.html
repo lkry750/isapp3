@@ -61,8 +61,7 @@
       // 2つ目のタブ
       async function displayBook() {
         var sql = `
-            select BookTitle.title, 
-            Books.isbn, 
+            select BookTitle.title, Books.isbn, 
             count(distinct Books.uuid) as total,
             count(distinct Books.uuid) - count(distinct case when checkoutDate is not null and returnDate is null then Books.uuid end)as stock
             from Books
