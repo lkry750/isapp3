@@ -19,7 +19,7 @@
 
         // 5分間の返却時間を与える
         function enableReturnMode() {
-            sessionStorage.setItem('return_expire', Date.now() + 5 * 60 * 1000);
+            sessionStorage.setItem('return_expire', Date.now() + 2 * 60 * 1000);
             document.getElementById('result').innerHTML = '読み取りが完了しました<br>返却ページに遷移します';
         }
 

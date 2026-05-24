@@ -24,28 +24,32 @@
 
         async function displayIsbn() {
             var isbn = osql.getParam('isbn');
-            var sql = `select uuid, created_at from Books where isbn = "${isbn}";`;
+            var sql = `select uuid, copy_no, created_at from Books where isbn = "${isbn}" order by copy_no desc;`;
             var objects = await osql.connect(sql);
             var html = "";
             for (var i=0;i<objects.length;i++){
                 var object = objects[i];
                 html += `<div class="box">`;
-                html += `<div>uuid: ${object.uuid} </div>`;
+                html += `<div>No. ${object.copy_no} </div>`;
                 html += `<div>追加日: ${object.created_at} </div>`;
                 html += `<button onclick="button1Pressed('${object.uuid}')">QR</button>`;
-                html += `<button onclick="button2Pressed()">削除</button>`;
+                html += `<button onclick="deleteBook('${object.uuid}')">削除</button>`;
                 html += `</div>`;
             }
             document.getElementById('tab1').innerHTML = html;
         }
 
-        function button1Pressed(uuid) {
-            console.log(uuid)
-            location.href = 'qrcode.html?uuid=' + uuid;
+        async function deleteBook(uuid) {
+            var ok = confirm("本当に削除しますか?");
+            if (!ok) return;
+            var sql = `delete from Books where uuid = "${uuid}"`;
+            var result = await osql.connect(sql);
+            alert("削除しました");
+            location.reload();
         }
 
-        function button2Pressed() {
-            alert('まだ未実装');
+        function button1Pressed(uuid) {
+            location.href = 'qrcode.html?uuid=' + uuid;
         }
 
     </script>

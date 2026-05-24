@@ -135,7 +135,7 @@
                 // copy_no取得
                 var sql3 = `select IFNULL(MAX(copy_no), 0) as max_no from Books where isbn = '${books[i].isbn}'`;
                 var result3 = await osql.connect(sql3);
-                var maxNo = result3[0].max_no;
+                var maxNo = Number(result3[0].max_no);
                 // 冊数分追加
                 for (var j = 0; j < books[i].n; j++) {
                     var copyNo = maxNo + j + 1;
