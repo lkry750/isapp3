@@ -1,104 +1,116 @@
 <!DOCTYPE html>
 
 <html>
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
     <script type="text/javascript" src="js/admin.js"></script>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 
     <script>
-        osql.requireLogin();
+      osql.requireLogin();
 
-        $(document).ready(async function () {
-            await login();
-            await admin();
-            execSelect();
-        });
+      $(document).ready(async function () {
+        await login();
+        await admin();
+        displayBook();
+      });
 
-        async function execSelect() {
-            var uuid = osql.getParam('uuid');
-            var me = await osql.getMe();
-            console.log(uuid);
-            if(!uuid) return;
-
-            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
-            case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
-            then "貸出中" else "在架" end as status
+      async function displayBook() {
+        var sql = `
+            select BookTitle.title, Books.isbn,
+            count(distinct Books.uuid) as total,
+            count(distinct Books.uuid) - count(distinct case when checkoutDate is not null and returnDate is null then Books.uuid
+            end)as stock
             from Books
+            left join Borrowings on Borrowings.uuid = Books.uuid
             left join BookTitle on Books.isbn = BookTitle.isbn
-            left join Borrowings on Books.uuid = Borrowings.uuid
-            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
-            where Books.uuid = '${uuid}';
-            `;
-            var objects = await osql.connect(sql);
-            console.log(objects);
-
-            if (objects.length <= 0) {
-                document.getElementById('result').innerHTML = `<p>本が見つかりません</p>`;
-                return;
-            }
-
-            var html = "";
-            for (var i = 0; i < objects.length; i++) {
-                var object = objects[i];
-
-                html += `<div class="box">`;
-                html += `<div class="book-line">`;
-                html += `<span class="book-title">${object.title}</span>`;
-                html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
-                html += `</div>`;
-
-                html += `<div class="book-line">`;
-
-                if (object.status == "貸出中") {
-                    html += `<span class="status-red">貸出中</span>`;
-                    html += `<span>削除できません</span>`;
-                } else if (object.status == "在架") {
-                    html += `<span class="status-green">在架</span>`;
-                    html += `<button class="checkoutbutton" onclick="deleteBook('${object.uuid}')">削除</button>`;   
-                }
-                html += `</div>`;
-                html += `</div>`;
-            }
-            document.getElementById('result').innerHTML = html;
+            group by Books.isbn, BookTitle.title;
+        `;
+        var objects = await osql.connect(sql);
+        console.log(objects);
+        var html = '';
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
+          html += `<div class="box" onclick="toggleBookDetail('${object.isbn}')">`;
+          html += `<div>${object.title}</div>`;
+          html += `<div>ISBN: ${object.isbn}</div>`;
+          html += `<div>Stock: ${object.stock}/${object.total}</div>`;
+          html += `</div>`;
+          html += `<div id="detail-${object.isbn}"></div>`;
         }
+        document.getElementById('result').innerHTML = html;
+      }
 
-        async function deleteBook(uuid) {
-            if (!confirm('本を削除しますか?')) return;
-            var sql = `
-            delete from Books where uuid = '${uuid}';
-            `;
-            var object = await osql.connect(sql);
-            alert('削除しました');
-            execSelect();
+      async function toggleBookDetail(isbn) {
+        var detail = document.getElementById('detail-' + isbn);
+        if (detail.innerHTML != '') {
+          detail.innerHTML = '';
+          return;
         }
+        var sql = `select uuid, copy_no, created_at, printed_at from Books where isbn = '${isbn}' order by copy_no asc`;
+        var objects = await osql.connect(sql);
+        var html = '';
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
+          var checked = selectedUuids.includes(object.uuid) ? 'checked' : '';
+          html += `<div class="box">`;
+          html += `<label><input type="checkbox" class="book-check" value="${object.uuid}" ${checked} onchange="changeCheck('${object.uuid}', this.checked)">No. ${object.copy_no}</label>`;
+          html += `<div>印刷日: ${object.printed_at == null ? '----------------' : object.printed_at}</div>`;
+          html += `</div>`;
+        }
+        detail.innerHTML = html;
+      }
 
-        function goScan() {
-            sessionStorage.setItem("url", "book_delete.html");
-            location.replace('scan.html');
+      var selectedUuids = [];
+
+      function changeCheck(uuid, checked) {
+        if (checked) {
+          if (!selectedUuids.includes(uuid)) {
+            selectedUuids.push(uuid);
+          }
+        } else {
+          selectedUuids = selectedUuids.filter(function (x) {
+            return x !== uuid;
+          });
         }
+      }
+
+      async function deleteSelectedBooks() {
+        var uuids = selectedUuids;
+        if (uuids.length <= 0) {
+          alert('削除する本を選択してください');
+          return;
+        }
+        var ok = confirm(uuids.length + '冊の本を本当に削除しますか？');
+        if (!ok) return;
+        var sql = '';
+        for (var i = 0; i < uuids.length; i++) {
+          sql += `delete from Books where uuid = '${uuids[i]}';`;
+        }
+        await osql.connect(sql);
+        alert('削除しました');
+        selectedUuids = [];
+        displayBook();
+      }
     </script>
+  </head>
 
-</head>
-
-<body>
+  <body>
     <h1>図書管理システム</h1>
-    <div style="text-align: right;">
-        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-        <a href="javascript:logout()">logout</a>
+    <div style="text-align: right">
+      ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+      <a href="javascript:logout()">logout</a>
     </div>
     <hr>
     <h2>本の削除</h2>
     <hr>
-    <button onclick="goScan()">カメラ起動</button>
-    <p id="result"></p>
-</body>
-
+    <div id="result">読み込み中...</div>
+    <button onclick="deleteSelectedBooks()">選択した本を削除</button>
+  </body>
 </html>
