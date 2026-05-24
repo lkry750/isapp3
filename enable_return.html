@@ -20,11 +20,11 @@
         // 5分間の返却時間を与える
         function enableReturnMode() {
             sessionStorage.setItem('return_expire', Date.now() + 5 * 60 * 1000);
-            document.getElementById('result').innerHTML = '読み取りが完了しました<br>返却ページに遷移します';
+            document.getElementById('result').innerHTML = '読み取りが完了しました';
         }
 
         setTimeout(function () {
-            location.href = 'return.html';
+            location.href = 'index.html';
         },2000);
             
     </script>

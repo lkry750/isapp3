@@ -71,7 +71,7 @@
             await osql.connect(sql);
             await execSelect();
             alert('本を借りました');
-            document.getElementById('uuid').value = '';
+            location.href = 'index.html';
         }
 
         function button2Pressed(id) {
@@ -97,9 +97,6 @@
     <h2>貸出</h2>
     <hr>
     <div>
-        <h3>検索</h3>
-        <button onclick="goScan()">カメラ起動</button>
-        <hr>
         <div id="result"></div>
     </div>
 </body>

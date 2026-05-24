@@ -85,8 +85,8 @@
             var sql = `update Borrowings set returnDate = now() where id = ${id}`;
             await osql.connect(sql);
             await execSelect();
-            await execSelectStatus();
             alert('返却が完了しました');
+            location.href = 'index.html';
         }
 
         function buttonPressed(){
@@ -116,9 +116,6 @@
     <h2>返却</h2>
     <hr>
     <div>
-        <h3>検索</h3>
-        <button onclick="goScan()">カメラ起動</button>
-        <hr>
         <div id="result"></div>
     </div>
 </body>
