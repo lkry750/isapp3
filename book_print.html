@@ -39,7 +39,7 @@
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
           html += `<div class="box" onclick="toggleBookDetail('${object.isbn}')">`;
-          html += `<span id="arrow-${object.isbn}">▶</span>`;
+          html += `<div id="arrow-${object.isbn}">▶</div>`;
           html += `<div>${object.title}</div>`;
           html += `<div>ISBN: ${object.isbn}</div>`;
           html += `<div>Stock: ${object.stock}/${object.total}</div>`;
