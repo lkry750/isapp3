@@ -15,8 +15,22 @@
         osql.requireLogin();
         
         $(document).ready(async function () {
+            display();
             reader();
         });
+
+        function display() {
+            var url = sessionStorage.getItem('url');
+            var text = '';
+            if (url == 'checkout.html') {
+                text = '借りる本のQRを読み込んでください';
+            }else if (url == 'return.html') {
+                text = '返す本のQRを読み込んでください';
+            }else{
+                text = 'ISBNを読み込んでください'
+            }
+            document.getElementById('text').innerHTML = text;
+        }
         
         function reader() {
             var url = sessionStorage.getItem('url');
@@ -75,7 +89,7 @@
 </head>
 
 <body>
-    <h1>QRコード</h1>
+    <h1 id="text"></h1>
     <div id="reader" style="width:300px;"></div>
     <div id="result"></div>
 </body>

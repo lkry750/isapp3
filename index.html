@@ -24,7 +24,7 @@
             var objects = await osql.connect(sql);
             var role = objects[0].role;
             if (role != 'teacher') return;
-            document.getElementById('admin').innerHTML = `<a href="admin.html">管理者向け</a>`;
+            document.getElementById('admin').innerHTML = `<a href="admin.html">管理者画面</a>`;
             document.getElementById('add').innerHTML = `<a href="book_addition.html">本の追加</a>`;
             document.getElementById('print2').innerHTML = `<a href="book_print.html">本の印刷</a>`;
             document.getElementById('del').innerHTML = `<a href="book_delete.html">本の削除</a>`;
@@ -41,11 +41,13 @@
         <a href="javascript:logout()">logout</a>
     </div>
     <hr>
-    <h2>一般向け</h2>
+    <h2>本を利用する</h2>
     <hr>
-    <p><a href="checkout.html">貸出</a></p>
-    <p><a href="return.html">返却</a></p>
-    <p><a href="book_me.html">まいらいぶらり</a></p>
+    <p><a href="checkout.html">本を借りる</a></p>
+    <p><a href="return.html">本を返す</a></p>
+    <p><a href="book_me.html">マイライブラリ</a></p>
+    <hr>
+    <h2>管理する</h2>
     <hr>
     <p id="admin"></p>
     <p id="add"></p>
