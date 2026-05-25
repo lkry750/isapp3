@@ -78,7 +78,7 @@
           html += `<span id="arrow-${object.isbn}">▶</span>`;
           html += `<div>${object.title}</div>`;
           html += `<div>ISBN: ${object.isbn}</div>`;
-          html += `<div>Stock: ${object.stock}/${object.total}</div>`;
+          html += `<div>在庫数: ${object.stock}/${object.total}</div>`;
           html += `</div>`;
           html += `<div id="detail-${object.isbn}"></div>`;
         }
@@ -162,10 +162,9 @@
           var object = objects[i];
           html += `<div class="box">`;
           html += `<div>${object.action}</div>`;
-          html += `<div>Date: ${object.Date}</div>`;
-          html += `<div>タイトル: ${object.title}</div>`;
-          html += `<div>ISBN: ${object.isbn}</div>`;
+          html += `<div>${object.title}</div>`;
           html += `<div>${object.userid} (${object.role})</div>`;
+          html += `<div>日付: ${object.Date}</div>`;
           html += `</div>`;
         }
         document.getElementById('tab4').innerHTML = html;
