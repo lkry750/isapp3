@@ -22,7 +22,7 @@
       async function execSelectStatus() {
         var me = await osql.getMe();
         var sql = `
-            select Borrowings.id, title, userid, role, checkoutDate from Books
+            select Borrowings.id, title, copy_no, userid, role, checkoutDate from Books
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Borrowings on Borrowings.uuid = Books.uuid
             left join Users on Users.id = Borrowings.userid
@@ -31,30 +31,36 @@
         var objects = await osql.connect(sql);
         console.log(objects);
         if (objects.length == 0){
-          document.getElementById('book').innerHTML = "借りている本はありません";
+          document.getElementById('book').innerHTML = '<div class="empty-message">借りている本はありません</div>';
           return;
         }
         var html = '';
+        html += `<div class="admin-row my-library-row admin-header">`;
+        html += `<div>本の名前</div>`;
+        html += `<div>番号</div>`;
+        html += `<div>借りた日</div>`;
+        html += `</div>`;
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
-          html += `<div class="box">`;
-          html += `<div>${object.title}</div>`;
-          html += `<div>借りた日: ${object.checkoutDate}</div>`;
+          html += `<div class="admin-row my-library-row">`;
+          html += `<div class="admin-cell-title">${object.title}</div>`;
+          html += `<div class="admin-cell-muted">No. ${object.copy_no}</div>`;
+          html += `<div class="admin-cell-muted">${object.checkoutDate}</div>`;
           html += `</div>`;
         }
-        document.getElementById('book').innerHTML = html;
+        document.getElementById('book').innerHTML = `<div class="admin-list">${html}</div>`;
       }
     </script>
   </head>
 
   <body>
     <h1>図書管理システム</h1>
-    <div style="text-align: right">
+    <div class="user-bar">
       ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
       <a href="javascript:logout()">logout</a>
     </div>
     <hr />
-    <h2>まいらいぶらり</h2>
+    <h2>マイライブラリ</h2>
     <hr />
     <div id="book"></div>
   </body>

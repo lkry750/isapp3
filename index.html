@@ -10,6 +10,8 @@
     <script type="text/javascript" src="lib/osql.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
 
+    <link rel="stylesheet" href="style.css">
+
     <script>
         osql.requireLogin();
 
@@ -24,6 +26,8 @@
             var objects = await osql.connect(sql);
             var role = objects[0].role;
             if (role != 'teacher') return;
+            document.getElementById('adminSeparator').style.display = 'block';
+            document.getElementById('adminHeading').style.display = 'block';
             document.getElementById('admin').innerHTML = `<a href="admin.html">管理者画面</a>`;
             document.getElementById('add').innerHTML = `<a href="book_addition.html">本の追加</a>`;
             document.getElementById('print2').innerHTML = `<a href="book_print.html">本の印刷</a>`;
@@ -36,24 +40,30 @@
 
 <body>
     <h1>図書管理システム</h1>
-    <div style="text-align: right;">
+    <div class="user-bar">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="javascript:logout()">logout</a>
     </div>
     <hr>
     <h2>本を利用する</h2>
     <hr>
-    <p><a href="checkout.html">本を借りる</a></p>
-    <p><a href="return.html">本を返す</a></p>
-    <p><a href="book_me.html">マイライブラリ</a></p>
-    <hr>
-    <h2>管理する</h2>
-    <hr>
-    <p id="admin"></p>
-    <p id="add"></p>
-    <p id="print2"></p>
-    <p id="del"></p>
-    <p id="qr"></p>
+    <div class="top-menu">
+        <p><a href="checkout.html">本を借りる</a></p>
+        <p><a href="return.html">本を返す</a></p>
+        <p><a href="book_me.html">マイライブラリ</a></p>
+    </div>
+    <hr id="adminSeparator" style="display: none;">
+    <div id="adminHeading" style="display: none;">
+        <h2>管理する</h2>
+        <hr>
+    </div>
+    <div class="admin-menu">
+        <p id="admin"></p>
+        <p id="add"></p>
+        <p id="print2"></p>
+        <p id="del"></p>
+        <p id="qr"></p>
+    </div>
 </body>
 
 </html>

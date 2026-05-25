@@ -108,15 +108,16 @@
 
 <body>
     <h1>図書管理システム</h1>
-    <div style="text-align: right;">
+    <div class="user-bar">
         ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
         <a href="javascript:logout()">logout</a>
     </div>
     <hr>
     <h2>本を返す</h2>
     <hr>
-    <button onclick="goScan()">QRを読み取る</button>
-    <br>
+    <div class="action-panel">
+        <button onclick="goScan()">QRを読み取る</button>
+    </div>
     <div>
         <div id="result"></div>
     </div>

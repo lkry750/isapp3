@@ -41,21 +41,28 @@
 
       // 1つ目のタブ
       async function displayUser() {
-        var sql = `select id, role from Users`;
+        var sql = `select id, fname, lname, role from Users`;
         var objects = await osql.connect(sql);
         console.log(objects);
         var html = '';
+        html += `<div class="admin-row admin-user-row admin-header">`;
+        html += `<div>ユーザ</div>`;
+        html += `<div>メールアドレス</div>`;
+        html += `<div>権限</div>`;
+        html += `</div>`;
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
-          html += `<div class="box">`;
-          html += `<div>${object.id}</div>`;
+          var name = `${object.fname || ''} ${object.lname || ''}`.trim();
+          html += `<div class="admin-row admin-user-row">`;
+          html += `<div class="admin-cell-title">${name}</div>`;
+          html += `<div class="admin-cell-muted">${object.id}</div>`;
           html += `<select onchange="userChange('${object.id}', this.value)">`;
           html += `<option value="student" ${object.role === 'student' ? 'selected' : ''}>student</option>`;
           html += `<option value="teacher" ${object.role === 'teacher' ? 'selected' : ''}>teacher</option>`;
           html += `</select>`;
           html += `</div>`;
         }
-        document.getElementById('tab1').innerHTML = html;
+        document.getElementById('tab1').innerHTML = `<div class="admin-list">${html}</div>`;
       }
 
       // 2つ目のタブ
@@ -72,17 +79,23 @@
         var objects = await osql.connect(sql);
         console.log(objects);
         var html = '';
+        html += `<div class="admin-row admin-book-row admin-header">`;
+        html += `<div></div>`;
+        html += `<div>本の名前</div>`;
+        html += `<div>ISBN</div>`;
+        html += `<div>在庫数</div>`;
+        html += `</div>`;
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
-          html += `<div class="box" onclick="toggleBookDetail('${object.isbn}')">`;
+          html += `<div class="admin-row admin-book-row admin-row--button" onclick="toggleBookDetail('${object.isbn}')">`;
           html += `<div id="arrow-${object.isbn}">▶</div>`;
-          html += `<div>${object.title}</div>`;
-          html += `<div>ISBN: ${object.isbn}</div>`;
-          html += `<div>在庫数: ${object.stock}/${object.total}</div>`;
+          html += `<div class="admin-cell-title">${object.title}</div>`;
+          html += `<div class="admin-cell-muted">${object.isbn}</div>`;
+          html += `<div class="admin-cell-stock">${object.stock}/${object.total}</div>`;
           html += `</div>`;
           html += `<div id="detail-${object.isbn}"></div>`;
         }
-        document.getElementById('tab2').innerHTML = html;
+        document.getElementById('tab2').innerHTML = `<div class="admin-list">${html}</div>`;
       }
 
       async function toggleBookDetail(isbn) {
@@ -93,19 +106,30 @@
           arrow.innerHTML = '▶';
           return;
         }
-        var sql = `select uuid, copy_no, created_at from Books where isbn = '${isbn}' order by copy_no`;
+        var sql = `
+          select Books.uuid, copy_no, created_at,
+          case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
+          then "貸出中" else "在架" end as status
+          from Books
+          left join Borrowings on Books.uuid = Borrowings.uuid
+          and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
+          where isbn = '${isbn}'
+          order by copy_no;
+        `;
         var objects = await osql.connect(sql);
         var html = '';
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
-          html += `<div class="box">`;
+          html += `<div class="admin-detail-row">`;
+          html += `<input type="checkbox" />`;
           html += `<div>No. ${object.copy_no}</div>`;
-          html += `<div>追加日: ${object.created_at}</div>`;
-          html += `<button onclick="button1Pressed('${object.uuid}')">QR</button>`;
+          html += `<div class="${object.status === '在架' ? 'status-green' : 'status-red'}">${object.status}</div>`;
+          html += `<div class="admin-cell-muted">追加日: ${object.created_at}</div>`;
+          html += `<button class="small-button" onclick="button1Pressed('${object.uuid}')">QR</button>`;
           html += `</div>`;
         }
         arrow.innerHTML = '▼';
-        detail.innerHTML = html;
+        detail.innerHTML = `<div class="admin-detail">${html}</div>`;
       }
 
       function button1Pressed(uuid) {
@@ -115,7 +139,7 @@
       // 3つ目のタブ
       async function displayCheckout() {
         var sql = `
-            select title, userid, role, checkoutDate from Books
+            select title, copy_no, fname, lname, userid, role, checkoutDate from Books
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Borrowings on Borrowings.uuid = Books.uuid
             left join Users on Users.id = Borrowings.userid
@@ -124,30 +148,40 @@
         var objects = await osql.connect(sql);
         console.log(objects);
         if (objects.length <= 0) {
-          document.getElementById('tab3').innerHTML = '借りている人はいません';
+          document.getElementById('tab3').innerHTML = '<div class="empty-message">借りている人はいません</div>';
           return;
         }
         var html = '';
+        html += `<div class="admin-row admin-log-row admin-header">`;
+        html += `<div>状態</div>`;
+        html += `<div>本の名前</div>`;
+        html += `<div>番号</div>`;
+        html += `<div>利用者</div>`;
+        html += `<div>借りた日</div>`;
+        html += `</div>`;
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
-          html += `<div class="box">`;
-          html += `<div>${object.title}</div>`;
-          html += `<div>${object.userid} (${object.role})</div>`;
-          html += `<div>借りた日: ${object.checkoutDate}</div>`;
+          var name = `${object.fname || ''} ${object.lname || ''}`.trim();
+          html += `<div class="admin-row admin-log-row">`;
+          html += `<div class="status-red">貸出中</div>`;
+          html += `<div class="admin-cell-title">${object.title}</div>`;
+          html += `<div class="admin-cell-muted">No. ${object.copy_no}</div>`;
+          html += `<div>${name}</div>`;
+          html += `<div class="admin-cell-muted">${object.checkoutDate}</div>`;
           html += `</div>`;
         }
-        document.getElementById('tab3').innerHTML = html;
+        document.getElementById('tab3').innerHTML = `<div class="admin-list">${html}</div>`;
       }
 
       // 4つ目のタブ
       async function displayLog() {
         var sql = `
-            select checkoutDate as Date, Books.isbn, title, userid, role, '貸出' as action from Borrowings
+            select checkoutDate as Date, Books.isbn, copy_no, title, userid, fname, lname, role, '貸出' as action from Borrowings
             left join Books on Borrowings.uuid = Books.uuid
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Users on Borrowings.userid = Users.id
             union all
-            select returnDate as Date, Books.isbn, title, userid, role, '返却' as action from Borrowings
+            select returnDate as Date, Books.isbn, copy_no, title, userid, fname, lname, role, '返却' as action from Borrowings
             left join Books on Borrowings.uuid = Books.uuid
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Users on Borrowings.userid = Users.id
@@ -158,22 +192,31 @@
         var objects = await osql.connect(sql);
         console.log(objects);
         var html = '';
+        html += `<div class="admin-row admin-log-row admin-header">`;
+        html += `<div>操作</div>`;
+        html += `<div>本の名前</div>`;
+        html += `<div>番号</div>`;
+        html += `<div>利用者</div>`;
+        html += `<div>日付</div>`;
+        html += `</div>`;
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
-          html += `<div class="box">`;
+          var name = `${object.fname || ''} ${object.lname || ''}`.trim();
+          html += `<div class="admin-row admin-log-row">`;
           html += `<div>${object.action}</div>`;
-          html += `<div>${object.title}</div>`;
-          html += `<div>${object.userid} (${object.role})</div>`;
-          html += `<div>日付: ${object.Date}</div>`;
+          html += `<div class="admin-cell-title">${object.title}</div>`;
+          html += `<div class="admin-cell-muted">No. ${object.copy_no}</div>`;
+          html += `<div>${name}</div>`;
+          html += `<div class="admin-cell-muted">${object.Date}</div>`;
           html += `</div>`;
         }
-        document.getElementById('tab4').innerHTML = html;
+        document.getElementById('tab4').innerHTML = `<div class="admin-list">${html}</div>`;
       }
 
       async function userChange(userid, role) {
         var sql = `update Users set role = "${role}" where id = "${userid}";`;
         await osql.connect(sql);
-        alert('変更');
+        alert('権限を変更しました');
       }
 
     </script>
@@ -181,21 +224,21 @@
 
   <body>
     <h1>図書管理システム</h1>
-    <div style="text-align: right">
+    <div class="user-bar">
       ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
       <a href="javascript:logout()">logout</a>
     </div>
     <hr />
-    <h2>管理者向け</h2>
+    <h2>管理者パネル</h2>
     <hr />
     <div class="tab-switch">
       <label><input type="radio" name="tab" onclick="showTab(1)" />ユーザ管理</label>
       <div class="tab-content" id="tab1">読み込み中です．．．．．．</div>
 
-      <label><input type="radio" name="tab" onclick="showTab(2)" checked />本管理</label>
+      <label><input type="radio" name="tab" onclick="showTab(2)" checked />在庫確認</label>
       <div class="tab-content" id="tab2">読み込み中です．．．．．．</div>
 
-      <label><input type="radio" name="tab" onclick="showTab(3)" />貸本管理</label>
+      <label><input type="radio" name="tab" onclick="showTab(3)" />貸出状況</label>
       <div class="tab-content" id="tab3">読み込み中です．．．．．．</div>
 
       <label><input type="radio" name="tab" onclick="showTab(4)" />履歴</label>
