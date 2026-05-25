@@ -334,7 +334,7 @@ input {
 
 .admin-detail-row {
   display: grid;
-  grid-template-columns: 44px minmax(76px, 0.45fr) minmax(64px, 0.4fr) minmax(160px, 1fr) auto;
+  grid-template-columns: 100px minmax(76px, 0.45fr) minmax(64px, 0.4fr) minmax(160px, 1fr) auto;
   gap: 12px;
   align-items: center;
   padding: 10px 14px;
