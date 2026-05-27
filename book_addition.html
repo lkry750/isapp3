@@ -1,90 +1,89 @@
 <!DOCTYPE html>
 
 <html>
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
     <script type="text/javascript" src="js/admin.js"></script>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 
     <script>
-        osql.requireLogin();
+      osql.requireLogin();
 
-        $(document).ready(async function () {
-            await login();
-            await admin();
-            var isbn = osql.getParam('isbn');
-            if (isbn != null) {
-                await addBook(isbn);
-                // リロード防止
-                history.replaceState(null,null,"book_addition.html");
-            }
-            displayBookList();
-        });
-
-        // books取得
-        function getBookList() {
-            var books = sessionStorage.getItem('books');
-            if (books == null) return [];
-            return JSON.parse(books);
+      $(document).ready(async function () {
+        await login();
+        await admin();
+        var isbn = osql.getParam('isbn');
+        if (isbn != null) {
+          await addBook(isbn);
+          // リロード防止
+          history.replaceState(null, null, 'book_addition.html');
         }
+        displayBookList();
+      });
 
-        // books保存
-        function setBookList(books) {
-            sessionStorage.setItem('books',JSON.stringify(books));
-        }
+      // books取得
+      function getBookList() {
+        var books = sessionStorage.getItem('books');
+        if (books == null) return [];
+        return JSON.parse(books);
+      }
 
-        // 本追加
-        async function addBook(isbn) {
-            if (isbn.length != 13) return;
-            var books = getBookList();
-            for (var i=0;i<books.length;i++){
-                if (books[i].isbn == isbn) {
-                    books[i].n++;
-                    setBookList(books);
-                    return;
-                }
-            }
-            var title = await getTitle(isbn);
-            books.push({
-                isbn: isbn,
-                title: title,
-                n: 1
-            });
+      // books保存
+      function setBookList(books) {
+        sessionStorage.setItem('books', JSON.stringify(books));
+      }
+
+      // 本追加
+      async function addBook(isbn) {
+        if (isbn.length != 13) return;
+        var books = getBookList();
+        for (var i = 0; i < books.length; i++) {
+          if (books[i].isbn == isbn) {
+            books[i].n++;
             setBookList(books);
+            return;
+          }
         }
+        var title = await getTitle(isbn);
+        books.push({
+          isbn: isbn,
+          title: title,
+          n: 1,
+        });
+        setBookList(books);
+      }
 
-        // タイトル取得
-        async function getTitle(isbn) {
-            var sql = `select title from BookTitle where isbn = "${isbn}"`;
-            var object = await osql.connect(sql);
-            if (object.length > 0) {
-                return object[0].title;
-            }
-            var url = "https://api.openbd.jp/v1/get?isbn=" + isbn;
-            var data = await $.getJSON(url);
-            if (!data[0]) {
-                return "取得できませんでした";
-            }
-            return data[0].summary.title;
+      // タイトル取得
+      async function getTitle(isbn) {
+        var sql = `select title from BookTitle where isbn = "${isbn}"`;
+        var object = await osql.connect(sql);
+        if (object.length > 0) {
+          return object[0].title;
         }
+        var url = 'https://api.openbd.jp/v1/get?isbn=' + isbn;
+        var data = await $.getJSON(url);
+        if (!data[0]) {
+          return '取得できませんでした';
+        }
+        return data[0].summary.title;
+      }
 
-        // テーブル表示
-        function displayBookList() {
-            var books = getBookList();
-            if (books.length <= 0){
-                document.getElementById('booklist').innerHTML = "";
-                return;
-            }
-            var html = `<table border="1">`;
-            for (var i=0;i<books.length;i++){
-                html += `
+      // テーブル表示
+      function displayBookList() {
+        var books = getBookList();
+        if (books.length <= 0) {
+          document.getElementById('booklist').innerHTML = '';
+          return;
+        }
+        var html = `<table border="1">`;
+        for (var i = 0; i < books.length; i++) {
+          html += `
                 <tr>
                 <td>${books[i].isbn}</td>
                 <td>${books[i].title}</td>
@@ -92,86 +91,115 @@
                 <td><button onclick="removeBook(${i})">削除</button></td>
                 </tr>
                 `;
-            }
-            html += `</table>`;
-            document.getElementById('booklist').innerHTML = html;
         }
+        html += `</table>`;
+        document.getElementById('booklist').innerHTML = html;
+      }
 
-        // 冊数変更
-        function changeBookCount(index, value) {
-            var books = getBookList();
-            value = Number(value);
-            if (!Number.isInteger(value) || value <= 0){
-                value = 1;
-            }
-            books[index].n = value;
-            setBookList(books);
-            displayBookList();
+      // 冊数変更
+      function changeBookCount(index, value) {
+        var books = getBookList();
+        value = Number(value);
+        if (!Number.isInteger(value) || value <= 0) {
+          value = 1;
         }
+        books[index].n = value;
+        setBookList(books);
+        displayBookList();
+      }
 
-        // 本削除
-        function removeBook(index) {
-            var books = getBookList();
-            books.splice(index, 1);
-            setBookList(books);
-            displayBookList();
+      // 本削除
+      function removeBook(index) {
+        var books = getBookList();
+        books.splice(index, 1);
+        setBookList(books);
+        displayBookList();
+      }
+
+      // 本追加
+      async function execInsert() {
+        var books = getBookList();
+        if (books.length <= 0) {
+          alert('本がありません');
+          return;
         }
-
-        // 本追加
-        async function execInsert() {
-            var books = getBookList();
-            if (books.length <= 0){
-                alert('本がありません');
-                return;
-            }
-            for (var i=0;i<books.length;i++){
-                // 登録されているか確認
-                var sql1 = `select isbn from BookTitle where isbn = "${books[i].isbn}"`;
-                var result = await osql.connect(sql1);
-                if (result.length == 0) {
-                    var sql2 = `insert into BookTitle (isbn, title) values ("${books[i].isbn}", "${books[i].title}")`;
-                    await osql.connect(sql2);
-                }
-                // copy_no取得
-                var sql3 = `select IFNULL(MAX(copy_no), 0) as max_no from Books where isbn = '${books[i].isbn}'`;
-                var result3 = await osql.connect(sql3);
-                var maxNo = Number(result3[0].max_no);
-                // 冊数分追加
-                for (var j = 0; j < books[i].n; j++) {
-                    var copyNo = maxNo + j + 1;
-                    var sql4 = `
-                        insert into Books (uuid, isbn, copy_no, created_at)
-                        values (uuid(), '${books[i].isbn}', ${copyNo}, now())
-                    `;
-                    await osql.connect(sql4);
-                }
-            }
-            alert('登録しました');
-            sessionStorage.removeItem('books');
-            displayBookList();
+        for (var i = 0; i < books.length; i++) {
+          // 登録されているか確認
+          var sql1 = `select isbn from BookTitle where isbn = "${books[i].isbn}"`;
+          var result = await osql.connect(sql1);
+          if (result.length == 0) {
+            var sql2 = `insert into BookTitle (isbn, title) values ("${books[i].isbn}", "${books[i].title}")`;
+            await osql.connect(sql2);
+          }
+          // copy_no取得
+          var sql3 = `select IFNULL(MAX(copy_no), 0) as max_no from Books where isbn = '${books[i].isbn}'`;
+          var result3 = await osql.connect(sql3);
+          var maxNo = Number(result3[0].max_no);
+          // 冊数分追加
+          for (var j = 0; j < books[i].n; j++) {
+            var copyNo = maxNo + j + 1;
+            var uuid = crypto.randomUUID();
+            // tinyurl登録
+            var longUrl =
+              'https://mindcode.si.aoyama.ac.jp/' +
+              'user_projects/' +
+              'a8124018%40gsuite.si.aoyama.ac.jp/' +
+              'f0848f6e-c797-41a5-a63f-aad2421ea462/' +
+              `router.html?uuid=${uuid}`;
+            var shortUrl = await createTinyUrl(longUrl, uuid);
+            // データベース登録
+            var sql4 = `
+                    insert into Books (uuid, isbn, copy_no, created_at)
+                    values ('${uuid}', '${books[i].isbn}', ${copyNo}, now())
+                `;
+            await osql.connect(sql4);
+          }
         }
+        alert('登録しました');
+        sessionStorage.removeItem('books');
+        displayBookList();
+      }
 
-        function goScan() {
-            sessionStorage.setItem("url", "book_addition.html");
-            location.replace('scan.html');
-        }
+      // tinyurl追加api
+      async function createTinyUrl(longUrl, alias) {
+        var response = await fetch('https://api.tinyurl.com/create', {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer g7tFcMGR2UvLyH7CzaXad3XBHejebVEzY93Ir9PGuOrBFKI6tLAtxQVPio7O',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            url: longUrl,
+            domain: 'tinyurl.com',
+            alias: alias,
+          }),
+        });
 
+        var data = await response.json();
+
+        console.log(data);
+
+        return data.data.tiny_url;
+      }
+
+      function goScan() {
+        sessionStorage.setItem('url', 'book_addition.html');
+        location.replace('scan.html');
+      }
     </script>
+  </head>
 
-</head>
-
-<body>
+  <body>
     <h1>図書管理システム</h1>
-    <div style="text-align: right;">
-        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-        <a href="javascript:logout()">logout</a>
+    <div style="text-align: right">
+      ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+      <a href="javascript:logout()">logout</a>
     </div>
-    <hr>
+    <hr />
     <h2>本の追加</h2>
-    <hr>
+    <hr />
     <button onclick="goScan()">ISBNを読み取る</button>
     <div id="booklist"></div>
     <button onclick="execInsert()">選択した本を追加する</button>
-</body>
-
+  </body>
 </html>
