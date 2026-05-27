@@ -139,6 +139,7 @@
           for (var j = 0; j < books[i].n; j++) {
             var copyNo = maxNo + j + 1;
             var uuid = crypto.randomUUID();
+            var tinyid = `${books[i].isbn}-${copyNo}`;
             // tinyurl登録
             var longUrl =
               'https://mindcode.si.aoyama.ac.jp/' +
@@ -146,7 +147,8 @@
               'a8124018%40gsuite.si.aoyama.ac.jp/' +
               'f0848f6e-c797-41a5-a63f-aad2421ea462/' +
               `router.html?uuid=${uuid}`;
-            var shortUrl = await createTinyUrl(longUrl, uuid);
+            var shortUrl = await createTinyUrl(longUrl, tinyid);
+            if (shortUrl == null) return;
             // データベース登録
             var sql4 = `
                     insert into Books (uuid, isbn, copy_no, created_at)
@@ -174,11 +176,12 @@
             alias: alias,
           }),
         });
-
         var data = await response.json();
-
         console.log(data);
-
+        if (!response.ok) {
+          alert(data.errors.join('\n'));
+          return null;
+        }
         return data.data.tiny_url;
       }
 
