@@ -22,19 +22,21 @@
         // 5分間の返却時間を与える
         function enableReturnMode() {
             sessionStorage.setItem('return_expire', Date.now() + 5 * 60 * 1000);
-            document.getElementById('result').innerHTML = '返却が可能になりました<br>5分以内に返す本のQRコードを読み取ってください';
+            document.getElementById('result').innerHTML = '今から5分間,返却が可能になりました<br>'
+                                                        + 'このままお待ちください';
         }
 
         setTimeout(function () {
             location.href = 'index.html';
-        },2000);
+        },3000);
             
     </script>
 
 </head>
 
 <body>
+    <h2>返却できます!</h2>
     <div id="result" class="empty-message"></div>
-  </body>
+</body>
 
 </html>
