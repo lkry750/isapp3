@@ -23,14 +23,14 @@
         async function qrcode() {
             var uuid = osql.getParam('uuid');
             // tinyurlの処理
-            // var url = await tinyurl(uuid);
+            var url = await tinyurl(uuid);
             // QRが小さくなって読めない,要検討
-            var url =
-            'https://mindcode.si.aoyama.ac.jp/' +
-            'user_projects/' +
-            'a8124018%40gsuite.si.aoyama.ac.jp/' +
-            'f0848f6e-c797-41a5-a63f-aad2421ea462/' +
-            `router.html?uuid=${uuid}`;
+            // var url =
+            // 'https://mindcode.si.aoyama.ac.jp/' +
+            // 'user_projects/' +
+            // 'a8124018%40gsuite.si.aoyama.ac.jp/' +
+            // 'f0848f6e-c797-41a5-a63f-aad2421ea462/' +
+            // `router.html?uuid=${uuid}`;
             $('#qrcode').qrcode({
                 text: url,
                 width: 500,
