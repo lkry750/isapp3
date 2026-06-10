@@ -106,6 +106,18 @@ input {
   font-weight: 700;
 }
 
+.book-status-line {
+  align-items: center;
+  gap: 10px;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.book-status-description {
+  font-weight: 500;
+  color: #1f2937;
+}
+
 .book-status {
   width: 50px;
   text-align: center;

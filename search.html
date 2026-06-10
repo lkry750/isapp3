@@ -50,13 +50,15 @@
                 html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
                 html += `</div>`;
 
-                html += `<div class="book-line">`;
+                html += `<div class="book-line book-status-line">`;
 
                 html += object.status == "貸出中"
                 ? `<span class="status-red">貸出中</span>` : `<span class="status-green">在架</span>`;
 
+                html += `<span class="book-status-description">`;
                 html += object.id == null
                 ? '誰も利用していない本です' : `${object.fname} ${object.lname} さんが利用中です`;
+                html += `</span>`;
 
                 html += `</div>`;
                 html += `</div>`;
