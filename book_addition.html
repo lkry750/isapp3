@@ -136,53 +136,20 @@
           var result3 = await osql.connect(sql3);
           var maxNo = Number(result3[0].max_no);
           // 冊数分追加
+          var values = [];
           for (var j = 0; j < books[i].n; j++) {
             var copyNo = maxNo + j + 1;
             var uuid = crypto.randomUUID();
-            var tinyid = `${books[i].isbn}-${copyNo}`;
-            // tinyurl登録
-            var longUrl =
-              'https://mindcode.si.aoyama.ac.jp/' +
-              'user_projects/' +
-              'a8124018%40gsuite.si.aoyama.ac.jp/' +
-              'f0848f6e-c797-41a5-a63f-aad2421ea462/' +
-              `router.html?uuid=${uuid}`;
-            var shortUrl = await createTinyUrl(longUrl, tinyid);
-            if (shortUrl == null) return;
-            // データベース登録
-            var sql4 = `
-                    insert into Books (uuid, isbn, copy_no, created_at)
-                    values ('${uuid}', '${books[i].isbn}', ${copyNo}, now())
-                `;
-            await osql.connect(sql4);
+            values.push(`("${uuid}", "${books[i].isbn}", ${copyNo}, now())`);
           }
+          // // データベース登録
+          var sql4 = `insert into Books (uuid, isbn, copy_no, created_at)
+                      values  ${values.join(',')}`;
+          await osql.connect(sql4);
         }
         alert('登録しました');
         sessionStorage.removeItem('books');
         displayBookList();
-      }
-
-      // tinyurl追加api
-      async function createTinyUrl(longUrl, alias) {
-        var response = await fetch('https://api.tinyurl.com/create', {
-          method: 'POST',
-          headers: {
-            Authorization: 'Bearer g7tFcMGR2UvLyH7CzaXad3XBHejebVEzY93Ir9PGuOrBFKI6tLAtxQVPio7O',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            url: longUrl,
-            domain: 'tinyurl.com',
-            alias: alias,
-          }),
-        });
-        var data = await response.json();
-        console.log(data);
-        if (!response.ok) {
-          alert(data.errors.join('\n'));
-          return null;
-        }
-        return data.data.tiny_url;
       }
 
       function goScan() {
