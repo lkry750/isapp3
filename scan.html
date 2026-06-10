@@ -57,7 +57,7 @@
           //読み取り成功時の処理
           (decodedText) => {
             //isbnとQRコードで分岐
-
+            console.log(decodedText);
             //正規表現というらしい
             if (/^(97[89])\d{10}$/.test(decodedText)) {
               //isbnの処理
@@ -66,19 +66,9 @@
 
               html5QrCode.stop();
               location.replace(url + '?isbn=' + isbn);
-            } else if (/^https?:\/\/.+/i.test(decodedText)) {
+            } else {
               html5QrCode.stop();
-              if (decodedText.includes('tinyurl.com/')) {
-                location.replace(decodedText);
-                return;
-              }
-              //uuidの処理
-              if (decodedText.includes('uuid=')) {
-                var uuid = decodedText.split('uuid=')[1].split('&')[0];
-                location.replace(url + '?uuid=' + uuid);
-                return;
-              }
-              alert("対応していないURLです");
+              location.replace(url + '?uuid=' + decodedText);
             }
           }
           // 読み取り失敗時の処理
