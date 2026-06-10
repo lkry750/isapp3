@@ -23,7 +23,7 @@
         async function qrcode() {
             var uuid = osql.getParam('uuid');
             // tinyurlの処理
-            var url = await tinyurl(uuid);
+            //var url = await tinyurl(uuid);
             // QRが小さくなって読めない,要検討
             // var url =
             // 'https://mindcode.si.aoyama.ac.jp/' +
@@ -32,18 +32,18 @@
             // 'f0848f6e-c797-41a5-a63f-aad2421ea462/' +
             // `router.html?uuid=${uuid}`;
             $('#qrcode').qrcode({
-                text: url,
+                text: uuid,
                 width: 500,
                 height: 500
             });
         }
 
-        async function tinyurl(uuid) {
-            var sql = `select isbn, copy_no from Books where uuid = '${uuid}'`;
-            var objects = await osql.connect(sql);
-            var object = objects[0];
-            return `https://tinyurl.com/${object.isbn}-${object.copy_no}`;
-        }
+        // async function tinyurl(uuid) {
+        //     var sql = `select isbn, copy_no from Books where uuid = '${uuid}'`;
+        //     var objects = await osql.connect(sql);
+        //     var object = objects[0];
+        //     return `https://tinyurl.com/${object.isbn}-${object.copy_no}`;
+        // }
 
         async function displayTitle() {
             var uuid = osql.getParam('uuid');

@@ -103,7 +103,7 @@
         for (var i = 0; i < uuids.length; i++) {
           var uuid = uuids[i];
           // tinyurlの処理
-          var url = await tinyurl(uuid);
+          //var url = await tinyurl(uuid);
           // QRが小さくなって読めない,要検討
           // var url =
           // 'https://mindcode.si.aoyama.ac.jp/' +
@@ -113,7 +113,7 @@
           // `router.html?uuid=${uuid}`;
 
           $(`#qr-${uuid}`).qrcode({
-            text: url,
+            text: uuid,
             width: 380,
             height: 380,
           });
