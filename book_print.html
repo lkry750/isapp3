@@ -66,8 +66,10 @@
           html += `<div class="admin-detail-row">`;
           html += `<input type="checkbox" class="book-check" value="${object.uuid}" ${checked} onchange="changeCheck('${object.uuid}', this.checked)">`;
           html += `<div>No. ${object.copy_no}</div>`;
-          html += `<div class="admin-cell-muted">追加日: ${object.created_at == null ? '----------------' : object.created_at}</div>`;
-          html += `<div class="admin-cell-muted printed-date">印刷日: ${object.printed_at == null ? '未印刷' : object.printed_at}</div>`;
+          html += `<div class="admin-detail-dates">`;
+          html += `<span>追加日: ${object.created_at == null ? '----------------' : object.created_at}</span>`;
+          html += `<span>印刷日: ${object.printed_at == null ? '未印刷' : object.printed_at}</span>`;
+          html += `</div>`;
           html += `</div>`;
         }
         detail.innerHTML = `<div class="admin-detail">${html}</div>`;
