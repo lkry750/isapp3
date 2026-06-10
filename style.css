@@ -8,7 +8,12 @@ body {
   padding: 18px 18px 40px;
   color: #1f2937;
   background: #ffffff;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   line-height: 1.6;
 }
 
@@ -201,10 +206,20 @@ input {
   .no-print {
     display: none;
   }
-}
 
-.qr-box:not(:last-child) {
-  break-after: page;
+  .qr-box {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .lab {
+    font-size: 48px;
+    font-weight: bold;
+  }
+
+  .qr-box:not(:last-child) {
+    break-after: page;
+  }
 }
 
 .page-header {
@@ -264,7 +279,7 @@ input {
 
 .top-menu a::after,
 .admin-menu a::after {
-  content: ">";
+  content: '>';
   float: right;
   color: #64748b;
 }
@@ -383,7 +398,7 @@ input {
   border-top: 0;
 }
 
-.admin-detail-row input[type="checkbox"] {
+.admin-detail-row input[type='checkbox'] {
   min-height: auto;
   width: 18px;
   height: 18px;
@@ -403,7 +418,10 @@ input {
 }
 
 .admin-log-row {
-  grid-template-columns: 80px minmax(160px, 1.4fr) minmax(56px, 0.35fr) minmax(120px, 1fr) minmax(140px, 1fr);
+  grid-template-columns: 80px minmax(160px, 1.4fr) minmax(56px, 0.35fr) minmax(120px, 1fr) minmax(
+      140px,
+      1fr
+    );
 }
 
 .my-library-row {
