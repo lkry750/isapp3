@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <script type="text/javascript" src="lib/osql.js"></script>
+  <script type="text/javascript" src="js/login.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script>
+    osql.requireLogin();
+
+        $(document).ready(async function () {
+            await login();
+            await execSelect();
+        });
+
+        async function execSelect() {
+            var uuid = osql.getParam('uuid');
+            var me = await osql.getMe();
+            console.log(uuid);
+            if(!uuid) return;
+
+            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
+            Users.fname, Users.lname, Users.id,
+            case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
+            then "貸出中" else "在架" end as status
+            from Books
+            left join BookTitle on Books.isbn = BookTitle.isbn
+            left join Borrowings on Books.uuid = Borrowings.uuid
+            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
+            left join Users on Borrowings.userid = Users.id
+            where Books.uuid = '${uuid}';
+            `;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+
+            var html = "";
+            for (var i = 0; i < objects.length; i++) {
+                var object = objects[i];
+
+                html += `<div class="box">`;
+                html += `<div class="book-line">`;
+                html += `<span class="book-title">${object.title}</span>`;
+                html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
+                html += `</div>`;
+
+                html += `<div class="book-line">`;
+
+                html += object.status == "貸出中"
+                ? `<span class="status-red">貸出中</span>` : `<span class="status-green">在架</span>`;
+
+                html += object.id == null
+                ? '誰も利用していない本です' : `${object.fname} ${object.lname} さんが利用中です`;
+
+                html += `</div>`;
+                html += `</div>`;
+            }
+            document.getElementById('result').innerHTML = html;
+        }
+
+        async function execInsert(id) {
+            var me = await osql.getMe();
+
+            var sql = `insert into Borrowings (uuid, userid, checkoutDate) values ('${id}', '${me.id}', now())`;
+            await osql.connect(sql);
+            await execSelect();
+            alert('本を借りました');
+        }
+
+        function button2Pressed(id) {
+            execInsert(id);
+        }
+
+        function goScan() {
+            sessionStorage.setItem("url", "search.html");
+            location.replace('scan.html');
+        }
+
+  </script>
+
+</head>
+
+<body>
+  <h1>図書管理システム</h1>
+  <div class="user-bar">
+    ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+    <a href="javascript:logout()">logout</a>
+  </div>
+  <hr>
+  <h2>本の持ち主を確認</h2>
+  <hr>
+  <div class="action-panel">
+    <button onclick="goScan()">QRを読み取る</button>
+  </div>
+  <div>
+    <div id="result"></div>
+  </div>
+</body>
+
+</html>
