@@ -404,6 +404,13 @@ input {
   height: 18px;
 }
 
+.admin-detail-row .printed-date {
+  justify-self: end;
+  text-align: right;
+  font-weight: 600;
+  color: #0f172a;
+}
+
 .admin-user-row {
   grid-template-columns: minmax(140px, 0.8fr) minmax(200px, 1.2fr) minmax(120px, auto);
 }
