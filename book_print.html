@@ -36,6 +36,12 @@
         var objects = await osql.connect(sql);
         console.log(objects);
         var html = '';
+        html += `<div class="admin-row admin-book-row admin-header">`;
+        html += `<div></div>`;
+        html += `<div>本の名前</div>`;
+        html += `<div>ISBN</div>`;
+        html += `<div>在庫数</div>`;
+        html += `</div>`;
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
           html += `<div class="admin-row admin-book-row admin-row--button" onclick="toggleBookDetail('${object.isbn}')">`;
