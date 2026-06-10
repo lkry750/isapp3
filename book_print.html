@@ -68,9 +68,13 @@
         var html = '';
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
-          var checked = selectedUuids.includes(object.uuid) ? 'checked' : '';
+          var checked = selectedBooks.some(function (book) {
+            return book.uuid === object.uuid;
+          })
+            ? 'checked'
+            : '';
           html += `<div class="admin-detail-row">`;
-          html += `<input type="checkbox" class="book-check" value="${object.uuid}" ${checked} onchange="changeCheck('${object.uuid}', this.checked)">`;
+          html += `<input type="checkbox" class="book-check" data-created-at="${object.created_at || ''}" data-copy-no="${object.copy_no || ''}" value="${object.uuid}" ${checked} onchange="changeCheck(this)">`;
           html += `<div>No. ${object.copy_no}</div>`;
           html += `<div class="admin-detail-dates">`;
           html += `<span>追加日: ${object.created_at == null ? '----------------' : object.created_at}</span>`;
@@ -82,39 +86,67 @@
         arrow.innerHTML = '▼';
       }
 
-      var selectedUuids = [];
+      var selectedBooks = [];
 
-      function changeCheck(uuid, checked) {
-        if (checked) {
-          if (!selectedUuids.includes(uuid)) {
-            selectedUuids.push(uuid);
+      function changeCheck(checkbox) {
+        var uuid = checkbox.value;
+        var createdAt = checkbox.dataset.createdAt || '';
+        var copyNo = Number(checkbox.dataset.copyNo);
+        if (Number.isNaN(copyNo)) {
+          copyNo = 0;
+        }
+        if (checkbox.checked) {
+          if (!selectedBooks.some(function (book) {
+            return book.uuid === uuid;
+          })) {
+            selectedBooks.push({
+              uuid: uuid,
+              created_at: createdAt,
+              copy_no: copyNo,
+            });
           }
         } else {
-          selectedUuids = selectedUuids.filter(function (x) {
-            return x !== uuid;
+          selectedBooks = selectedBooks.filter(function (book) {
+            return book.uuid !== uuid;
           });
         }
       }
 
+      function formatBookCode(createdAt, copyNo) {
+        var copy = String(copyNo || 0).padStart(3, '0');
+        if (!createdAt) {
+          return `------${copy}`;
+        }
+        var match = createdAt.match(/(\d{4})-(\d{2})-(\d{2})/);
+        if (!match) {
+          return `------${copy}`;
+        }
+        var yy = match[1].slice(2);
+        var mm = match[2];
+        var dd = match[3];
+        return `${yy}${mm}${dd}-${copy}`;
+      }
+
       async function printSelectedBooks() {
-        var uuids = selectedUuids;
-        if (uuids.length <= 0) {
+        if (selectedBooks.length <= 0) {
           alert('印刷する本を選択してください');
           return;
         }
         var html = '';
-        for (var i = 0; i < uuids.length; i++) {
-          var uuid = uuids[i];
+        for (var i = 0; i < selectedBooks.length; i++) {
+          var book = selectedBooks[i];
+          var bookCode = formatBookCode(book.created_at, book.copy_no);
           html += `
           <div class="qr-box">
-            <div id="qr-${uuid}"></div>
+            <div id="qr-${book.uuid}"></div>
             <div class="lab">Matsuzawa Lab</div>
+            <div class="book-code">${bookCode}</div>
           </div>
           `;
         }
         document.getElementById('qr').innerHTML = html;
-        for (var i = 0; i < uuids.length; i++) {
-          var uuid = uuids[i];
+        for (var i = 0; i < selectedBooks.length; i++) {
+          var uuid = selectedBooks[i].uuid;
           $(`#qr-${uuid}`).qrcode({
             text: uuid,
             width: 380,
@@ -124,8 +156,11 @@
         window.print();
         var ok = confirm('印刷できましたか？');
         if (ok) {
+          var uuids = selectedBooks.map(function (book) {
+            return book.uuid;
+          });
           await updatePrintedAt(uuids);
-          selectedUuids = [];
+          selectedBooks = [];
         }
       }
 
