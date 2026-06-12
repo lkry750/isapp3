@@ -489,6 +489,12 @@ input {
   font-size: 0.92rem;
 }
 
+.book-status-inline {
+  justify-self: start;
+  font-weight: 600;
+  min-width: 68px;
+}
+
 .admin-user-row {
   grid-template-columns: minmax(140px, 0.8fr) minmax(200px, 1.2fr) minmax(120px, auto);
 }

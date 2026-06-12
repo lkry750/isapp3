@@ -62,15 +62,24 @@
           arrow.innerHTML = '▶';
           return;
         }
-        var sql = `select uuid, copy_no, created_at, printed_at from Books where isbn = '${isbn}' order by copy_no asc`;
+        var sql = `select Books.uuid, copy_no, created_at, printed_at,
+            case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
+            then "貸出中" else "在架" end as status
+            from Books
+            left join Borrowings on Books.uuid = Borrowings.uuid
+            and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
+            where isbn = '${isbn}'
+            order by copy_no asc`;
         var objects = await osql.connect(sql);
         var html = '';
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
           var checked = selectedUuids.includes(object.uuid) ? 'checked' : '';
+          var statusClass = object.status === '在架' ? 'status-green' : 'status-red';
           html += `<div class="admin-detail-row">`;
           html += `<input type="checkbox" class="book-check" value="${object.uuid}" ${checked} onchange="changeCheck('${object.uuid}', this.checked)">`;
           html += `<div>No. ${object.copy_no}</div>`;
+          html += `<div class="book-status-inline ${statusClass}">${object.status}</div>`;
           html += `<div class="admin-detail-dates">`;
           html += `<span>追加日: ${object.created_at == null ? '----------------' : object.created_at}</span>`;
           html += `<span>印刷日: ${object.printed_at == null ? '未印刷' : object.printed_at}</span>`;
