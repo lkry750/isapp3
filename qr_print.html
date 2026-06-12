@@ -20,18 +20,22 @@
     });
 
     function generateQRPreview() {
-      var text = document.getElementById('qr-text').value.trim();
-      if (!text) {
+      var qrText = document.getElementById('qr-text').value.trim();
+      if (!qrText) {
         alert('QR化するテキストを入力してください');
         return;
       }
+      var displayText = document.getElementById('display-text').value.trim();
+      if (!displayText) {
+        displayText = qrText;
+      }
       var container = document.getElementById('qr-result');
       container.innerHTML = `<div class="qr-print-area">
-        <h1>QRテキスト印刷</h1>
+        <h1>${escapeHtml(displayText)}</h1>
         <div id="qr-preview"></div>
       </div>`;
       $('#qr-preview').qrcode({
-        text: text,
+        text: qrText,
         width: 380,
         height: 380,
       });
@@ -70,7 +74,9 @@
     <hr />
     <div class="qr-print-form">
       <label for="qr-text">QR化するテキスト</label>
-      <textarea id="qr-text" placeholder="ここに印刷したい文字を入力してください"></textarea>
+      <textarea id="qr-text" placeholder="QRコードにしたい文字を入力してください"></textarea>
+      <label for="display-text">印刷時に表示する文字</label>
+      <textarea id="display-text" placeholder="印刷したいタイトルなどを入力してください"></textarea>
       <div class="action-panel">
         <button onclick="generateQRPreview()">QRを生成</button>
         <button onclick="printQR()">印刷する</button>
