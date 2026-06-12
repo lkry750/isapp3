@@ -38,7 +38,10 @@
       var container = document.getElementById('qr-result');
       container.innerHTML = `<div class="qr-print-area">
         <h1 style="font-size:${fontSize}px">${escapeHtml(displayText)}</h1>
-        <div id="qr-preview"></div>
+        <div class="qr-preview-wrapper">
+          <div id="qr-preview"></div>
+          <img class="qr-logo-overlay" src="bookry.jpg" alt="ブックリー" />
+        </div>
       </div>`;
       $('#qr-preview').qrcode({
         text: qrText,
