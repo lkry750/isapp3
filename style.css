@@ -249,11 +249,36 @@ input {
 .logo-link {
   color: inherit;
   text-decoration: none;
-  cursor: pointer;
 }
 
 .logo-link:hover {
   text-decoration: underline;
+}
+
+.CLHeaderTitle {
+  display: flex;
+  align-items: center;
+  font-size: 28px;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif;
+  letter-spacing: 1px;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.CLHeaderTitle:hover {
+  background-color: rgba(44, 62, 80, 0.1);
+  color: #2c3e50;
+  text-decoration: none;
+}
+
+.CLHeaderTitle img {
+  height: 24px;
+  width: 24px;
+  margin-right: 8px;
+  margin-top: -4px;
 }
 
 .user-bar {
