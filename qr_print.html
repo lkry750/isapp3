@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <script type="text/javascript" src="lib/osql.js"></script>
+  <script type="text/javascript" src="js/login.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+
+  <script>
+    osql.requireLogin();
+
+    $(document).ready(async function () {
+      await login();
+      await admin();
+    });
+
+    function generateQRPreview() {
+      var text = document.getElementById('qr-text').value.trim();
+      if (!text) {
+        alert('QR化するテキストを入力してください');
+        return;
+      }
+      var container = document.getElementById('qr-result');
+      container.innerHTML = `<div class="qr-box">
+        <div id="qr-preview"></div>
+        <div class="lab">Matsuzawa Lab</div>
+        <div class="qr-value">${escapeHtml(text)}</div>
+      </div>`;
+      $('#qr-preview').qrcode({
+        text: text,
+        width: 380,
+        height: 380,
+      });
+    }
+
+    function printQR() {
+      if (!document.getElementById('qr-result').innerHTML) {
+        alert('先にQRを生成してください');
+        return;
+      }
+      window.print();
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</head>
+
+<body>
+  <div class="page-header">
+    <h1><a class="logo-link" href="index.html">図書管理システム</a></h1>
+    <div class="user-bar">
+      ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+      <a href="javascript:logout()">logout</a>
+    </div>
+  </div>
+  <hr />
+  <h2>QRテキスト印刷</h2>
+  <hr />
+  <div class="qr-print-form">
+    <label for="qr-text">QR化するテキスト</label>
+    <textarea id="qr-text" placeholder="ここに印刷したい文字を入力してください"></textarea>
+    <div class="action-panel">
+      <button onclick="generateQRPreview()">QRを生成</button>
+      <button onclick="printQR()">印刷する</button>
+    </div>
+  </div>
+  <div id="qr-result"></div>
+</body>
+
+</html>

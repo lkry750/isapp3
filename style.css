@@ -306,6 +306,27 @@ input {
   font-size: 1rem;
 }
 
+.qr-print-form {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.qr-print-form textarea {
+  min-height: 140px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+  font: inherit;
+}
+
+.qr-value {
+  font-size: 0.95rem;
+  color: #475569;
+  text-align: center;
+  word-break: break-word;
+}
+
 .checkoutbutton {
   min-width: 104px;
 }
