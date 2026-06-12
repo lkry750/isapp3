@@ -263,12 +263,12 @@ input {
 
 .logo-banner {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 10px;
 }
 
 .logo-banner img.site-logo {
-  height: 50px;
+  height: 38px;
   width: auto;
   border-radius: 8px;
 }
@@ -276,6 +276,7 @@ input {
 .logo-banner span {
   font-size: 1.4rem;
   font-weight: 700;
+  line-height: 1;
 }
 
 .user-bar a {
