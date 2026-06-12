@@ -29,9 +29,15 @@
       if (!displayText) {
         displayText = qrText;
       }
+      var fontSizeInput = document.getElementById('display-font-size');
+      var fontSize = Number(fontSizeInput.value);
+      if (Number.isNaN(fontSize) || fontSize < 12) {
+        fontSize = 32;
+        fontSizeInput.value = fontSize;
+      }
       var container = document.getElementById('qr-result');
       container.innerHTML = `<div class="qr-print-area">
-        <h1>${escapeHtml(displayText)}</h1>
+        <h1 style="font-size:${fontSize}px">${escapeHtml(displayText)}</h1>
         <div id="qr-preview"></div>
       </div>`;
       $('#qr-preview').qrcode({
@@ -77,6 +83,8 @@
       <textarea id="qr-text" placeholder="QRコードにしたい文字を入力してください"></textarea>
       <label for="display-text">印刷時に表示する文字</label>
       <textarea id="display-text" placeholder="印刷したいタイトルなどを入力してください"></textarea>
+      <label for="display-font-size">表示文字のフォントサイズ (px)</label>
+      <input type="number" id="display-font-size" min="12" value="32" />
       <div class="action-panel">
         <button onclick="generateQRPreview()">QRを生成</button>
         <button onclick="printQR()">印刷する</button>

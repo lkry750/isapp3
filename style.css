@@ -337,6 +337,7 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: calc(100vh - 360px);
   min-height: 320px;
 }
 
@@ -362,6 +363,16 @@ input {
 .qr-print-area #qr-preview {
   width: min(380px, 80vw);
   height: min(380px, 80vw);
+}
+
+@media print {
+  #qr-result {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .checkoutbutton {
