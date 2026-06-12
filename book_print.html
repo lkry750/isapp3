@@ -121,10 +121,10 @@
         if (!match) {
           return `------${copy}`;
         }
-        var yy = match[1].slice(2);
+        var yy = match[1];//年の表示
         var mm = match[2];
         var dd = match[3];
-        return `${yy}${mm}${dd}-${copy}`;
+        return `${yy}/${mm}/${dd}-${copy}`;
       }
 
       async function printSelectedBooks() {
@@ -139,7 +139,7 @@
           html += `
           <div class="qr-box">
             <div id="qr-${book.uuid}"></div>
-            <div class="lab">Matsuzawa Lab</div>
+            <div class="lab">松澤研究室蔵書</div>
             <div class="book-code">${bookCode}</div>
           </div>
           `;

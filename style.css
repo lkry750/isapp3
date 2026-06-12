@@ -214,7 +214,7 @@ input {
 
   .lab {
     font-size: 48px;
-    font-weight: bold;
+    font-weight: 50;
   }
 
   .qr-box:not(:last-child) {
@@ -223,9 +223,8 @@ input {
 }
 
 .book-code {
-  margin-top: 6px;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 3rem;
+  font-weight: 50;
   color: #0f172a;
 }
 
