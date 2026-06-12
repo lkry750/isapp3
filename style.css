@@ -220,6 +220,11 @@ input {
   .qr-box:not(:last-child) {
     break-after: page;
   }
+
+  #qr-result {
+    min-height: 100vh;
+    margin: 0;
+  }
 }
 
 .book-code {
@@ -325,6 +330,14 @@ input {
   color: #475569;
   text-align: center;
   word-break: break-word;
+}
+
+#qr-result {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
 }
 
 .checkoutbutton {
