@@ -44,6 +44,7 @@
         text: qrText,
         width: 380,
         height: 380,
+        correctLevel: 3
       });
     }
 
@@ -70,7 +71,7 @@
   <div class="no-print">
     <div class="page-header">
       <div class="logo-banner">
-        <a class="logo-link CLHeaderTitle" href="index.html">
+        <a class="logo-link" href="index.html">
           <img class="site-logo" src="bookry.jpg" alt="ブックリー" />
           <span>ブックリー</span>
         </a>
@@ -84,12 +85,12 @@
     <h2>QRテキスト印刷</h2>
     <hr />
     <div class="qr-print-form">
-      <label for="qr-text">QR化するテキスト</label>
-      <textarea id="qr-text" placeholder="QRコードにしたい文字を入力してください"></textarea>
-      <label for="display-text">印刷時に表示する文字</label>
+      <label for="qr-text">データ入力</label>
+      <textarea id="qr-text" placeholder="QRコードにしたい文字列を入力してください"></textarea>
+      <label for="display-text">タイトル入力</label>
       <textarea id="display-text" placeholder="印刷したいタイトルなどを入力してください"></textarea>
       <label for="display-font-size">表示文字のフォントサイズ (px)</label>
-      <input type="number" id="display-font-size" min="12" value="32" />
+      <input type="number" id="display-font-size" min="12" value="40" />
       <div class="action-panel">
         <button onclick="generateQRPreview()">QRを生成</button>
         <button onclick="printQR()">印刷する</button>
