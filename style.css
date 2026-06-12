@@ -268,10 +268,9 @@ input {
 }
 
 .logo-banner img.site-logo {
-  height: 38px;
+  height: 50px;
   width: auto;
   border-radius: 8px;
-  margin-top: 6px;
 }
 
 .logo-banner span {
