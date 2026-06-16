@@ -398,10 +398,30 @@ input {
   font-size: 1.8rem;
 }
 
-.qr-print-area .qr-box {
+.qr-box {
   width: 100%;
   display: flex;
+  align-items: flex-start;
   justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.qr-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  min-width: 200px;
+  text-align: left;
+}
+
+.lab {
+  font-size: 20px;
+  font-weight: 300;
+  color: #1f2937;
+  margin: 0;
 }
 
 .qr-print-area #qr-preview {
