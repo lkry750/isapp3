@@ -425,10 +425,10 @@ input {
 
 .qr-logo-corner {
   position: absolute;
-  bottom: -8px;
+  bottom: -200px;
   left: 8px;
-  width: 42px;
-  height: 42px;
+  width: 150px;
+  height: 150px;
   background: white;
   border-radius: 8px;
   padding: 6px;
