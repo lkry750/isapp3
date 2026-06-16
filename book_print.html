@@ -133,7 +133,7 @@
         var yy = match[1];//年の表示
         var mm = match[2];
         var dd = match[3];
-        return `${yy}/${mm}/${dd}-${copy}`;
+        return `${yy}${mm}${dd}-${copy}`;
       }
 
       async function printSelectedBooks() {
@@ -160,6 +160,7 @@
             text: uuid,
             width: 380,
             height: 380,
+            correctLevel: 0,
           });
         }
         window.print();
