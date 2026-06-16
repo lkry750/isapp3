@@ -214,11 +214,14 @@ input {
     gap: 32px;
     flex-wrap: wrap;
     margin: 0 auto 32px;
-    text-align: right;
   }
 
   .qr-info {
     min-width: 200px;
+    text-align: center;
+    margin-left: auto;
+    align-items: center;
+    gap: 12px;
   }
 
   .lab {
@@ -421,9 +424,11 @@ input {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 20px;
-  min-width: 500px;
+  gap: 12px;
+  min-width: 200px;
   text-align: center;
+  margin-left: auto;
+  align-items: center;
 }
 
 .lab {
