@@ -213,8 +213,8 @@ input {
   }
 
   .lab {
-    font-size: 48px;
-    font-weight: 50;
+    font-size: 24px;
+    font-weight: 100;
   }
 
   .qr-box:not(:last-child) {
@@ -228,8 +228,8 @@ input {
 }
 
 .book-code {
-  font-size: 3rem;
-  font-weight: 50;
+  font-size: 24px;
+  font-weight: 100;
   color: #0f172a;
 }
 
@@ -362,7 +362,7 @@ input {
 }
 
 .qr-print-form textarea {
-  min-height: 140px;
+  height: 50px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   padding: 12px;
