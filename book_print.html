@@ -147,10 +147,7 @@
           var bookCode = formatBookCode(book.created_at, book.copy_no);
           html += `
           <div class="qr-box">
-            <div class="qr-preview-wrapper">
-              <div id="qr-${book.uuid}"></div>
-              <img class="qr-logo-overlay" src="bookry.jpg" alt="ブックリー" />
-            </div>
+            <div id="qr-${book.uuid}"></div>
             <div class="lab">松澤研究室蔵書</div>
             <div class="book-code">${bookCode}</div>
           </div>
