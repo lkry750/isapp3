@@ -429,13 +429,10 @@ input {
   left: 8px;
   width: 150px;
   height: 150px;
-  background: white;
-  border-radius: 8px;
-  padding: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
   pointer-events: none;
 }
 
