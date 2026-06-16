@@ -210,11 +210,11 @@ input {
   .qr-box {
     display: flex;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 32px;
     flex-wrap: wrap;
     margin: 0 auto 32px;
-    text-align: left;
+    text-align: right;
   }
 
   .qr-info {
@@ -411,7 +411,7 @@ input {
   width: 100%;
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 32px;
   flex-wrap: wrap;
   margin-bottom: 32px;
@@ -423,7 +423,7 @@ input {
   justify-content: center;
   gap: 12px;
   min-width: 200px;
-  text-align: left;
+  text-align: right;
 }
 
 .lab {
