@@ -221,11 +221,11 @@ input {
     text-align: center;
     margin-left: auto;
     align-items: center;
-    gap: 12px;
+    gap: 0px;
   }
 
   .lab {
-    font-size: 24px;
+    font-size: 32px;
     font-weight: 100;
   }
 
@@ -240,7 +240,7 @@ input {
 }
 
 .book-code {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 100;
   color: #0f172a;
 }
@@ -460,10 +460,10 @@ input {
 
 .qr-logo-corner {
   position: absolute;
-  bottom: -205px;
+  bottom: -160px;
   left: 0px;
-  width: 160px;
-  height: 160px;
+  width: 80px;
+  height: 80px;
   background: transparent;
   border-radius: 0;
   padding: 0;
