@@ -240,7 +240,7 @@ input {
 }
 
 .book-code {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 100;
   color: #0f172a;
 }
@@ -427,12 +427,13 @@ input {
   gap: 12px;
   min-width: 200px;
   text-align: center;
-  margin-left: auto;
+  margin-top: 45px;
+  margin-right: 25px;
   align-items: center;
 }
 
 .lab {
-  font-size: 25px;
+  font-size: 30px;
   font-weight: 300;
   color: #1f2937;
   margin: 0;
