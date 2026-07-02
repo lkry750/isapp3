@@ -26,7 +26,8 @@
             console.log(uuid);
             if(!uuid) return;
 
-            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.checkoutDate, Borrowings.returnDate,
+            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.userid,
+            Borrowings.checkoutDate, Borrowings.returnDate,Users.fname, Users.lname, Users.id,
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
             then "貸出中" else "在架" end as status
             from Books
@@ -53,10 +54,14 @@
 
                 if (object.status == "貸出中") {
                     html += `<span class="status-red">貸出中</span>`;
-                    html += `<span class="book-status-description">現在他の人が利用しています</span>`;
+                    if (me.id == object.userid) {
+                        html += `<span class="book-status-description">現在あなたが利用しています</span>`;
+                    }else{
+                        html += `<span class="book-status-description">現在他の人が利用しています</span>`;
+                    }
                 } else if (object.status == "在架") {
                     html += `<span class="status-green">利用可</span>`;
-                    html += `<span class="book-status-description">この本は現在借りることができます</span>`;
+                    html += `<span class="book-status-description">現在この本は借りることができます</span>`;
                     html += `<button class="checkoutbutton" onclick="button2Pressed('${object.uuid}')">借りる</button>`;
                 }
 

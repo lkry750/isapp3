@@ -26,8 +26,8 @@
             console.log(uuid);
             if(!uuid) return;
 
-            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.id, 
-            Borrowings.checkoutDate, Borrowings.returnDate, userid,
+            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.id, Borrowings.userid,
+            Borrowings.checkoutDate, Borrowings.returnDate, Users.fname, Users.lname, 
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
             then "貸出中" else "在架" end as status
             from Books
@@ -54,11 +54,13 @@
 
                 if (object.status == "貸出中") {
                     html += `<span class="status-red">貸出中</span>`;
-                    html += `<span class="book-status-description">返却する場合は「返す」を押してください</span>`;
                     if (me.id == object.userid && canReturn()) {
+                        html += `<span class="book-status-description">返却する場合は「返す」を押してください</span>`;
                         html += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返す</button>`;
                     }else if (me.id == object.userid) {
-                        html += `<div>返却のためのQRを読み込んでください</div>`;
+                        html += `<span class="book-status-description">返却するには返却用QRコードを読み込んでください</span>`;
+                    }else if(me.id != object.userid) {
+                        html += `<span class="book-status-description">この本は他の人が利用しています</span>`;
                     }
                 } else if (object.status == "在架") {
                     html += `<span class="status-green">利用可</span>`;
