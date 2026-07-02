@@ -125,12 +125,13 @@
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
           var name = `${object.fname || ''} ${object.lname || ''}`.trim();
+          var borrowerName = object.status === '在架' ? '' : name;
           html += `<div class="admin-detail-row">`;
           html += `<input type="checkbox" />`;
           html += `<div>No. ${object.copy_no}</div>`;
           html += `<div class="admin-detail-status">`;
           html += `<span class="${object.status === '在架' ? 'status-green' : 'status-red'}">${object.status}</span>`;
-          html += `<span class="admin-detail-borrower">${name || ''}</span>`;
+          html += `<span class="admin-detail-borrower">${borrowerName || ''}</span>`;
           html += `</div>`;
           html += `<div class="admin-cell-muted">追加日: ${object.created_at}</div>`;
           html += `<button class="small-button" onclick="button1Pressed('${object.uuid}')">QR</button>`;
