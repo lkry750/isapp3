@@ -16,6 +16,7 @@
         osql.requireLogin();
 
         $(document).ready(async function () {
+            await login();
             await qrcode();
             await displayTitle();
         });

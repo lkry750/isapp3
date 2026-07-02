@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 
 <html>
-
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <script type="text/javascript" src="lib/jquery.min.js"></script>
     <script type="text/javascript" src="lib/osql.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
 
     <script>
-        osql.requireLogin();
+      osql.requireLogin();
 
-        $(document).ready(async function () {
-            await login();
-            await execSelect();
-        });
+      $(document).ready(async function () {
+        await login();
+        await execSelect();
+        displayScan();
+      });
 
-        async function execSelect() {
-            var uuid = osql.getParam('uuid');
-            var me = await osql.getMe();
-            console.log(uuid);
-            if(!uuid) return;
+      async function execSelect() {
+        var uuid = osql.getParam('uuid');
+        var me = await osql.getMe();
+        console.log(uuid);
+        if (!uuid) return;
 
-            var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.id, Borrowings.userid,
+        var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.id, Borrowings.userid,
             Borrowings.checkoutDate, Borrowings.returnDate, Users.fname, Users.lname, 
             case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
             then "貸出中" else "在架" end as status
@@ -37,101 +37,109 @@
             left join Users on Borrowings.userid = Users.id
             where Books.uuid = '${uuid}';
             `;
-            var objects = await osql.connect(sql);
-            console.log(objects);
+        var objects = await osql.connect(sql);
+        console.log(objects);
 
-            var html = "";
-            for (var i = 0; i < objects.length; i++) {
-                var object = objects[i];
+        var html = '';
+        for (var i = 0; i < objects.length; i++) {
+          var object = objects[i];
 
-                html += `<div class="box">`;
-                html += `<div class="book-line">`;
-                html += `<span class="book-title">${object.title}</span>`;
-                html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
-                html += `</div>`;
+          html += `<div class="box">`;
+          html += `<div class="book-line">`;
+          html += `<span class="book-title">${object.title}</span>`;
+          html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
+          html += `</div>`;
 
-                html += `<div class="book-line">`;
+          html += `<div class="book-line">`;
 
-                if (object.status == "貸出中") {
-                    html += `<span class="status-red">貸出中</span>`;
-                    if (me.id == object.userid && canReturn()) {
-                        html += `<span class="book-status-description">返却する場合は「返す」を押してください</span>`;
-                        html += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返す</button>`;
-                    }else if (me.id == object.userid) {
-                        html += `<span class="book-status-description">返却するには返却用QRコードを読み込んでください</span>`;
-                    }else if(me.id != object.userid) {
-                        html += `<span class="book-status-description">この本は他の人が利用しています</span>`;
-                    }
-                } else if (object.status == "在架") {
-                    html += `<span class="status-green">利用可</span>`;
-                    html += `<span class="book-status-description">この本はすでに返却されています</span>`;
-                }
-
-                html += `</div>`;
-                html += `</div>`;
+          if (object.status == '貸出中') {
+            html += `<span class="status-red">貸出中</span>`;
+            if (me.id == object.userid && canReturn()) {
+              html += `<span class="book-status-description">返却する場合は「返す」を押してください</span>`;
+              html += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返す</button>`;
+            } else if (me.id == object.userid) {
+              html += `<span class="book-status-description">返却するには返却用QRコードを読み込んでください</span>`;
+            } else if (me.id != object.userid) {
+              html += `<span class="book-status-description">この本は他の人が利用しています</span>`;
             }
-            document.getElementById('result').innerHTML = html;
-        }
+          } else if (object.status == '在架') {
+            html += `<span class="status-green">利用可</span>`;
+            html += `<span class="book-status-description">この本はすでに返却されています</span>`;
+          }
 
-        function canReturn() {
-            var expire = sessionStorage.getItem('return_expire');
-            if (!expire) return false;
-            if (Date.now() > Number(expire)) {
-                sessionStorage.removeItem('return_expire');
-                return false;
-            }
-            return true;
+          html += `</div>`;
+          html += `</div>`;
         }
+        document.getElementById('result').innerHTML = html;
+      }
 
-        async function execUpdate(id) {
-            if (!confirm("本当に返却しますか？")) {
-                return;
-            }
-            var sql = `update Borrowings set returnDate = now() where id = ${id}`;
-            await osql.connect(sql);
-            await execSelect();
-            alert('返却が完了しました');
+      function canReturn() {
+        var expire = sessionStorage.getItem('return_expire');
+        if (!expire) return false;
+        if (Date.now() > Number(expire)) {
+          sessionStorage.removeItem('return_expire');
+          return false;
         }
+        return true;
+      }
 
-        function buttonPressed(){
-            execSelect();
+      async function execUpdate(id) {
+        if (!confirm('本当に返却しますか？')) {
+          return;
         }
+        var sql = `update Borrowings set returnDate = now() where id = ${id}`;
+        await osql.connect(sql);
+        await execSelect();
+        alert('返却が完了しました');
+      }
 
-        function button2Pressed(id) {
-            execUpdate(id);
-        }
+      function buttonPressed() {
+        execSelect();
+      }
 
-        
-        function goScan() {
-            sessionStorage.setItem("url", "return.html");
-            location.replace('scan.html');
+      function button2Pressed(id) {
+        execUpdate(id);
+      }
+
+      function goScan() {
+        sessionStorage.setItem('url', 'return.html');
+        location.replace('scan.html');
+      }
+
+      function displayScan() {
+        var uuid = osql.getParam('uuid');
+        var text = '';
+        if (!uuid) {
+          text = 'QRを読み取る';
+        } else {
+          text = '他の本のQRを読み取る';
         }
+        document.getElementById('scan').innerHTML = text;
+      }
     </script>
+  </head>
 
-</head>
-
-<body>
+  <body>
     <div class="page-header">
-        <div class="logo-banner">
-            <a class="logo-link CLHeaderTitle" href="index.html">
-                <img class="site-logo" src="bookry.jpg" alt="ブックリー" />
-                <span>ブックリー</span>
-            </a>
-        </div>
-        <div class="user-bar">
-            ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
-            <a href="javascript:logout()">logout</a>
-        </div>
+      <div class="logo-banner">
+        <a class="logo-link CLHeaderTitle" href="index.html">
+          <img class="site-logo" src="bookry.jpg" alt="ブックリー" />
+          <span>ブックリー</span>
+        </a>
+      </div>
+      <div class="user-bar">
+        ようこそ<span id="lastname"></span> <span id="firstname"></span>さん
+        <a href="javascript:logout()">logout</a>
+      </div>
     </div>
-    <hr>
+    <hr />
     <h2>本を返す</h2>
-    <hr>
+    <hr />
     <div class="action-panel">
-        <button onclick="goScan()">QRを読み取る</button>
+      <button id="scan" onclick="goScan()">QRを読み取る</button>
     </div>
     <div>
-        <div id="result"></div>
+      <div id="result"></div>
     </div>
-</body>
-
+  </body>
 </html>

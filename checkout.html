@@ -18,6 +18,7 @@
         $(document).ready(async function () {
             await login();
             await execSelect();
+            displayScan();
         });
 
         async function execSelect() {
@@ -89,6 +90,17 @@
             location.replace('scan.html');
         }
 
+        function displayScan() {
+            var uuid = osql.getParam('uuid');
+            var text = "";
+            if (!uuid) {
+                text = "QRを読み取る";
+            }else{
+                text = "他の本のQRを読み取る";
+            }
+            document.getElementById('scan').innerHTML = text;
+        }
+
   </script>
 
 </head>
@@ -110,7 +122,7 @@
     <h2>本を借りる</h2>
     <hr>
     <div class="action-panel">
-        <button onclick="goScan()">QRを読み取る</button>
+        <button id="scan" onclick="goScan()">QRを読み取る</button>
     </div>
     <div>
         <div id="result"></div>
