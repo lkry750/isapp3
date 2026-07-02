@@ -33,6 +33,7 @@
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Borrowings on Books.uuid = Borrowings.uuid
             and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
+            left join Users on Borrowings.userid = Users.id
             where Books.uuid = '${uuid}';
             `;
             var objects = await osql.connect(sql);
