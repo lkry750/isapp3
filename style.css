@@ -600,6 +600,17 @@ input {
   border-top: 1px solid #e5e7eb;
 }
 
+.admin-detail-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-detail-borrower {
+  font-size: 0.9rem;
+  color: #475569;
+}
+
 .admin-detail-row:first-child {
   border-top: 0;
 }

@@ -109,10 +109,14 @@
         var sql = `
           select Books.uuid, copy_no, created_at,
           case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
-          then "貸出中" else "在架" end as status
+          then "貸出中" else "在架" end as status,
+          Borrowings.userid,
+          Users.fname,
+          Users.lname
           from Books
           left join Borrowings on Books.uuid = Borrowings.uuid
           and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
+          left join Users on Borrowings.userid = Users.id
           where isbn = '${isbn}'
           order by copy_no;
         `;
@@ -120,10 +124,14 @@
         var html = '';
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
+          var name = `${object.fname || ''} ${object.lname || ''}`.trim();
           html += `<div class="admin-detail-row">`;
           html += `<input type="checkbox" />`;
           html += `<div>No. ${object.copy_no}</div>`;
-          html += `<div class="${object.status === '在架' ? 'status-green' : 'status-red'}">${object.status}</div>`;
+          html += `<div class="admin-detail-status">`;
+          html += `<span class="${object.status === '在架' ? 'status-green' : 'status-red'}">${object.status}</span>`;
+          html += `<span class="admin-detail-borrower">${name || ''}</span>`;
+          html += `</div>`;
           html += `<div class="admin-cell-muted">追加日: ${object.created_at}</div>`;
           html += `<button class="small-button" onclick="button1Pressed('${object.uuid}')">QR</button>`;
           html += `</div>`;
