@@ -51,9 +51,9 @@
                 html += `<div class="book-line">`;
 
                 if (object.status == "貸出中") {
-                    html += `<span class="status-red">貸出中</span>`;
+                    html += `<span class="status-red">他の人が借りています</span>`;
                 } else if (object.status == "在架") {
-                    html += `<span class="status-green">在架</span>`;
+                    html += `<span class="status-green">借りられます</span>`;
                     html += `<button class="checkoutbutton" onclick="button2Pressed('${object.uuid}')">借りる</button>`;
                        
                 }
