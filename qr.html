@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -16,22 +17,43 @@
         await admin();
         qrcode();
       });
+
       function qrcode() {
         // QRが小さくなって読めない,要検討
+        var qr = createURL();
+
         var url =
           'https://mindcode.si.aoyama.ac.jp/' +
           'user_projects/' +
           'a8124018%40gsuite.si.aoyama.ac.jp/' +
           'f0848f6e-c797-41a5-a63f-aad2421ea462/' +
-          `enable_return.html`;
+          qr;
         $('#qrcode').qrcode({
           text: url,
           width: 500,
           height: 500,
         });
       }
+
+      function createURL() {
+        var qr = osql.getParam('URL');
+        if (qr == 'checkout'){
+          document.getElementById('title').textContent = "借りるQR";
+          return "scan.html?mode=checkout";
+        }else if(qr == 'return'){
+          document.getElementById('title').textContent = "返すQR";
+          return "scan.html?mode=return";
+        }else if(qr == 'search'){
+          document.getElementById('title').textContent = "誰が借りているか確認するQR";
+          return "scan.html?mode=search";
+        }else if(qr == 'book_me'){
+          document.getElementById('title').textContent = "借りている本を確認するQR";
+          return "book_me.html";
+        }
+      }
     </script>
   </head>
+
   <body>
     <div class="page-header">
       <div class="logo-banner">
@@ -45,9 +67,9 @@
         <a href="javascript:logout()">logout</a>
       </div>
     </div>
-    <hr>
-    <h2>返却QR</h2>
-    <hr>
+    <hr />
+    <h2 id="title"></h2>
+    <hr />
     <div id="qrcode"></div>
   </body>
 </html>

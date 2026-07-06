@@ -32,11 +32,11 @@
             document.getElementById('add').innerHTML = `<a href="book_addition.html">本の追加</a>`;
             document.getElementById('print2').innerHTML = `<a href="book_print.html">本の印刷</a>`;
             document.getElementById('del').innerHTML = `<a href="book_delete.html">本の削除</a>`;
-            document.getElementById('qr-h').innerHTML = `<a href="qr_home.html">ホームQR</a>`;
-            document.getElementById('qr-c').innerHTML = `<a href="qr_checkout.html">貸出QR</a>`;
-            document.getElementById('qr-r').innerHTML = `<a href="qr_return.html">返却QR</a>`;
+            document.getElementById('qr-c').innerHTML = `<a href="qr.html?URL=checkout">本を借りるQR</a>`;
+            document.getElementById('qr-r').innerHTML = `<a href="qr.html?URL=return">本を返すQR</a>`;
+            document.getElementById('qr-s').innerHTML = `<a href="qr.html?URL=search">誰が借りているか確認するQR</a>`;
+            document.getElementById('qr-m').innerHTML = `<a href="qr.html?URL=book_me">借りている本を確認するQR</a>`;
             document.getElementById('qr-p').innerHTML = `<a href="qr_print.html">QR作成&紙印刷</a>`;
-
         }
     </script>
 
@@ -45,7 +45,7 @@
 <body>
     <div class="page-header">
         <div class="logo-banner">
-            <a class="logo-link CLHeaderTitle">
+            <a class="logo-link CLHeaderTitle" href="index.html">
                 <img class="site-logo" src="bookry.jpg" alt="ブックリー" />
                 <span>ブックリー</span>
             </a>
@@ -74,9 +74,10 @@
         <p id="add"></p>
         <p id="print2"></p>
         <p id="del"></p>
-        <p id="qr-h"></p>
         <p id="qr-c"></p>
         <p id="qr-r"></p>
+        <p id="qr-s"></p>
+        <p id="qr-m"></p>
         <p id="qr-p"></p>
     </div>
 </body>
