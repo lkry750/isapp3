@@ -53,14 +53,15 @@
           html += `<div class="book-line">`;
 
           if (object.status == '貸出中') {
-            html += `<span class="status-red">借りられません</span>`;
             if (me.id == object.userid) {
+              html += `<span class="status-red">返せます</span>`;
               html += `<span class="book-status-description">この本を返しますか？</span>`;
             } else if (me.id != object.userid) {
-              html += `<span class="book-status-description">この本は他の人が借りています</span>`;
+              html += `<span class="status-red">返せません</span>`;
+              html += `<span class="book-status-description">現在他の人が借りています</span>`;
             }
           } else if (object.status == '在架') {
-            html += `<span class="status-green">借りられます</span>`;
+            html += `<span class="status-green">返せました</span>`;
             html += `<span class="book-status-description">この本はすでに返却されています</span>`;
           }
 

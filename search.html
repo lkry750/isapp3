@@ -54,14 +54,14 @@
 
           html +=
             object.status == '貸出中'
-              ? `<span class="status-red">借りています</span>`
-              : `<span class="status-green">借りられます</span>`;
+              ? `<span class="status-red">利用中</span>`
+              : `<span class="status-green">利用できます</span>`;
 
           html += `<span class="book-status-description">`;
           html +=
             object.status == '貸出中'
-              ? `${object.fname} ${object.lname}さんが借りています`
-              : 'この本は借りることができます';
+              ? `現在 ${object.fname} ${object.lname}さんが借りています`
+              : '現在借りている人はいません';
           html += `</span>`;
 
           html += `</div>`;
