@@ -21,13 +21,14 @@
       });
 
       function display() {
-        var url = sessionStorage.getItem('url');
+        var mode = osql.getParam("mode");
+
         var text = '';
-        if (url == 'checkout.html') {
+        if (mode == 'checkout') {
           text = '借りる本のQRを読み込んでください';
-        } else if (url == 'return.html') {
+        } else if (mode == 'return') {
           text = '返す本のQRを読み込んでください';
-        } else if (url == 'search.html') {
+        } else if (mode == 'search') {
           text = '本のQRを読み込んでください';
         } else {
           text = 'ISBNを読み込んでください';
@@ -36,7 +37,7 @@
       }
 
       function reader() {
-        var url = sessionStorage.getItem('url');
+        var mode = osql.getParam("mode");
 
         //QRコード
         const html5QrCode = new Html5Qrcode('reader');
@@ -67,10 +68,10 @@
               var isbn = decodedText;
 
               html5QrCode.stop();
-              location.replace(url + '?isbn=' + isbn);
+              location.replace(mode + '.html?isbn=' + isbn);
             } else {
               html5QrCode.stop();
-              location.replace(url + '?uuid=' + decodedText);
+              location.replace(mode + '.html?uuid=' + decodedText);
             }
           }
           // 読み取り失敗時の処理
