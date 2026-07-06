@@ -53,14 +53,14 @@
           html += `<div class="book-line">`;
 
           if (object.status == '貸出中') {
-            html += `<span class="status-red">貸出中</span>`;
+            html += `<span class="status-red">借りられません</span>`;
             if (me.id == object.userid) {
-              html += `<span class="book-status-description">返却する場合は「返す」を押してください</span>`;
+              html += `<span class="book-status-description">この本を返しますか？</span>`;
             } else if (me.id != object.userid) {
-              html += `<span class="book-status-description">この本は他の人が利用しています</span>`;
+              html += `<span class="book-status-description">この本は他の人が借りています</span>`;
             }
           } else if (object.status == '在架') {
-            html += `<span class="status-green">利用可</span>`;
+            html += `<span class="status-green">借りられます</span>`;
             html += `<span class="book-status-description">この本はすでに返却されています</span>`;
           }
 
@@ -68,9 +68,9 @@
 
           html += `<div class="book-line action-line">`;
           if (object.status == '貸出中' && me.id == object.userid) {
+            html += `<button class="checkoutbutton" onclick="cancelReturn()">キャンセル</button>`;
             html += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返す</button>`;
           }
-          html += `<button class="checkoutbutton" onclick="cancelReturn()">キャンセル</button>`;
           html += `</div>`;
 
           html += `</div>`;

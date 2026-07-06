@@ -54,21 +54,19 @@
 
           html +=
             object.status == '貸出中'
-              ? `<span class="status-red">貸出中</span>`
-              : `<span class="status-green">利用可</span>`;
+              ? `<span class="status-red">借りています</span>`
+              : `<span class="status-green">借りられます</span>`;
 
           html += `<span class="book-status-description">`;
           html +=
             object.status == '貸出中'
-              ? `現在 ${object.fname} ${object.lname}さんが利用しています`
+              ? `${object.fname} ${object.lname}さんが借りています`
               : 'この本は借りることができます';
           html += `</span>`;
 
           html += `</div>`;
 
           html += `<div class="book-line action-line">`;
-          html += `<button class="checkoutbutton" onclick="confirmSearch()">OK</button>`;
-          html += `<button class="checkoutbutton" onclick="cancelSearch()">キャンセル</button>`;
           html += `</div>`;
 
           html += `</div>`;
@@ -85,22 +83,8 @@
         if (!uuid) {
           document.getElementById('scan').innerHTML = `<button onclick="goScan()">QRを読み取る</button>`;
         } else {
-          document.getElementById('scan').innerHTML = '';
+          document.getElementById('scan').innerHTML = `<button onclick="goScan()">他の本のQRを読み取る</button>`;
         }
-      }
-
-      function showScanButton(label = '他の本のQRを読み取る') {
-        document.getElementById('scan').innerHTML = `<button onclick="goScan()">${label}</button>`;
-      }
-
-      function confirmSearch() {
-        showScanButton();
-      }
-
-      function cancelSearch() {
-        document.getElementById('result').innerHTML = `
-          <div class="box"><span class="book-status-description">キャンセルしました</span></div>`;
-        showScanButton();
       }
     </script>
   </head>
