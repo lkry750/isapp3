@@ -65,6 +65,12 @@
           html += `</span>`;
 
           html += `</div>`;
+
+          html += `<div class="book-line action-line">`;
+          html += `<button class="checkoutbutton" onclick="confirmSearch()">OK</button>`;
+          html += `<button class="checkoutbutton" onclick="cancelSearch()">キャンセル</button>`;
+          html += `</div>`;
+
           html += `</div>`;
         }
         document.getElementById('result').innerHTML = html;
@@ -76,13 +82,25 @@
 
       function displayScan() {
         var uuid = osql.getParam('uuid');
-        var text = '';
         if (!uuid) {
-          text = 'QRを読み取る';
+          document.getElementById('scan').innerHTML = `<button onclick="goScan()">QRを読み取る</button>`;
         } else {
-          text = '他の本のQRを読み取る';
+          document.getElementById('scan').innerHTML = '';
         }
-        document.getElementById('scan').innerHTML = text;
+      }
+
+      function showScanButton(label = '他の本のQRを読み取る') {
+        document.getElementById('scan').innerHTML = `<button onclick="goScan()">${label}</button>`;
+      }
+
+      function confirmSearch() {
+        showScanButton();
+      }
+
+      function cancelSearch() {
+        document.getElementById('result').innerHTML = `
+          <div class="box"><span class="book-status-description">キャンセルしました</span></div>`;
+        showScanButton();
       }
     </script>
   </head>
@@ -107,7 +125,7 @@
       <div id="result"></div>
     </div>
     <div class="action-panel">
-      <button id="scan" onclick="goScan()">QRを読み取る</button>
+      <div id="scan"></div>
     </div>
   </body>
 </html>
