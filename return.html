@@ -59,10 +59,12 @@
             } else if (me.id != object.userid) {
               html += `<span class="status-red">返せません</span>`;
               html += `<span class="book-status-description">現在他の人が借りています</span>`;
+              showScanButton();
             }
           } else if (object.status == '在架') {
             html += `<span class="status-green">返せました</span>`;
             html += `<span class="book-status-description">この本はすでに返却されています</span>`;
+            showScanButton();
           }
 
           html += `</div>`;
@@ -111,8 +113,8 @@
         }
       }
 
-      function showScanButton(label = '他の本のQRを読み取る') {
-        document.getElementById('scan').innerHTML = `<button onclick="goScan()">${label}</button>`;
+      function showScanButton() {
+        document.getElementById('scan').innerHTML = `<button onclick="goScan()">他の本のQRを読み取る</button>`;
       }
 
       function cancelReturn() {
