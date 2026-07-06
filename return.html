@@ -54,11 +54,9 @@
 
           if (object.status == '貸出中') {
             html += `<span class="status-red">貸出中</span>`;
-            if (me.id == object.userid && canReturn()) {
+            if (me.id == object.userid) {
               html += `<span class="book-status-description">返却する場合は「返す」を押してください</span>`;
               html += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返す</button>`;
-            } else if (me.id == object.userid) {
-              html += `<span class="book-status-description">返却するには返却用QRコードを読み込んでください</span>`;
             } else if (me.id != object.userid) {
               html += `<span class="book-status-description">この本は他の人が利用しています</span>`;
             }
@@ -71,16 +69,6 @@
           html += `</div>`;
         }
         document.getElementById('result').innerHTML = html;
-      }
-
-      function canReturn() {
-        var expire = sessionStorage.getItem('return_expire');
-        if (!expire) return false;
-        if (Date.now() > Number(expire)) {
-          sessionStorage.removeItem('return_expire');
-          return false;
-        }
-        return true;
       }
 
       async function execUpdate(id) {
