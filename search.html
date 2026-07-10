@@ -41,6 +41,7 @@
         console.log(objects);
 
         var html = '';
+        var html2 = '';
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
 
@@ -49,29 +50,16 @@
           html += `<span class="book-title">${object.title}</span>`;
           html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
           html += `</div>`;
-
-          html += `<div class="book-line book-status-line">`;
-
-          html +=
-            object.status == '貸出中'
-              ? `<span class="status-red">利用中</span>`
-              : `<span class="status-green">利用できます</span>`;
-
-          html += `<span class="book-status-description">`;
-          html +=
-            object.status == '貸出中'
-              ? `現在 ${object.fname} ${object.lname}さんが借りています`
-              : '現在借りている人はいません';
-          html += `</span>`;
-
           html += `</div>`;
 
-          html += `<div class="book-line action-line">`;
-          html += `</div>`;
-
-          html += `</div>`;
+          html2 += `<div class="box">`;
+          html2 += `<span class="book-status-description">`;
+          html2 += object.status == '貸出中' ? `現在 ${object.fname} ${object.lname}さんが借りています` : '現在借りている人はいません';
+          html2 += `</span>`;
+          html2 += `</div>`;
         }
-        document.getElementById('result').innerHTML = html;
+        document.getElementById('result-book').innerHTML = html;
+        document.getElementById('result-status').innerHTML = html2;
       }
 
       function goScan() {
@@ -106,7 +94,8 @@
     <h2>誰が借りているか確認する</h2>
     <hr />
     <div>
-      <div id="result"></div>
+      <div id="result-book"></div>
+      <div id="result-status"></div>
     </div>
     <div class="action-panel">
       <div id="scan"></div>

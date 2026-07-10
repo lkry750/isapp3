@@ -41,6 +41,7 @@
         console.log(objects);
 
         var html = '';
+        var html2 = '';
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
 
@@ -49,47 +50,35 @@
           html += `<span class="book-title">${object.title}</span>`;
           html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
           html += `</div>`;
+          html += `</div>`;
 
-          html += `<div class="book-line">`;
-
+          html2 += `<div class="box">`;
           if (object.status == '貸出中') {
             if (me.id == object.userid) {
-              html += `<span class="status-red">返せます</span>`;
-              html += `<span class="book-status-description">この本を返しますか？</span>`;
+              html2 += `<span class="book-status-description">この本を返しますか？</span><br><br>`;
+              html2 += `<div class="book-line">`;
+              html2 += `<button class="checkoutbutton" onclick="cancelReturn()">キャンセル</button>`;
+              html2 += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返す</button>`;
+              html2 += `</div>`;
             } else if (me.id != object.userid) {
-              html += `<span class="status-red">返せません</span>`;
-              html += `<span class="book-status-description">現在他の人が借りています</span>`;
+              html2 += `<span class="book-status-description">現在 ${object.fname} ${object.lname}さんが借りています`;
               showScanButton();
             }
           } else if (object.status == '在架') {
-            html += `<span class="status-green">返せました</span>`;
-            html += `<span class="book-status-description">この本はすでに返却されています</span>`;
+            html2 += `<span class="book-status-description">現在あなたはこの本を借りていません</span>`;
             showScanButton();
           }
-
-          html += `</div>`;
-
-          html += `<div class="book-line action-line">`;
-          if (object.status == '貸出中' && me.id == object.userid) {
-            html += `<button class="checkoutbutton" onclick="cancelReturn()">キャンセル</button>`;
-            html += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返す</button>`;
-          }
-          html += `</div>`;
-
-          html += `</div>`;
+          html2 += `</div>`;
         }
-        document.getElementById('result').innerHTML = html;
+        document.getElementById('result-book').innerHTML = html;
+        document.getElementById('result-status').innerHTML = html2;
       }
 
       async function execUpdate(id) {
-        if (!confirm('本当に返却しますか？')) {
-          return;
-        }
         var sql = `update Borrowings set returnDate = now() where id = ${id}`;
         await osql.connect(sql);
         await execSelect();
-        alert('返却が完了しました');
-        showScanButton();
+        compReturn();
       }
 
       function buttonPressed() {
@@ -107,19 +96,27 @@
       function displayScan() {
         var uuid = osql.getParam('uuid');
         if (!uuid) {
-          document.getElementById('scan').innerHTML = `<button onclick="goScan()">QRを読み取る</button>`;
+          document.getElementById('scan').innerHTML =
+            `<button onclick="goScan()">QRを読み取る</button>`;
         } else {
           document.getElementById('scan').innerHTML = '';
         }
       }
 
       function showScanButton() {
-        document.getElementById('scan').innerHTML = `<button onclick="goScan()">他の本のQRを読み取る</button>`;
+        document.getElementById('scan').innerHTML =
+          `<button onclick="goScan()">他の本のQRを読み取る</button>`;
       }
 
       function cancelReturn() {
-        document.getElementById('result').innerHTML = `
+        document.getElementById('result-status').innerHTML = `
           <div class="box"><span class="book-status-description">キャンセルしました</span></div>`;
+        showScanButton();
+      }
+
+      function compReturn(){
+        document.getElementById('result-status').innerHTML = `
+          <div class="box"><span class="book-status-description">返却が完了しました</span></div>`;
         showScanButton();
       }
     </script>
@@ -142,7 +139,8 @@
     <h2>本を返す</h2>
     <hr />
     <div>
-      <div id="result"></div>
+      <div id="result-book"></div>
+      <div id="result-status"></div>
     </div>
     <div class="action-panel">
       <div id="scan"></div>
