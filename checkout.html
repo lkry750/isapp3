@@ -52,7 +52,7 @@
           html += `</div>`;
           html += `</div>`;
 
-          html2 += `<div class="box">`;
+          html2 += `<div class="box status-card">`;
           if (object.status == '貸出中') {
             if (me.id == object.userid) {
               html2 += `<span class="book-status-description">現在あなたが借りています</span>`;
@@ -61,10 +61,12 @@
             }
             showScanButton();
           } else if (object.status == '在架') {
-            html2 += `<span class="book-status-description">この本を借りますか？</span><br><br>`;
-            html2 += `<div class="book-line">`;
-            html2 += `<button class="checkoutbutton" onclick="cancelCheckout()">キャンセル</button>`;
-            html2 += `<button class="checkoutbutton" onclick="execInsert('${object.uuid}')">借りる</button>`;
+            html2 += `<div class="status-message">`;
+            html2 += `<span class="book-status-description status-question">この本を借りますか？</span>`;
+            html2 += `</div>`;
+            html2 += `<div class="borrow-actions">`;
+            html2 += `<button class="checkoutbutton checkoutbutton--secondary" onclick="cancelCheckout()">キャンセル</button>`;
+            html2 += `<button class="checkoutbutton checkoutbutton--primary" onclick="execInsert('${object.uuid}')">借りる</button>`;
             html2 += `</div>`;
           }
           html2 += `</div>`;
@@ -103,13 +105,13 @@
 
       function cancelCheckout() {
         document.getElementById('result-status').innerHTML = `
-            <div class="box"><span class="book-status-description">キャンセルしました</span></div>`;
+            <div class="box status-card"><span class="book-status-description">キャンセルしました</span></div>`;
         showScanButton();
       }
 
       function compCheckout(){
         document.getElementById('result-status').innerHTML = `
-            <div class="box"><span class="book-status-description">貸出が完了しました</span></div>`;
+            <div class="box status-card"><span class="book-status-description">貸出が完了しました</span></div>`;
         showScanButton();
       }
     </script>

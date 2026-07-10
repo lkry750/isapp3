@@ -510,6 +510,34 @@ input {
   min-width: 104px;
 }
 
+.status-card {
+  border-left-color: #10b981;
+  background: #ecfdf5;
+  border: 1px solid #d1fae0;
+}
+
+.status-card .book-status-description {
+  font-size: 1rem;
+}
+
+.status-message {
+  margin-bottom: 12px;
+}
+
+.borrow-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkoutbutton--primary {
+  background: #059669;
+}
+
+.checkoutbutton--secondary {
+  background: #6b7280;
+}
+
 .small-button {
   min-height: 34px;
   min-width: 48px;
