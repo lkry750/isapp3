@@ -45,14 +45,14 @@
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
 
-          html += `<div class="box status-card">`;
+          html += `<div class="box">`;
           html += `<div class="book-line">`;
           html += `<span class="book-title">${object.title}</span>`;
           html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
           html += `</div>`;
           html += `</div>`;
 
-          html2 += `<div class="box">`;
+          html2 += `<div class="box status-card">`;
           html2 += `<span class="book-status-description">`;
           html2 += object.status == '貸出中' ? `現在 ${object.fname} ${object.lname}さんが借りています` : '現在借りている人はいません';
           html2 += `</span>`;
