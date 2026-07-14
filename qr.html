@@ -19,7 +19,7 @@
       });
 
       function qrcode() {
-        // QRが小さくなって読めない,要検討
+
         var qr = createURL();
         //https://mindcode.si.aoyama.ac.jp/user_projects/a8124018%40gsuite.si.aoyama.ac.jp/f0848f6e-c797-41a5-a63f-aad2421ea462/
         var url =
@@ -49,6 +49,9 @@
         }else if(qr == 'book_me'){
           document.getElementById('title').textContent = "借りている本を確認するQR";
           return "book_me.html";
+        }else if(qr == 'home'){
+          document.getElementById('title').textContent = "開発QR";
+          return "index.html";
         }
       }
     </script>
