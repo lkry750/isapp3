@@ -116,9 +116,18 @@
         showScanButton();
       }
 
-      function compReturn(){
-        document.getElementById('result-status').innerHTML = `
-          <div class="box status-card"><span class="book-status-description">返却が完了しました</span></div>`;
+      function compReturn() {
+        document.getElementById('result-book').innerHTML = ``;
+        document.getElementById('result-status').innerHTML =
+          `<div class="box status-card checkout-complete">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+          
+            <path class="checkmark-check" fill="none" d="M14 27l7 7 16-16" />
+            </svg>
+            <span class="book-status-description">貸出が完了しました</span>
+            </div>
+            `;
         showScanButton();
       }
     </script>
