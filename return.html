@@ -40,38 +40,41 @@
         var objects = await osql.connect(sql);
         console.log(objects);
 
-        var html = '';
-        var html2 = '';
+        var bookHtml = '';
+        var statusHtml = '';
+        var awaitingAction = false;
         for (var i = 0; i < objects.length; i++) {
           var object = objects[i];
 
-          html += `<div class="box status-card">`;
-          html += `<div class="book-line">`;
-          html += `<span class="book-title">${object.title}</span>`;
-          html += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
-          html += `</div>`;
-          html += `</div>`;
+          bookHtml += `<div class="box">`;
+          bookHtml += `<div class="book-line">`;
+          bookHtml += `<span class="book-title">${object.title}</span>`;
+          bookHtml += `<span class="book-isbn">ISBN : ${object.isbn}</span>`;
+          bookHtml += `</div>`;
+          bookHtml += `</div>`;
 
-          html2 += `<div class="box">`;
+          statusHtml += `<div class="box status-card">`;
           if (object.status == '貸出中') {
             if (me.id == object.userid) {
-              html2 += `<span class="book-status-description">この本を返しますか？</span><br><br>`;
-              html2 += `<div class="book-line">`;
-              html2 += `<button class="checkoutbutton" onclick="cancelReturn()">キャンセル</button>`;
-              html2 += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返す</button>`;
-              html2 += `</div>`;
-            } else if (me.id != object.userid) {
-              html2 += `<span class="book-status-description">現在 ${object.fname} ${object.lname}さんが借りています`;
-              showScanButton();
+              statusHtml += `<span class="book-status-description">この本を返しますか？</span>`;
+              statusHtml += `<div class="borrow-actions">`;
+              statusHtml += `<button class="checkoutbutton checkoutbutton--secondary" onclick="cancelReturn()">キャンセル</button>`;
+              statusHtml += `<button class="checkoutbutton" onclick="button2Pressed('${object.id}')">返す</button>`;
+              statusHtml += `</div>`;
+              awaitingAction = true;
+            } else {
+              statusHtml += `<span class="book-status-description">現在 ${object.fname} ${object.lname}さんが借りています</span>`;
             }
           } else if (object.status == '在架') {
-            html2 += `<span class="book-status-description">現在あなたはこの本を借りていません</span>`;
-            showScanButton();
+            statusHtml += `<span class="book-status-description">この本はすでに返却されています</span>`;
           }
-          html2 += `</div>`;
+          statusHtml += `</div>`;
         }
-        document.getElementById('result-book').innerHTML = html;
-        document.getElementById('result-status').innerHTML = html2;
+        document.getElementById('result-book').innerHTML = bookHtml;
+        document.getElementById('result-status').innerHTML = statusHtml;
+        if (!awaitingAction) {
+          showScanButton();
+        }
       }
 
       async function execUpdate(id) {
@@ -110,13 +113,13 @@
 
       function cancelReturn() {
         document.getElementById('result-status').innerHTML = `
-          <div class="box"><span class="book-status-description">キャンセルしました</span></div>`;
+          <div class="box status-card"><span class="book-status-description">キャンセルしました</span></div>`;
         showScanButton();
       }
 
       function compReturn(){
         document.getElementById('result-status').innerHTML = `
-          <div class="box"><span class="book-status-description">返却が完了しました</span></div>`;
+          <div class="box status-card"><span class="book-status-description">返却が完了しました</span></div>`;
         showScanButton();
       }
     </script>
