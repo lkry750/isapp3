@@ -21,7 +21,7 @@
       });
 
       function display() {
-        var mode = osql.getParam("mode");
+        var mode = osql.getParam('mode');
 
         var text = '';
         if (mode == 'checkout') {
@@ -39,7 +39,7 @@
       }
 
       function reader() {
-        var mode = osql.getParam("mode");
+        var mode = osql.getParam('mode');
 
         //QRコード
         const html5QrCode = new Html5Qrcode('reader');
@@ -60,20 +60,24 @@
             experimentalFeatures: { useBarCodeDetectorIfSupported: false },
           },
           //読み取り成功時の処理
-          (decodedText) => {
+          async (decodedText) => {
             //isbnとQRコードで分岐
-            console.log(decodedText);
+
             //正規表現というらしい
-            if (/^(97[89])\d{10}$/.test(decodedText)) {
+            if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(decodedText)) {
+              if (mode == 'router'){
+                mode = await checkMode(decodedText);
+              }
+              html5QrCode.stop();
+              console.log(mode);
+              location.replace(mode + '.html?uuid=' + decodedText);
+            } else if (/^(97[89])\d{10}$/.test(decodedText)) {
               //isbnの処理
               sessionStorage.setItem('isbn', decodedText);
               var isbn = decodedText;
 
               html5QrCode.stop();
               location.replace(mode + '.html?isbn=' + isbn);
-            } else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(decodedText)){
-              html5QrCode.stop();
-              location.replace(mode + '.html?uuid=' + decodedText);
             } else {
               alert('QRコードが正しくないです');
             }
@@ -87,7 +91,24 @@
         );
       }
 
-      
+      async function checkMode(uuid) {
+        var sql = `select Books.uuid, Books.isbn, BookTitle.title, Borrowings.userid,
+        Borrowings.checkoutDate, Borrowings.returnDate,Users.fname, Users.lname, Users.id,
+        case when Borrowings.checkoutDate is not null and Borrowings.returnDate is null
+        then "貸出中" else "在架" end as status
+        from Books
+        left join BookTitle on Books.isbn = BookTitle.isbn
+        left join Borrowings on Books.uuid = Borrowings.uuid
+        and Borrowings.checkoutDate = (select Max(b.checkoutDate) from Borrowings b where b.uuid = Books.uuid)
+        left join Users on Borrowings.userid = Users.id
+        where Books.uuid = '${uuid}'`;
+        var object = await osql.connect(sql);
+        console.log(object);
+        var status = object[0].status;
+        console.log(status);
+        mode = object[0].status == '貸出中' ? 'return' : 'checkout';
+        return mode;
+      }
     </script>
   </head>
 
