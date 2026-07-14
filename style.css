@@ -530,10 +530,6 @@ input {
   gap: 10px;
 }
 
-.checkoutbutton--primary {
-  background: #059669;
-}
-
 .checkoutbutton--secondary {
   background: #6b7280;
 }
