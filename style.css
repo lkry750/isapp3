@@ -527,11 +527,17 @@ input {
 .borrow-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   gap: 10px;
 }
 
 .checkoutbutton--secondary {
   background: #6b7280;
+}
+
+.status-question {
+  display: block;
+  text-align: center;
 }
 
 .small-button {
