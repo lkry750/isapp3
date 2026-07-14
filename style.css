@@ -537,7 +537,7 @@ input {
 
 .status-question {
   display: block;
-  text-align: center;
+  text-align: left;
 }
 
 .small-button {
