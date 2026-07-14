@@ -511,9 +511,9 @@ input {
 }
 
 .status-card {
-  border-left-color: #10b981;
-  background: #ecfdf5;
-  border: 1px solid #d1fae0;
+  border-left-color: #2563eb;
+  background: #ebf4ff;
+  border: 1px solid #bfdbfe;
 }
 
 .status-card .book-status-description {
