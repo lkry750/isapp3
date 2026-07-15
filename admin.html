@@ -152,7 +152,7 @@
             left join BookTitle on Books.isbn = BookTitle.isbn
             left join Borrowings on Borrowings.uuid = Books.uuid
             left join Users on Users.id = Borrowings.userid
-            where checkoutDate is not null and returnDate is null order by CheckoutDate desc;
+            where checkoutDate is not null and returnDate is null order by title desc, copy_no asc;
             `;
         var objects = await osql.connect(sql);
         console.log(objects);

@@ -106,13 +106,14 @@
       }
 
       function showScanButton() {
-        document.getElementById('scan').innerHTML =
-          `<button onclick="goScanRouter()">他の本のQRを読み取る</button>`;
+        var html = `<button onclick="goScanRouter()">他の本のQRを読み取る</button>`;
+        document.getElementById('scan').innerHTML = html;
       }
 
       function cancelReturn() {
-        document.getElementById('result-status').innerHTML = `
-          <div class="box status-card"><span class="book-status-description">キャンセルしました</span></div>`;
+        document.getElementById('result-book').innerHTML = '';
+        var html = `<div class="box status-card"><span class="book-status-description">キャンセルしました</span></div>`;
+        document.getElementById('result-status').innerHTML = html;
         showScanButton();
       }
 

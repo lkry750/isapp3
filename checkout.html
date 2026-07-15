@@ -104,8 +104,9 @@
       }
 
       function cancelCheckout() {
-        document.getElementById('result-status').innerHTML = `
-            <div class="box status-card"><span class="book-status-description">キャンセルしました</span></div>`;
+        document.getElementById('result-book').innerHTML = '';
+        var html = `<div class="box status-card"><span class="book-status-description">キャンセルしました</span></div>`;
+        document.getElementById('result-status').innerHTML = html;
         showScanButton();
       }
 
