@@ -84,26 +84,22 @@
         compCheckout();
       }
 
-      function goScanCheckout() {
-        location.replace('scan.html?mode=checkout');
-      }
-
-      function goScanReturn() {
-        location.replace('scan.html?mode=return');
+      function goScanRouter() {
+        location.replace('scan.html?mode=router');
       }
 
       function displayScan() {
         var uuid = osql.getParam('uuid');
         if (!uuid) {
           document.getElementById('scan').innerHTML =
-            `<button onclick="goScanCheckout()">QRを読み取る</button>`;
+            `<button onclick="goScanRouter()">QRを読み取る</button>`;
         } else {
           document.getElementById('scan').innerHTML = '';
         }
       }
 
       function showScanButton() {
-        var html = `<button onclick="goScanCheckout()">他の本のQRを読み取る</button>`;
+        var html = `<button onclick="goScanRouter()">他の本のQRを読み取る</button>`;
         document.getElementById('scan').innerHTML = html;
       }
 

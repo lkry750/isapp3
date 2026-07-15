@@ -24,16 +24,14 @@
         var mode = osql.getParam('mode');
 
         var text = '';
-        if (mode == 'checkout') {
-          text = '借りる本のQRを読み込んでください';
-        } else if (mode == 'return') {
-          text = '返す本のQRを読み込んでください';
-        } else if (mode == 'search') {
+        if (mode == 'search') {
           text = '誰が借りているか確認する本のQRを<br>読み込んでください';
         } else if (mode == 'router') {
           text = '貸出/返却する本のQRを<br>読み込んでください';
-        } else {
+        } else if (mode == 'add') {
           text = 'ISBNを読み込んでください';
+        } else {
+          text = '本のQRを読み込んでください';
         }
         document.getElementById('text').innerHTML = text;
       }
