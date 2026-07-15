@@ -32,12 +32,10 @@
             document.getElementById('add').innerHTML = `<a href="book_addition.html">本の追加</a>`;
             document.getElementById('print2').innerHTML = `<a href="book_print.html">本の印刷</a>`;
             document.getElementById('del').innerHTML = `<a href="book_delete.html">本の削除</a>`;
-            document.getElementById('qr-c').innerHTML = `<a href="qr.html?URL=checkout">本を借りるQR</a>`;
-            document.getElementById('qr-r').innerHTML = `<a href="qr.html?URL=return">本を返すQR</a>`;
+            document.getElementById('qr-h').innerHTML = `<a href="qr.html?URL=home">本を借りる・返すQR</a>`;
             document.getElementById('qr-s').innerHTML = `<a href="qr.html?URL=search">誰が借りているか確認するQR</a>`;
             document.getElementById('qr-m').innerHTML = `<a href="qr.html?URL=book_me">あなたが借りている本を確認するQR</a>`;
             document.getElementById('qr-p').innerHTML = `<a href="qr_print.html">QR作成&紙印刷</a>`;
-            document.getElementById('qr-h').innerHTML = `<a href="qr.html?URL=home">開発QR</a>`;
         }
     </script>
 
@@ -60,11 +58,9 @@
     <h2>本の利用メニュー</h2>
     <hr>
     <div class="top-menu">
-        <p><a href="checkout.html">本を借りる</a></p>
-        <p><a href="return.html">本を返す</a></p>
+        <p><a href="scan.html?mode=router">借りる・返す</a></p>
         <p><a href="search.html">誰が借りているか確認する</a></p>
         <p><a href="book_me.html">あなたが借りている本を確認する</a></p>
-        <p><a href="scan.html?mode=router">貸出/返却</a></p>
     </div>
     <hr id="adminSeparator" style="display: none;">
     <div id="adminHeading" style="display: none;">
@@ -76,12 +72,10 @@
         <p id="add"></p>
         <p id="print2"></p>
         <p id="del"></p>
-        <p id="qr-c"></p>
-        <p id="qr-r"></p>
+        <p id="qr-h"></p>
         <p id="qr-s"></p>
         <p id="qr-m"></p>
         <p id="qr-p"></p>
-        <p id="qr-h"></p>
     </div>
 </body>
 
