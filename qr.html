@@ -37,17 +37,14 @@
 
       function createURL() {
         var qr = osql.getParam('URL');
-        if (qr == 'checkout'){
-          document.getElementById('title').textContent = "借りるQR";
-          return "scan.html?mode=checkout";
-        }else if(qr == 'return'){
-          document.getElementById('title').textContent = "返すQR";
-          return "scan.html?mode=return";
+        if (qr == 'router'){
+          document.getElementById('title').textContent = "借りる・返すQR";
+          return "scan.html?mode=router";
         }else if(qr == 'search'){
           document.getElementById('title').textContent = "誰が借りているか確認するQR";
           return "scan.html?mode=search";
         }else if(qr == 'book_me'){
-          document.getElementById('title').textContent = "借りている本を確認するQR";
+          document.getElementById('title').textContent = "あなたが借りている本を確認するQR";
           return "book_me.html";
         }else if(qr == 'home'){
           document.getElementById('title').textContent = "開発QR";
